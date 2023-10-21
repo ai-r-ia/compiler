@@ -16,52 +16,56 @@ enum dataType
 {
     INT,
     CHAR,
-    STRING,
+    STRING
 };
 
-typedef struct _vector
+typedef  struct vector* Vector; 
+struct vector
 {
-    int vectorType;
-    void *data;
-    size_t n;
-    size_t pos;
-} vector;
+    enum dataType dataType;
+    void* data;
+    size_t size;
+    size_t next_index;
+};
 
-vector *iVector(int vectorType);
+// vector *iVector(int vectorType);
 
-void enqueue(vector *vector, void *data);
+Vector initialize_vector(enum dataType dataType);
 
-void *get(vector *vector, size_t index);
+// void enqueue(vector *vector, void *data);
 
-void put(vector *vector, size_t index, void *data);
+void* get(Vector vec, size_t ind);
 
-void push_back(vector *vec, void *data);
+void put(Vector vec, size_t ind, void *value);
 
-bool contains(vector *vec, void *data);
+void push_back(Vector vec, void* value);
 
-vector *copy_vector(vector *destination, vector *source);
+bool contains(Vector vec, void *data);
 
-size_t size(vector *vector);
+// vector *copy_vector(vector *destination, vector *source);
 
-void removeAt(vector *vector, size_t index);
+size_t size(Vector vec);
 
-// void *pop_back(vector *vector);
+void removeAt(Vector vec, size_t ind);
+
+void pop_back(Vector vec);
 
 void *copy_data(void *destination, void *source, int type);
 
-void clear(vector* vector);
+void clear(Vector vec);
+
 // for internal workings
 
-void _malloc_vec(vector *vector, size_t size);
+void _malloc_vector(Vector vec, size_t size);
 
-void _realloc_vec(vector *vector, size_t new_size);
+void _realloc_vector(Vector vec, size_t size);
 
-void *_get(vector *vector, size_t index);
+// void *_get(vector *vector, size_t index);
 
-bool _checkEqual(void *a, void *b, int vectorType);
+bool _checkEqual(void *a, void *b, enum dataType dataType);
 
-void _put(vector *vector, size_t index, void *data);
+// void _put(vector *vector, size_t index, void *data);
 
-void *_copy_data(void *destination, void *source, int type);
+// void *_copy_data(void *destination, void *source, int type);
 
 #endif

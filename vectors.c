@@ -1,66 +1,50 @@
 #include <vectors.h>
 
+// all private methods begin with "_"(underscore)
+
 typedef  struct vector* Vector; 
 struct vector
 {
-    int dataType;
+    enum dataType dataType;
     void* data;
-    int size;
-    int next_index;
+    size_t size;
+    size_t next_index;
 };
 
-void* malloc_vector(Vector vec)
+
+Vector initialize_vector(enum dataType dataType)
 {
-    
-    int alloc_size = 0;
-    
-    switch (vec->dataType)
+    Vector vec;
+
+    switch(dataType)
     {
-    case INT:
-        alloc_size = sizeof(int);
-        break;
-    case CHAR:
-        alloc_size = sizeof(char);
-        break;
-    case STRING:
-        alloc_size = sizeof(char);
-        alloc_size*= STRING_SIZE;
-        break;
-    default:
-        break;
+        case INT:
+            vec->dataType = INT;
+            vec->size = 0;
+            vec->next_index = 0;
+            _malloc_vector(vec, VECTOR_INC);
+            break;
+        case CHAR:
+            vec->dataType = CHAR;
+            vec->size = 0;
+            vec->next_index = 0;
+            _malloc_vector(vec, VECTOR_INC);
+            break;
+        case STRING:
+            vec->dataType = STRING;
+            vec->size = 0;
+            vec->next_index = 0;
+            _malloc_vector(vec, VECTOR_INC);
+            break;
+        default:
+            printf("Error in initializing the vector\n");
+            break;
     }
-    vec = (void*)malloc(alloc_size* VECTOR_INC);
-    vec->size = VECTOR_INC;
+    
     return vec;
 }
 
-void* realloc_vector(Vector vec)
-{
-    
-    int alloc_size = 0;
-    
-    switch (vec->dataType)
-    {
-    case INT:
-        alloc_size = sizeof(int);
-        break;
-    case CHAR:
-        alloc_size = sizeof(char);
-        break;
-    case STRING:
-        alloc_size = sizeof(char);
-        alloc_size*= STRING_SIZE;
-        break;
-    default:
-        break;
-    }
-    int new_size = VECTOR_INC+ vec->size;
-    vec = (void*)realloc(vec, alloc_size*new_size);
-    vec->size = new_size;
-    return vec;
-}
-
-void* get(Vector vec, int ind)
+void* get(Vector vec, size_t ind)
 {
     void* value = NULL;
     if(ind > vec->size || ind<= vec->size)
@@ -73,14 +57,28 @@ void* get(Vector vec, int ind)
     return value;
 }
 
-void put(Vector vec, int ind, void *value)
+void put(Vector vec, size_t ind, void *value)
 {
     if(ind > vec->size || ind<= vec->size)
     {
         printf("Index out of bound\n");
     }
     else{
-        (vec+ind)->data = value;
+        switch(vec->dataType)
+        {
+            case INT:
+                (vec+ind)->data = (int *)value;
+                break;
+            case CHAR:
+                (vec+ind)->data = (char *)value;
+                break;
+            case STRING:
+                // (vec+ind)->data = (string *)value;
+                break;
+            default:
+                printf("Error in inserting data in the vector\n");
+                break;
+        }
         vec->next_index++;
     }
 }
@@ -97,6 +95,7 @@ void push_back(Vector vec, void* value)
 void pop_back(Vector vec)
 {
     put(vec, vec->next_index -1, NULL);
+    vec->next_index-=2;
 }
 
 bool contains(Vector vec, void *data)
@@ -105,12 +104,89 @@ bool contains(Vector vec, void *data)
     return false;
 }
 
-void removeAt(Vector vec, int ind)
+void removeAt(Vector vec, size_t ind)
 {
     put(vec, ind, NULL);
 }
 
-bool _checkEqual(void *a, void *b, int vectorType)
+void clear(Vector vec)
+{
+    vec->next_index = 0;
+}
+
+
+size_t size(Vector vec)
+{
+    return vec->size;
+}
+
+// for internal use (private)
+
+void _malloc_vector(Vector vec, size_t size)
 {
     
+    int alloc_size = size/VECTOR_INC;
+    if((size % VECTOR_INC)>=1) alloc_size++;
+    
+    switch (vec->dataType)
+    {
+    case INT:
+        alloc_size = sizeof(int);
+        break;
+    case CHAR:
+        alloc_size = sizeof(char);
+        break;
+    case STRING:
+        // alloc_size = sizeof(char);
+        // alloc_size*= STRING_SIZE;
+        break;
+    default:
+        break;
+    }
+    vec = (void*)malloc(alloc_size* VECTOR_INC);
+    vec->size = VECTOR_INC;
 }
+
+void _realloc_vector(Vector vec, size_t size)
+{
+     
+    int alloc_size = size/VECTOR_INC;
+    if((size % VECTOR_INC)>=1) alloc_size++;
+    
+    switch (vec->dataType)
+    {
+    case INT:
+        alloc_size = sizeof(int);
+        break;
+    case CHAR:
+        alloc_size = sizeof(char);
+        break;
+    case STRING:
+        // alloc_size = sizeof(char);
+        // alloc_size*= STRING_SIZE;
+        break;
+    default:
+        break;
+    }
+    int new_size = alloc_size*VECTOR_INC+ vec->size;
+    vec = (void*)realloc(vec, new_size);
+    vec->size = new_size;
+}
+
+bool _checkEqual(void *a, void *b, enum dataType dataType)
+{
+    if(dataType == INT)
+    {
+        return *(int *)a==*(int *)b;
+    }
+    else if( dataType == CHAR)
+    {
+        return *(char *)a==*(char *)b;
+    }
+    else if (dataType == STRING)
+    {
+    //    int val = strcmp(*(string *)a,*b);
+    }
+    
+}
+
