@@ -5,33 +5,33 @@
 typedef  struct vector* Vector; 
 struct vector
 {
-    enum dataType dataType;
+    enum DATATYPE DATATYPE;
     void* data;
     size_t size;
     size_t next_index;
 };
 
 
-Vector initialize_vector(enum dataType dataType)
+Vector initialize_vector(enum DATATYPE DATATYPE)
 {
     Vector vec;
 
-    switch(dataType)
+    switch(DATATYPE)
     {
         case INT:
-            vec->dataType = INT;
+            vec->DATATYPE = INT;
             vec->size = 0;
             vec->next_index = 0;
             _malloc_vector(vec, VECTOR_INC);
             break;
         case CHAR:
-            vec->dataType = CHAR;
+            vec->DATATYPE = CHAR;
             vec->size = 0;
             vec->next_index = 0;
             _malloc_vector(vec, VECTOR_INC);
             break;
         case STRING:
-            vec->dataType = STRING;
+            vec->DATATYPE = STRING;
             vec->size = 0;
             vec->next_index = 0;
             _malloc_vector(vec, VECTOR_INC);
@@ -64,7 +64,7 @@ void put(Vector vec, size_t ind, void *value)
         printf("Index out of bound\n");
     }
     else{
-        switch(vec->dataType)
+        switch(vec->DATATYPE)
         {
             case INT:
                 (vec+ind)->data = (int *)value;
@@ -128,7 +128,7 @@ void _malloc_vector(Vector vec, size_t size)
     int alloc_size = size/VECTOR_INC;
     if((size % VECTOR_INC)>=1) alloc_size++;
     
-    switch (vec->dataType)
+    switch (vec->DATATYPE)
     {
     case INT:
         alloc_size = sizeof(int);
@@ -153,7 +153,7 @@ void _realloc_vector(Vector vec, size_t size)
     int alloc_size = size/VECTOR_INC;
     if((size % VECTOR_INC)>=1) alloc_size++;
     
-    switch (vec->dataType)
+    switch (vec->DATATYPE)
     {
     case INT:
         alloc_size = sizeof(int);
@@ -173,17 +173,17 @@ void _realloc_vector(Vector vec, size_t size)
     vec->size = new_size;
 }
 
-bool _checkEqual(void *a, void *b, enum dataType dataType)
+bool _checkEqual(void *a, void *b, enum DATATYPE DATATYPE)
 {
-    if(dataType == INT)
+    if(DATATYPE == INT)
     {
         return *(int *)a==*(int *)b;
     }
-    else if( dataType == CHAR)
+    else if( DATATYPE == CHAR)
     {
         return *(char *)a==*(char *)b;
     }
-    else if (dataType == STRING)
+    else if (DATATYPE == STRING)
     {
     //    int val = strcmp(*(string *)a,*b);
     }

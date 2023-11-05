@@ -12,7 +12,7 @@ static int STRING_SIZE = 1000;
 // Add _O for user defined objects to add vector support
 // Also add the switch case for new vectorType in
 // _malloc_vec , _realloc_vec _put and _get
-enum dataType
+enum DATATYPE
 {
     INT,
     CHAR,
@@ -22,7 +22,7 @@ enum dataType
 typedef  struct vector* Vector; 
 struct vector
 {
-    enum dataType dataType;
+    enum DATATYPE DATATYPE;
     void* data;
     size_t size;
     size_t next_index;
@@ -30,7 +30,7 @@ struct vector
 
 // vector *iVector(int vectorType);
 
-Vector initialize_vector(enum dataType dataType);
+Vector initialize_vector(enum DATATYPE DATATYPE);
 
 // void enqueue(vector *vector, void *data);
 
@@ -62,7 +62,7 @@ void _realloc_vector(Vector vec, size_t size);
 
 // void *_get(vector *vector, size_t index);
 
-bool _checkEqual(void *a, void *b, enum dataType dataType);
+bool _checkEqual(void *a, void *b, enum DATATYPE DATATYPE);
 
 // void _put(vector *vector, size_t index, void *data);
 
