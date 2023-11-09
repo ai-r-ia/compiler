@@ -1,8 +1,7 @@
 #ifndef VECTORS
 #define VECTORS
 
-#include <stdbool.h>
-#include <stddef.h>
+#include "whole_include.h"
 
 static size_t VECTOR_INC = 10;
 static int STRING_SIZE = 1000;
@@ -24,8 +23,8 @@ struct vector
 {
     enum DATATYPE DATATYPE;
     void* data;
+    size_t memory_size;
     size_t size;
-    size_t next_index;
 };
 
 // vector *iVector(int vectorType);
@@ -44,21 +43,19 @@ bool contains(Vector vec, void *data);
 
 // vector *copy_vector(vector *destination, vector *source);
 
-size_t size(Vector vec);
-
 void removeAt(Vector vec, size_t ind);
 
-void pop_back(Vector vec);
+void* pop_back(Vector vec);
 
-void *copy_data(void *destination, void *source, int type);
+Vector copy_vector(Vector destination, Vector source);
 
 void clear(Vector vec);
 
 // for internal workings
 
-void _malloc_vector(Vector vec, size_t size);
+void _malloc_vector(Vector vec,enum DATATYPE DATATYPE);
 
-void _realloc_vector(Vector vec, size_t size);
+void _realloc_vector(Vector vec);
 
 // void *_get(vector *vector, size_t index);
 
