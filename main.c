@@ -4,6 +4,7 @@
 int main(char* args)
 {
     args = "test";
+
     if(strcmp(args,"test")==0)
     {
         testAll();

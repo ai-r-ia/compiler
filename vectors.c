@@ -20,17 +20,7 @@ void* get(Vector vec, size_t ind)
         printf("Index out of bound\n");
     }
     else{
-        switch (vec->DATATYPE) 
-        {
-        case INT:
-            value = &(((int*)(vec->data))[ind]);
-            break;
-        case CHAR:
-            value = &(((char*)(vec->data))[ind]);
-            break;
-        default:
-            break;
-        }
+       value = _get(vec, ind);
         // printf("value %d\n", value);
     }
     return value;
@@ -39,15 +29,10 @@ void* get(Vector vec, size_t ind)
 size_t get_index(Vector vec, void* data)
 {
     // TODO: checkequal, remove switch
+
     for(size_t i =0; i<vec->size; i++)
     {
-        switch(vec->DATATYPE)
-        {
-            case INT:
-                if(*(int*)get(vec, i) == *(int*)data) return i;
-                break;
-        }
-        
+        if(_checkEqual(get(vec,i), data, vec->DATATYPE)) return i;
     }
     return vec->size;
 }
@@ -59,21 +44,7 @@ void put(Vector vec, size_t ind, void *value)
         printf("Index out of bound\n");
     }
     else{
-        switch(vec->DATATYPE)
-        {
-            case INT:
-                ((int *)vec->data)[ind] = *((int *)value);
-                break;
-            case CHAR:
-                ((char *)vec->data)[ind] = *((char *)value);
-                break;
-            case STRING:
-                // (vec+ind)->data = (string *)value;
-                break;
-            default:
-                printf("Error in inserting data in the vector\n");
-                break;
-        }
+        _put(vec, ind, value);
     }
 }
 
@@ -83,25 +54,12 @@ void push_back(Vector vec, void* value)
     {
         _realloc_vector(vec);
     }
-    // TODO: internal put ignoring index, in put too
 
-    switch(vec->DATATYPE)
-        {
-            case INT:
-                ((int *)vec->data)[vec->size] = *((int *)value);
-                break;
-            case CHAR:
-                ((char *)vec->data)[vec->size] = *((char *)value);
-                break;
-            case STRING:
-                // (vec+ind)->data = (string *)value;
-                break;
-            default:
-                printf("Error in inserting data in the vector\n");
-                break;
-        }
+    _put(vec, vec->size, value);
 
     vec->size++;
+    // TODO: internal put ignoring index, in put too
+    // NOTE: test this
 }
 
 void* pop_back(Vector vec)
@@ -119,19 +77,22 @@ bool contains(Vector vec, void *data)
 
 void removeAt(Vector vec, size_t ind)
 {
-    int a = 0;
-    char c = '0';
-    switch(vec->DATATYPE)
+    if(ind >= vec->size || ind < 0 )
     {
-        case INT:
-            put(vec, ind, &a);
-            break;
-        case CHAR:
-            put(vec, ind, &c); 
-            break;
-
+        printf("Index out of bounds\n");
     }
+
+    if(ind < vec->size-1)
+    {
+        for(int i = ind; i<vec->size-1; i++)
+        {
+            put(vec, i, get(vec, i+1));
+        }
+    }
+    
+    vec->size--;
     //TODO: shift all elts, no switch-case, check size
+    //NOTE: test this
 }
 
 void clear(Vector vec)
@@ -158,6 +119,23 @@ Vector copy_vector(Vector destination, Vector source)
     return destination;
 }
 
+bool checkEqual(Vector a, Vector b)
+{
+    if((a->size != b->size) || (a->DATATYPE != b->DATATYPE))
+    {
+        return false;
+    }
+
+    for(int i = 0; i<a->size; i++)
+    {
+        if(!_checkEqual(get(a,i), get(b,i), a->DATATYPE))
+        {
+            return false;
+        }
+    }
+
+    return true;
+}
 
 // for internal use (private)
 
@@ -171,6 +149,12 @@ void _malloc_vector(Vector vec, enum DATATYPE datatype)
         break;
     case CHAR:
         vec->data = (char*)malloc(sizeof(char)*VECTOR_INC);
+        break;
+    case INT_PTR:
+        vec->data = (int**)malloc(sizeof(int*)* VECTOR_INC);
+        break;
+    case CHAR_PTR:
+        vec->data = (char**)malloc(sizeof(char*)*VECTOR_INC);
         break;
     case STRING:
         // alloc_size = sizeof(char);
@@ -195,6 +179,12 @@ void _realloc_vector(Vector vec)
         case CHAR:
             new_size = sizeof(char)*(vec->memory_size + VECTOR_INC);
             break;
+        case INT_PTR:
+            new_size = sizeof(int*)*(vec->memory_size + VECTOR_INC);
+            break;
+        case CHAR_PTR:
+             new_size = sizeof(char*)*(vec->memory_size + VECTOR_INC);
+            break;
     }
    
     vec->data = realloc(vec->data, new_size);
@@ -204,18 +194,66 @@ void _realloc_vector(Vector vec)
 
 bool _checkEqual(void *a, void *b, enum DATATYPE DATATYPE)
 {
-    if(DATATYPE == INT)
+   switch(DATATYPE)
     {
-        return *(int *)a==*(int *)b;
-    }
-    else if( DATATYPE == CHAR)
-    {
-        return *(char *)a==*(char *)b;
-    }
-    else if (DATATYPE == STRING)
-    {
-    //    int val = strcmp(*(string *)a,*b);
+        case INT:
+            return *(int *)a==*(int *)b;
+        case CHAR:
+            return *(char *)a==*(char *)b;
+        case INT_PTR:
+            return *(int **)a==*(int **)b;
+        case CHAR_PTR:
+            return *(char **)a==*(char **)b;
+            
     }
     
 }
 
+void _put(Vector vec, size_t index, void *value)
+{
+     switch(vec->DATATYPE)
+        {
+            case INT:
+                ((int *)vec->data)[index] = *((int *)value);
+                break;
+            case CHAR:
+                ((char *)vec->data)[index] = *((char *)value);
+                break;
+            case INT_PTR:
+                ((int **)vec->data)[index] = *((int **)value);
+                break;
+            case CHAR_PTR:
+                ((char **)vec->data)[index] = *((char **)value);
+                break;
+            case STRING:
+                // (vec+ind)->data = (string *)value;
+                break;
+            default:
+                printf("Error in inserting data in the vector\n");
+                break;
+        }
+}
+
+void* _get(Vector vec, size_t ind)
+{   
+    void* value;
+    switch (vec->DATATYPE) 
+    {
+    case INT:
+        value = &(((int*)(vec->data))[ind]);
+        break;
+    case CHAR:
+        value = &(((char*)(vec->data))[ind]);
+        break;
+    case INT_PTR:
+        value = &(((int**)(vec->data))[ind]);
+        break;
+    case CHAR_PTR:
+        value = &(((char**)(vec->data))[ind]);
+        break;
+    default:
+        break;
+    }
+
+    return value;
+}

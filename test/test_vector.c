@@ -1,108 +1,380 @@
 #include "test_vector.h"
+#define MIN_SIZE 1000
+
+// create a wrapper for all the tests in the module.
+void test_vector() {
+    test_vector_int_all_operations();
+    info("_________________________________\n");
+    test_vector_char_all_operations();
+    // info("_________________________________\n");
+    // test_vector_int_ptr_all_operations();
+    // info("_________________________________\n");
+    // test_vector_char_ptr_all_operations();
+    
+    // test_vector_string_all_operations();
+}
+
 
 void test_vector_int_all_operations()
 {
+    info("Testing for INT\n");
     Vector vec = initialize_vector(INT);
-    printf("size: %ld\n", vec->size);
 
-    int a[5] = {5,6,78,3,12};
-    push_back(vec, &a[0]);
-    push_back(vec, &a[1]);
-    push_back(vec, &a[2]);
-    push_back(vec, &a[3]);
-    push_back(vec, &a[4]);
+    int not_in_vec = rand();
+    size_t index = rand()%MIN_SIZE;
+    if(index == (MIN_SIZE-1)) index--;
+    int in_vec;
 
-    int b = 12;
-    if(contains(vec, &b))
+    for(int i = 0; i<MIN_SIZE; i++)
     {
-        printf("yes\n");
-    }
-    else{
-        printf("no\n");
+        int rand_val = rand();
+        while(rand_val == not_in_vec)
+        {
+            rand_val = rand();
+        }
+        if(i==index)
+        {
+            in_vec = rand_val;
+        }
+        push_back(vec, &rand_val);
     }
 
+    if(vec->size != MIN_SIZE)
+    {
+        error("Size of array inconsistent.");
+        exit(1);
+    }
+
+    int get_value = *((int*)get(vec, index));
+
+    if(get_value != in_vec)
+    {
+        error("Error in get().");
+        exit(1);
+    }
     
+    if(contains(vec, &not_in_vec))
+    {
+        error("Error in contains(). --negative case");
+        exit(1);
+    }
+
+    if(!contains(vec, &get_value))
+    {
+        error("Error in contains(). --positive case");
+        exit(1);
+    }
+
     Vector vec2 = copy_vector(NULL,vec);
-    int c = 13;
-    push_back(vec,&c);
-    printf("popped %d\n", *((int*)pop_back(vec)));
-    c = 15;
-    push_back(vec,&c);
-    removeAt(vec,3);
-    // clear(vec);
-    push_back(vec,&c);
 
-    for(int i = 0; i<vec->size; i++)
+    if(!checkEqual(vec, vec2))
     {
-        printf("%d ",*((int*)get(vec, i)));
-
+        error("Error in checkEqual().");
+        exit(1);
     }
-    printf("\n");
-    for(int i = 0; i<vec2->size; i++)
+
+    int c = rand();
+    push_back(vec,&c);
+
+    if(c != *((int*)pop_back(vec)))
     {
-        printf("%d ",*((int*)get(vec2, i)));
-
+        error("Error in pop_back().");
+        exit(1);
     }
-    printf("\n");
+
+    int next = *((int*)get(vec, index +1));
+    removeAt(vec,index);
+    int curr = *((int*)get(vec, index ));
+
+    if(curr != next)
+    {
+        error("Error in removeAt().");
+        exit(1);
+    }
+
+    clear(vec2);
+
+    if(vec2->size != 0)
+    {
+        error("Error in clear().");
+        exit(1);
+    }
+
+    c = rand();
+    push_back(vec,&c);
+
+    success("INT vector tested succesfullly.");
    }
 
 void test_vector_char_all_operations()
 {
+    info("Testing for CHAR\n");
     Vector vec = initialize_vector(CHAR);
-    printf("size: %ld\n", vec->size);
 
-    char a[5] = {'a','b','c','d','e'};
-    push_back(vec, &a[0]);
-    push_back(vec, &a[1]);
-    push_back(vec, &a[2]);
-    push_back(vec, &a[3]);
-    push_back(vec, &a[4]);
+    char not_in_vec = rand_char(); //TODO:
+    size_t index = rand()%MIN_SIZE;
+    if(index == (MIN_SIZE-1)) index--;
+    char in_vec; //TODO:
 
-
-    char b = 'f';
-    if(contains(vec, &b))
+    for(int i = 0; i<MIN_SIZE; i++)
     {
-        printf("yes\n");
+        char rand_val = rand_char(); //TODO:
+        while(rand_val == not_in_vec)
+        {
+            rand_val = rand_char(); //TODO:
+        }
+        if(i==index)
+        {
+            in_vec = rand_val;
+        }
+        push_back(vec, &rand_val);
     }
-    else{
-        printf("no\n");
+
+    if(vec->size != MIN_SIZE)
+    {
+        error("Size of array inconsistent.");
+        exit(1);
+    }
+
+    char get_value = *((char*)get(vec, index)); //TODO:
+
+    if(get_value != in_vec)
+    {
+        error("Error in get().");
+        exit(1);
+    }
+    
+    if(contains(vec, &not_in_vec))
+    {
+        error("Error in contains(). --negative case");
+        exit(1);
+    }
+
+    if(!contains(vec, &get_value))
+    {
+        error("Error in contains(). --positive case");
+        exit(1);
     }
 
     Vector vec2 = copy_vector(NULL,vec);
-    
-    char c = 'g';
-    push_back(vec,&c);
-    printf("popped %c\n", *((char*)pop_back(vec)));
-    c = 'h';
-    push_back(vec,&c);
-    removeAt(vec,3);
-    // clear(vec);
-    put(vec,4,&c);
 
-    for(int i = 0; i<vec->size; i++)
+    if(!checkEqual(vec, vec2))
     {
-        printf("%c ",*((char*)get(vec, i)));
-
+        error("Error in checkEqual().");
+        exit(1);
     }
-    printf("\n");
-    for(int i = 0; i<vec2->size; i++)
+
+    char c = rand_char(); //TODO:
+    push_back(vec,&c);
+
+    if(c != *((char*)pop_back(vec))) //TODO:
     {
-        printf("%c ",*((char*)get(vec2, i)));
-
+        error("Error in pop_back().");
+        exit(1);
     }
-    printf("\n");
-    printf("size of vector: %ld\n", vec->size); //should this == nextIndex?
+
+    char next = *((char*)get(vec, index +1)); //TODO:
+    removeAt(vec,index);
+    char curr = *((char*)get(vec, index )); //TODO:
+
+    if(curr != next)
+    {
+        error("Error in removeAt().");
+        exit(1);
+    }
+
+    clear(vec2);
+
+    if(vec2->size != 0)
+    {
+        error("Error in clear().");
+        exit(1);
+    }
+
+    c = rand_char(); //TODO:
+    push_back(vec,&c);
+
+    success("CHAR vector tested succesfullly."); //TODO:
 }
 
-// TODO: template test func, RANDOMIZE, store some randoms use to check contains, store popped
-// size check, pop, push. get, put, contains--> datatype agnostic, abstract func
+void test_vector_int_ptr_all_operations()
+{
+    info("Testing for INT_PTR\n");
+    Vector vec = initialize_vector(INT_PTR);//TODO:
 
-// create a wrapper for all the tests in the module.
-void test_vector() {
-    printf("testing int vector\n");
-    test_vector_int_all_operations();
-    printf("_________________________________\n");
-    printf("testing char vector\n");
-    test_vector_char_all_operations();
-    // test_vector_string_all_operations();
+    int* not_in_vec = rand_int_ptr(); //TODO:
+    size_t index = rand()%MIN_SIZE;
+    if(index == (MIN_SIZE-1)) index--;
+    int* in_vec; //TODO:
+
+    for(int i = 0; i<MIN_SIZE; i++)
+    {
+        int* rand_val = rand_int_ptr(); //TODO:
+        while(rand_val == not_in_vec)
+        {
+            rand_val = rand_int_ptr(); //TODO:
+        }
+        if(i==index)
+        {
+            in_vec = rand_val;
+        }
+        push_back(vec, &rand_val);
+    }
+
+    if(vec->size != MIN_SIZE)
+    {
+        error("Size of array inconsistent.");
+        exit(1);
+    }
+
+    int* get_value = *((int**)get(vec, index)); //TODO:
+
+    if(get_value != in_vec)
+    {
+        error("Error in get().");
+        exit(1);
+    }
+    
+    if(contains(vec, &not_in_vec))
+    {
+        error("Error in contains(). --negative case");
+        exit(1);
+    }
+
+    if(!contains(vec, &get_value))
+    {
+        error("Error in contains(). --positive case");
+        exit(1);
+    }
+
+    Vector vec2 = copy_vector(NULL,vec);
+
+    if(!checkEqual(vec, vec2))
+    {
+        error("Error in checkEqual().");
+        exit(1);
+    }
+
+    int* c = rand_int_ptr(); //TODO:
+    push_back(vec,&c);
+
+    if(c != *((int**)pop_back(vec))) //TODO:
+    {
+        error("Error in pop_back().");
+        exit(1);
+    }
+
+    int* next = *((int**)get(vec, index +1)); //TODO:
+    removeAt(vec,index);
+    int* curr = *((int**)get(vec, index )); //TODO:
+
+    if(curr != next)
+    {
+        error("Error in removeAt().");
+        exit(1);
+    }
+
+    clear(vec2);
+
+    if(vec2->size != 0)
+    {
+        error("Error in clear().");
+        exit(1);
+    }
+
+    c = rand_int_ptr(); //TODO:
+    push_back(vec,&c);
+
+    success("INT_PTR vector tested succesfullly."); //TODO:
+}
+
+void test_vector_char_ptr_all_operations()
+{
+    info("Testing for CHAR_PTR\n");
+    Vector vec = initialize_vector(CHAR_PTR);
+
+    char* not_in_vec = rand_char_ptr(); //TODO:
+    size_t index = rand()%MIN_SIZE;
+    if(index == (MIN_SIZE-1)) index--;
+    char* in_vec; //TODO:
+
+    for(int i = 0; i<MIN_SIZE; i++)
+    {
+        char* rand_val = rand_char_ptr(); //TODO:
+        while(rand_val == not_in_vec)
+        {
+            rand_val = rand_char_ptr(); //TODO:
+        }
+        if(i==index)
+        {
+            in_vec = rand_val;
+        }
+        push_back(vec, &rand_val);
+    }
+
+    if(vec->size != MIN_SIZE)
+    {
+        error("Size of array inconsistent.");
+        exit(1);
+    }
+
+    char* get_value = *((char**)get(vec, index)); //TODO:
+
+    if(get_value != in_vec)
+    {
+        error("Error in get().");
+        exit(1);
+    }
+    
+    if(contains(vec, &not_in_vec))
+    {
+        error("Error in contains(). --negative case");
+        exit(1);
+    }
+
+    if(!contains(vec, &get_value))
+    {
+        error("Error in contains(). --positive case");
+        exit(1);
+    }
+
+    Vector vec2 = copy_vector(NULL,vec);
+
+    if(!checkEqual(vec, vec2))
+    {
+        error("Error in checkEqual().");
+        exit(1);
+    }
+
+    char* c = rand_char_ptr(); //TODO:
+    push_back(vec,&c);
+
+    if(c != *((char**)pop_back(vec))) //TODO:
+    {
+        error("Error in pop_back().");
+        exit(1);
+    }
+
+    char* next = *((char**)get(vec, index +1)); //TODO:
+    removeAt(vec,index);
+    char* curr = *((char**)get(vec, index )); //TODO:
+
+    if(curr != next)
+    {
+        error("Error in removeAt().");
+        exit(1);
+    }
+
+    clear(vec2);
+
+    if(vec2->size != 0)
+    {
+        error("Error in clear().");
+        exit(1);
+    }
+
+    c = rand_char_ptr(); //TODO:
+    push_back(vec,&c);
+
+    success("CHAR_PTR vector tested succesfullly."); //TODO:
 }

@@ -15,8 +15,12 @@ enum DATATYPE
 {
     INT,
     CHAR,
-    STRING
+    STRING,
+    INT_PTR,
+    CHAR_PTR
 };
+
+static char* data_type_map[] = {"INT", "CHAR", "STRING"};
 
 typedef  struct vector* Vector; 
 struct vector
@@ -45,6 +49,8 @@ bool contains(Vector vec, void *data);
 
 void removeAt(Vector vec, size_t ind);
 
+bool checkEqual(Vector a, Vector b);
+
 void* pop_back(Vector vec);
 
 Vector copy_vector(Vector destination, Vector source);
@@ -61,8 +67,10 @@ void _realloc_vector(Vector vec);
 
 bool _checkEqual(void *a, void *b, enum DATATYPE DATATYPE);
 
-// void _put(vector *vector, size_t index, void *data);
+void _put(Vector vector, size_t index, void *data);
 
 // void *_copy_data(void *destination, void *source, int type);
+
+void* _get(Vector vec, size_t ind);
 
 #endif
