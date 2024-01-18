@@ -1,34 +1,35 @@
 #ifndef STRINGS
 #define STRINGS
 
-#include <stddef.h>
+#include "whole_include.h"
 
 static int STRING_INC = 10;
 
-typedef struct String
+typedef struct string *String;
+struct string
 {
     char *text;
     size_t n;
     size_t pos;
 } string;
 
-string *iString();
+String init_str();
 
-string *buildString(char *a);
+String buildString(char *a);
 
-void append(string *str, char val);
+void append(String str, char val);
 
-size_t len(string *str);
+size_t len(String str);
 
-string *add(string *a, string *b);
+String add(String a, String b);
 
-int compare(string *a, string *b);
+int compare(String a, String b);
 
-string* copy_string(string* destination, string* source);
+String copy_string(String destination, String source);
 
-string* toCapital(string* a);
+String toCapital(String a);
 
-string *toSmall(string *a);
+String toSmall(String a);
 
 // For internal workings
 
