@@ -9,8 +9,8 @@ typedef struct string *String;
 struct string
 {
     char *text;
-    size_t n;
-    size_t pos;
+    size_t n;      //available memory
+    size_t pos;    //filled length
 } string;
 
 String init_str();

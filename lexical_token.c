@@ -2,7 +2,7 @@
 
 bool checkIfArithmeticOperator(int lexicalToken)
 {
-    return lexicalToken == AND || lexicalToken == DIV || lexicalToken == PLUS || lexicalToken == MINUS || lexicalToken == MUL || lexicalToken == OR;
+    return lexicalToken == TK_AND || lexicalToken == TK_DIV || lexicalToken == TK_PLUS || lexicalToken == TK_MINUS || lexicalToken == TK_MUL || lexicalToken == TK_OR;
 }
 
 Token init_Token(int kind, String valueString, int lineNumber, int charNumber)
