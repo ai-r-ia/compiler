@@ -1,7 +1,7 @@
 #ifndef VECTORS
 #define VECTORS
 
-#include "whole_include.h"
+// #include "whole_include.h"
 
 static size_t VECTOR_INC = 10;
 static int STRING_SIZE = 1000;
@@ -18,10 +18,22 @@ enum DATATYPE
     CHAR,
     STRING,
     INT_PTR,
-    CHAR_PTR
+    CHAR_PTR,
+    TOKEN,
+    HASHNODE,
+    VECTOR
 };
 
-static char *data_type_map[] = {"INT", "CHAR", "STRING"};
+static char *data_type_map[] = {
+    "INT",
+    "CHAR",
+    "STRING",
+    "INT_PTR",
+    "CHAR_PTR",
+    "TOKEN",
+    "HASHNODE",
+    "VECTOR",
+};
 
 typedef struct vector *Vector;
 struct vector

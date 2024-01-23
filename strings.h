@@ -1,7 +1,8 @@
 #ifndef STRINGS
 #define STRINGS
 
-#include "whole_include.h"
+// #include "whole_include.h"
+#include <stddef.h>
 
 static int STRING_INC = 10;
 
@@ -9,8 +10,8 @@ typedef struct string *String;
 struct string
 {
     char *text;
-    size_t n;      //available memory
-    size_t pos;    //filled length
+    size_t memory_size; // available memory
+    size_t size;        // filled length
 } string;
 
 String init_str();

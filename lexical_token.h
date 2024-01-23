@@ -1,7 +1,8 @@
 #ifndef LEXER_TOKEN
 #define LEXER_TOKEN
 
-#include "whole_include.h"
+// #include "whole_include.h"
+#include "strings.h"
 
 enum TOKEN_TYPE
 {
@@ -11,7 +12,7 @@ enum TOKEN_TYPE
     TK_ID,
     TK_NUM,
     TK_RNUM,
-    TK_RNUM, // repeated
+    // TK_RNUM, // repeated
     TK_FUNID,
     TK_RUID,
     TK_WITH,
@@ -76,7 +77,7 @@ static char *token_type_list[] = {
     "TK_ID",
     "TK_NUM",
     "TK_RNUM",
-    "TK_RNUM", // repeated
+    // "TK_RNUM", // repeated
     "TK_FUNID",
     "TK_RUID",
     "TK_WITH",
@@ -136,16 +137,16 @@ static char *token_type_list[] = {
 typedef struct token *Token;
 struct token
 {
-    enum TOKEN_TYPE type;
-    String str;
+    int type;
+    String value;
     size_t line_num;
     size_t char_num;
     // void* value; //TODO: optional (post conversion) or use stoi/stof
-};
+} token;
 
 bool checkIfArithmeticOperator(int lexicalToken);
 
-Token init_Token(int kind, String valueString, int lineNumber, int charNumber);
+Token init_Token(int type, String value, int lineNumber, int charNumber);
 
 Token copy_token(Token destination, Token source);
 

@@ -1,4 +1,4 @@
-#include "vectors.h"
+#include "whole_include.h"
 
 // all private methods begin with "_"(underscore)
 
@@ -29,8 +29,6 @@ void *get(Vector vec, size_t ind)
 
 size_t get_index(Vector vec, void *data)
 {
-    // TODO: checkequal, remove switch
-
     for (size_t i = 0; i < vec->size; i++)
     {
         if (_checkEqual(get(vec, i), data, vec->DATATYPE))
@@ -84,6 +82,7 @@ void removeAt(Vector vec, size_t ind)
     if (ind >= vec->size || ind < 0)
     {
         printf("Index out of bounds\n");
+        return;
     }
 
     if (ind < vec->size - 1)
@@ -95,7 +94,6 @@ void removeAt(Vector vec, size_t ind)
     }
 
     vec->size--;
-    // TODO: shift all elts, no switch-case, check size
     // NOTE: test this
 }
 
@@ -160,8 +158,16 @@ void _malloc_vector(Vector vec, enum DATATYPE datatype)
         vec->data = (char **)malloc(sizeof(char *) * VECTOR_INC);
         break;
     case STRING:
-        // alloc_size = sizeof(char);
-        // alloc_size*= STRING_SIZE;
+        vec->data = (String)malloc(sizeof(struct string) * VECTOR_INC);
+        break;
+    case TOKEN:
+        vec->data = (Token)malloc(sizeof(struct token) * VECTOR_INC);
+        break;
+    case HASHNODE:
+        vec->data = (HashNode)malloc(sizeof(struct hash_node) * VECTOR_INC);
+        break;
+    case VECTOR:
+        vec->data = (Vector)malloc(sizeof(struct vector) * VECTOR_INC);
         break;
     default:
         break;
@@ -188,6 +194,20 @@ void _realloc_vector(Vector vec)
     case CHAR_PTR:
         new_size = sizeof(char *) * (vec->memory_size + VECTOR_INC);
         break;
+    case STRING:
+        new_size = sizeof(struct string) * (vec->memory_size + VECTOR_INC);
+        break;
+    case TOKEN:
+        new_size = sizeof(struct token) * (vec->memory_size + VECTOR_INC);
+        break;
+    case HASHNODE:
+        new_size = sizeof(struct hash_node) * (vec->memory_size + VECTOR_INC);
+        break;
+    case VECTOR:
+        new_size = sizeof(struct vector) * (vec->memory_size + VECTOR_INC);
+        break;
+    default:
+        break;
     }
 
     vec->data = realloc(vec->data, new_size);
@@ -207,6 +227,14 @@ bool _checkEqual(void *a, void *b, enum DATATYPE DATATYPE)
         return *(int **)a == *(int **)b;
     case CHAR_PTR:
         return *(char **)a == *(char **)b;
+    case STRING:
+        return (compare((String )a, (String)b));
+    case TOKEN:
+        return ((Token)a)->type == ((Token)b)->type;
+    case HASHNODE:
+        return ((HashNode)a)->value == ((HashNode)b)->value;
+    case VECTOR:
+        return checkEqual((Vector)a, (Vector)b);
     }
 }
 
@@ -227,7 +255,18 @@ void _put(Vector vec, size_t index, void *value)
         ((char **)vec->data)[index] = *((char **)value);
         break;
     case STRING:
-        // (vec+ind)->data = (string *)value;
+        // puts(((String)value)->text);
+        ((String )vec->data)[index] = *((String)value);
+        // puts(((String)vec->data)[index].text);
+        break;
+    case TOKEN:
+        ((Token)vec->data)[index] = *((Token)value);
+        break;
+    case HASHNODE:
+        ((HashNode)vec->data)[index] = *((HashNode)value);
+        break;
+    case VECTOR:
+        ((Vector)vec->data)[index] = *((Vector)value);
         break;
     default:
         printf("Error in inserting data in the vector\n");
@@ -251,6 +290,20 @@ void *_get(Vector vec, size_t ind)
         break;
     case CHAR_PTR:
         value = &(((char **)(vec->data))[ind]);
+        break;
+    case STRING:
+        value = &(((String)(vec->data))[ind]);
+        // printf("%ld\n", ((String)value)->n);
+        // printf("%ld\n", ((String)value)->pos);
+        break;
+    case TOKEN:
+        value = &(((Token)(vec->data))[ind]);
+        break;
+    case HASHNODE:
+        value = &(((HashNode)(vec->data))[ind]);
+        break;
+    case VECTOR:
+        value = &(((Vector)(vec->data))[ind]);
         break;
     default:
         break;
