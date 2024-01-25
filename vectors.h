@@ -66,6 +66,8 @@ Vector copy_vector(Vector destination, Vector source);
 
 void clear(Vector vec);
 
+void *find(Vector vec, void *data);
+
 // for internal workings
 
 void _malloc_vector(Vector vec, enum DATATYPE DATATYPE);

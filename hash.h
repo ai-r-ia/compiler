@@ -5,6 +5,8 @@
 #include "vectors.h"
 // #include "whole_include.h"
 
+#define TABLE_SIZE 1000
+
 typedef struct hash_node *HashNode;
 struct hash_node
 {
@@ -15,7 +17,7 @@ struct hash_node
 typedef struct hash_table *HashTable;
 struct hash_table
 {
-    Vector* items; // vector of vector of hash_nodes
+    Vector items; // vector of vector of hash_nodes
     int count;
 } hash_table;
 
@@ -25,8 +27,14 @@ HashNode init_node(String key, int value);
 
 void insert_item(HashTable tb, String key, int value);
 
+// void remove_itme
+
 int get_value(HashTable tb, String key);
 
-long long get_hash();
+int get_hash(String str);
+
+// private
+
+HashNode _find(Vector vec, String key);
 
 #endif

@@ -22,7 +22,7 @@ char *rand_char_ptr()
 String rand_string()
 {
     String str = init_str();
-    size_t len = rand()%1000;
+    size_t len = rand() % 1000;
     // size_t len = 10;
     str->memory_size = len + 1;
     for (int i = 0; i < str->memory_size - 1; i++)
@@ -35,19 +35,51 @@ String rand_string()
 
 Token rand_token()
 {
-    int type = rand()%58; //(tk_illegal +1)
+    int type = rand() % 58; //(tk_illegal +1)
     String value = buildString(token_type_list[type]);
     Token tk = init_Token(type, value, rand() % 1000, rand() % 1000);
     return tk;
 }
 
-HashNode rand_node()
+HashNode rand_hash_node() // rename
 {
-    HashNode node = init_node(rand_string(), rand()%1000);
+    HashNode node = init_node(rand_string(), rand() % 1000);
     return node;
 }
 
-Vector rand_vector()
+Vector rand_vector(enum DATATYPE type)
 {
+    Vector vec = initialize_vector(HASHNODE);
 
+    int len = rand() % 10;
+    for (int i = 0; i < len; i++)
+    {
+        void* (*fun)(void) = get_randomizer(type);
+        push_back(vec, fun());
+    }
+
+    return vec;
+}
+
+void *get_randomizer(enum DATATYPE type)
+{
+    switch (type)
+    {
+    case INT:
+        return &rand;
+    case CHAR:
+        return &rand_char;
+    case TOKEN:
+        return &rand_token;
+    case STRING:
+        return &rand_string;
+    case INT_PTR:
+        return &rand_int_ptr;
+    case CHAR_PTR:
+        return &rand_char_ptr;
+    case HASHNODE:
+        return &rand_hash_node;
+    default:
+        break;
+    }
 }

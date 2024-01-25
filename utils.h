@@ -12,6 +12,7 @@ int *rand_int_ptr();
 char *rand_char_ptr();
 String rand_string();
 Token rand_token();
-HashNode rand_node();
-Vector rand_vector();
+HashNode rand_hash_node();
+Vector rand_vector(enum DATATYPE type);
+void *get_randomizer(enum DATATYPE type);
 #endif

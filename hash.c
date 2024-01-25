@@ -5,6 +5,13 @@ const long long mod = 1e9 + 9;
 HashTable init_table()
 {
     HashTable tb = (HashTable)malloc(sizeof(hash_table));
+    tb->items = initialize_vector(VECTOR);
+
+    for (int i = 0; i < TABLE_SIZE; i++)
+    {
+        push_back(tb->items, initialize_vector(HASHNODE));
+    }
+
     tb->count = 0;
     return tb;
 }
@@ -16,7 +23,7 @@ HashNode init_node(String key, int value)
     node->value = value;
 }
 
-long long get_hash(String str)
+int get_hash(String str)
 {
     int n = len(str);
     long long pref_hash = {str->text[0] - 'a' + 1};
@@ -24,35 +31,44 @@ long long get_hash(String str)
     {
         pref_hash = (pref_hash * 53 + (str->text[i] - 'a' + 1)) % mod;
     }
-    return pref_hash;
+    return abs(pref_hash);
+}
+
+HashNode _find(Vector vec, String key)
+{
+    for (size_t i = 0; i < vec->size; i++)
+    {
+        HashNode node = get(vec, i);
+        if (compare(node->key, key))
+            return node;
+    }
+    return NULL;
 }
 
 void insert_item(HashTable tb, String key, int value)
 {
     HashNode node = init_node(key, value);
-    int hash_value = get_hash(key) % 58; // maxsize of table = 58
+    int hash_value = get_hash(key) % TABLE_SIZE;
 
-    if (tb->items[hash_value] == NULL)
-    {
-        tb->items[hash_value] = initialize_vector(HASHNODE);
+    Vector row = get(tb->items, hash_value);
+
+    HashNode nd = _find(row, key);
+    if (nd)
+        nd->value = node->value;
+    else{
+        push_back(row, node);
+        tb->count++;
     }
 
-    push_back(tb->items[hash_value], node);
 }
 
 int get_value(HashTable tb, String key)
 {
-    int hash_value = get_hash(key) % 58;
-    if (tb->items[hash_value] == NULL)
-    {
-        error("No entry with given key.");
-        exit(1);
-    }
-    int size = tb->items[hash_value]->size;
-    for (int i = 0; i < size; i++)
-    {
-        // if (((Vector)(tb->items[hash_value])->data)[i].data == key){
-        //     return (tb->items[hash_value]->data)[i].value;
-        // }
-    }
+    int hash_value = get_hash(key) % TABLE_SIZE;
+    Vector row = get(tb->items, hash_value);
+    HashNode node = _find(row, key);
+
+    if (node)
+        return node->value;
+    return -1; // values in hashTable should be positive
 }

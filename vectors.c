@@ -138,6 +138,13 @@ bool checkEqual(Vector a, Vector b)
     return true;
 }
 
+void *find(Vector vec, void *data)
+{
+    size_t index = get_index(vec, data);
+    if(index == vec->size) return NULL;
+    return get(vec, index);
+}
+
 // for internal use (private)
 
 void _malloc_vector(Vector vec, enum DATATYPE datatype)
