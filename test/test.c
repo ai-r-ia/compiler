@@ -6,6 +6,7 @@ void testAll()
     info("testing all\n");
     // test_vector_int_all_operations();
     // test_vector();
-    test_hash_table();
+    // test_hash_table();
+    test_lexer();
     return;
 }
