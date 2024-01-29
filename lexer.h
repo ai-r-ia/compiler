@@ -77,10 +77,4 @@ void _readFile(Lexer lexer);
 // Closes the File pointer in the lexer
 void _closeFile(Lexer lexer);
 
-// shifts buffer window right
-int _shiftBufferRight(Lexer lexer);
-
-// shifts buffer window left
-int _shiftBufferLeft(Lexer lexer);
-
 #endif

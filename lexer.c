@@ -30,7 +30,7 @@ void loadBuffer(Lexer lexer, String data)
 {
     char *buffer;
 
-    if (lexer->BUFF_NUM == 1)
+    if (lexer->BUFF_NUM == 2)
     {
         lexer->BUFF_SIZE1 = data->size + 1;
         buffer = lexer->buff1;
@@ -47,7 +47,7 @@ void loadBuffer(Lexer lexer, String data)
     }
 
     buffer[data->size] = '\0';
-    if (lexer->BUFF_NUM == 1)
+    if (lexer->BUFF_NUM == 2)
         lexer->buff1 = buffer;
     else
         lexer->buff2 = buffer;
@@ -55,7 +55,37 @@ void loadBuffer(Lexer lexer, String data)
 
 char getNextCharacter(Lexer lexer)
 {
+    char res;
+    if (lexer->BUFF_NUM == 1)
+    {
+        // lexer->buff_begin1;
+        res = lexer->buff1[lexer->buffp1];
+        lexer->buffp1++;
+        if (lexer->buffp1 >= lexer->BUFF_SIZE1)
+        {
+            if (lexer->buffp2 >= lexer->BUFF_SIZE2)
+                loadBuffer(lexer, "load new data"); // will load new data into buff2
+        }
+    }
+    else
+    {
+        res = lexer->buff2[lexer->buffp2];
+        lexer->buffp2++;
+        if (lexer->buffp2 >= lexer->BUFF_SIZE2)
+        {
+            if (lexer->buffp1 >= lexer->BUFF_SIZE1)
+                loadBuffer(lexer, "load new data"); // will load new data into buff1
+        }
+    }
 
+    lexer->charNumber++;
+    if (res == '\n')
+    {
+        lexer->lineNumber++;
+        lexer->prevLineChar = lexer->charNumber;
+        lexer->charNumber = 1;
+    }
+    return res;
 }
 
 // private functions (internal)
