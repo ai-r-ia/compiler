@@ -58,7 +58,10 @@ bool isLetter_b2d(char value);
 bool isLetter_e2z(char value);
 
 // Checks whether a character is [0-9]
-bool isDigit(char value);
+bool isDigit_0_9(char value);
+
+//[2-7]
+bool isDigit_2_7(char value);
 
 // Retrieves kind of keyword
 int getKeyword(String word);
@@ -89,7 +92,7 @@ void _lexical_error(Lexer lexer);
 /*  states
 -1: error
 0: start- checks whitespaces and eof
-1: get_char_tk
+1: get_char_tk ...[a_z] | [_] | [#]
 2: get_numeric_tk
 3: get_symbol_tk
 _____________________________________________
