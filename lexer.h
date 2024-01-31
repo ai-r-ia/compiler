@@ -15,28 +15,30 @@ struct lexer
     int BUFF_NUM;
     FILE *fp;
     char *filename;
-    // char curr_char; // current character
+    char curr_char; // current character
     char *buff1;
     char *buff2;
-    int buff_begin1;
-    int buff_begin2;
+    // int buff_begin1;
+    // int buff_begin2;
+    int fwd_ptr;
     int buffp1;
     int buffp2;
     int lineNumber, charNumber, prevLineChar;
+    bool all_input_read;
 };
 
 // Constructor for Lexer
 Lexer init_lexer(char *filename);
 
 // loads lexer buffer with given string
-void loadBuffer(Lexer lexer, String data);
+// void loadBuffer(Lexer lexer, String data);
 
 // Gives next character in lexer
 char getNextCharacter(Lexer lexer);
 
 // Gets the lex token from file
 // Also, increments the file pointer
-Token lex(Lexer lexer);
+Token tokenize(Lexer lexer);
 
 // Checks whether word is a keyword or not
 // if it is a keyword it gives the appropriate LexicalTokens

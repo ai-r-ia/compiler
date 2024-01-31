@@ -7,7 +7,43 @@ void test_lexer()
     Lexer lexer = init_lexer("test.txt");
 
     printf("buff1 : %s\n", lexer->buff1);
-    printf("buff2 : %s\n", lexer->buff2);
+    printf("buff2 : %s\n\n", lexer->buff2);
+    lexer->BUFF_NUM = 2;
+    _readFile(lexer);
+    printf("buff1 : %s\n", lexer->buff1);
+    printf("buff2 : %s\n\n", lexer->buff2);
+    lexer->BUFF_NUM = 1;
+    _readFile(lexer);
+    printf("buff1 : %s\n", lexer->buff1);
+    printf("buff2 : %s\n\n", lexer->buff2);
+    lexer->BUFF_NUM = 2;
+    _readFile(lexer);
+    printf("buff1 : %s\n", lexer->buff1);
+    printf("buff2 : %s\n\n", lexer->buff2);
+    lexer->BUFF_NUM = 1;
+    _readFile(lexer);
+    printf("buff1 : %s\n", lexer->buff1);
+    printf("buff2 : %s\n\n", lexer->buff2);
+    lexer->BUFF_NUM = 2;
+    _readFile(lexer);
+    printf("buff1 : %s\n", lexer->buff1);
+    printf("buff2 : %s\n\n", lexer->buff2);
+    lexer->BUFF_NUM = 1;
+    _readFile(lexer);
+    printf("buff1 : %s\n", lexer->buff1);
+    printf("buff2 : %s\n\n", lexer->buff2);
+    lexer->BUFF_NUM = 2;
+    _readFile(lexer);
+    printf("buff1 : %s\n", lexer->buff1);
+    printf("buff2 : %s\n\n", lexer->buff2);
+    lexer->BUFF_NUM = 1;
+    _readFile(lexer);
+    printf("buff1 : %s\n", lexer->buff1);
+    printf("buff2 : %s\n\n", lexer->buff2);
+    lexer->BUFF_NUM = 2;
+    _readFile(lexer);
+    printf("buff1 : %s\n", lexer->buff1);
+    printf("buff2 : %s\n\n", lexer->buff2);
 
     success("LEXER tested successfully.");
 }
