@@ -90,7 +90,8 @@ char getNextCharacter(Lexer lexer) // TODO: test this and work out doublebufferi
     return res;
 }
 
-/*
+/* check at the bottom of lexer.c for all TD states
+
 In digit based tokens: 10 states
 17: if [.]
 18: ret tk_num
