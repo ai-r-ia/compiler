@@ -23,7 +23,7 @@ Lexer init_lexer(char *filename)
     lexer->fwd_ptr = 0;
     lexer->lineNumber = 1;
     lexer->charNumber = 1;
-
+    lexer->state = 0;
     // _closeFile(lexer);
     return lexer;
 }
@@ -90,44 +90,218 @@ char getNextCharacter(Lexer lexer) // TODO: test this and work out doublebufferi
     return res;
 }
 
-// Token tokenize(Lexer lexer){
+/*
+In digit based tokens: 10 states
+17: if [.]
+18: ret tk_num
+19: if [0-9] after 17
+20: if [0-9] after 19
+21: if [E]
+22: if [+|-]
+23: if [0-9] after 22
+24: if [0-9] after 23
+25: ret tk_rnum
+*/
+Token get_numeric_tk(Lexer lexer)
+{
+    String lexeme = init_str();
+    append(lexeme, lexer->curr_char);
+    while (1)
+    {
+        switch (lexer->state)
+        {
+        case 2:
+            lexer->curr_char = getNextCharacter(lexer);
+            if (lexer->curr_char == '.')
+                lexer->state = 17;
+            if (!isDigit(lexer->curr_char) && lexer->curr_char != '.')
+                lexer->state = 18;
+            if (isDigit(lexer->curr_char) || lexer->curr_char == '.')
+                append(lexeme, lexer->curr_char);
+            break;
+        case 17:
+            lexer->curr_char = getNextCharacter(lexer);
+            if (isDigit(lexer->curr_char))
+            {
+                lexer->state = 19;
+                append(lexeme, lexer->curr_char);
+            }
+            else
+                lexer->state = -1; // error
+            break;
+        case 18:
+            return init_Token(TK_NUM, lexeme, lexer->lineNumber, lexer->charNumber);
+        case 19:
+            lexer->curr_char = getNextCharacter(lexer);
+            if (isDigit(lexer->curr_char))
+            {
+                lexer->state = 20;
+                append(lexeme, lexer->curr_char);
+            }
+            else
+                lexer->state = -1; // error
+            break;
+        case 20:
+            lexer->curr_char = getNextCharacter(lexer);
+            if (lexer->curr_char == 'E')
+            {
+                lexer->state = 21;
+                append(lexeme, lexer->curr_char);
+            }
+            else
+                lexer->state = 25; // error
+            break;
+        case 21:
+            lexer->curr_char = getNextCharacter(lexer);
+            if ((lexer->curr_char == '+') || (lexer->curr_char == '-'))
+            {
+                lexer->state = 22;
+                append(lexeme, lexer->curr_char);
+            }
+            else if (isDigit(lexer->curr_char))
+            {
+                lexer->state = 23;
+                append(lexeme, lexer->curr_char);
+            }
+            else
+                lexer->state = -1; // error
+            break;
+
+        case 23:
+            lexer->curr_char = getNextCharacter(lexer);
+            if (isDigit(lexer->curr_char))
+            {
+                lexer->state = 24;
+                append(lexeme, lexer->curr_char);
+            }
+            else
+                lexer->state = -1; // error
+            break;
+        case 24: // TODO: check if this can be skipped
+            lexer->state = 25;
+            break;
+        case 25:
+            return init_Token(TK_RNUM, lexeme, lexer->lineNumber, lexer->charNumber);
+        case -1:
+            // lexical error TODO:
+        }
+    }
+}
+
+/*In character based tokens : 13 states
+4 : if[b - d]
+5 : if[a | e - z] | [a - z] and check Keyword
+6 : ret tk_fieldid
+7 : from 4 accepts[2 - 7] to transition, loops on[b - d]
+8 : loops on[2 - 7]
+9 : ret tk_id
+10 : if[_]
+11 : loops on[a - z | A - Z], check keyword
+12 : loops on[0 - 9]
+13 : ret tk_funid
+14 : if[#]
+15 : loops on[a - z]
+16 : ret tk_ruid
+*/
+Token get_char_tk(Lexer lexer)
+{
+    String lexeme = init_str();
+    append(lexeme, lexer->curr_char);
+    while (1)
+    {
+        switch (lexer->state)
+        {
+        case 4:
+        }
+    }
+}
+
+Token tokenize(Lexer lexer)
+{
+    while (1)
+    {
+        switch (lexer->state)
+        {
+
+        // whitespaces and eof
+        case 0:
+            lexer->curr_char = getNextCharacter(lexer);
+            if (lexer->curr_char == ' ' || lexer->curr_char == '\t')
+                return tokenize(lexer);
+            if (lexer->curr_char == '\0')
+                _closeFile(lexer); // TODO: check if tk_eof needed and check if condtn
+            else
+                lexer->state = 1;
+            break;
+
+        // initial state for letter based tokens
+        case 1:
+            lexer->curr_char = getNextCharacter(lexer);
+            if (isLetter_e2z(lexer->curr_char) || isLetter_b2d(lexer->curr_char) || lexer->curr_char == '_' || lexer->curr_char == '#' || lexer->curr_char == 'a')
+                return get_char_tk(lexer);
+            lexer->state = 2;
+            break;
+
+        // initial state for digit based tokens
+        case 2:
+            lexer->curr_char = getNextCharacter(lexer);
+            if (isDigit(lexer->curr_char))
+                return get_numeric_tk(lexer);
+            lexer->state = 3;
+            break;
+        // initial state for symbolic tokens
+        case 3:
+            Token tk = get_symbol_tk(lexer);
+            if (tk->type == TK_ILLEGAL)
+            {
+                char errorString[200];
+                sprintf(errorString, "Line %d - Error: Illegal character input: '%c' at %d:%d", lexer->lineNumber, lexer->curr_char, lexer->lineNumber, lexer->charNumber);
+                error(errorString);
+            }
+            lexer->state = 0;
+            return tk;
+        }
+    }
+}
+// Token tokenize(Lexer lexer)
+// {
 //     lexer->curr_char = getNextCharacter(lexer);
 
-// // Check whether EOF
-// if (lexer->curr_char == -1)
-// {
-//     _closeFile(lexer);
-//     return iToken(ENDOFFILE, NULL, NULL, lexer->lineNumber, lexer->charNumber);
-// }
+//     // Check whether EOF
+//     if (lexer->curr_char == '\0') // TODO: check
+//     {
+//         _closeFile(lexer);
+//         return iToken(TK_EOF, NULL, NULL, lexer->lineNumber, lexer->charNumber);
+//     }
 
-// // Ignore whitespaces
-// if (lexer->curr_char == ' ' || lexer->curr_char == '\t')
-// {
-//     return tokenize(lexer);
-// }
+//     // Ignore whitespaces
+//     if (lexer->curr_char == ' ' || lexer->curr_char == '\t')
+//     {
+//         return tokenize(lexer);
+//     }
 
-// // Check for String literal
-// if (isChar(lexer->curr_char) || lexer->curr_char == '_')
-// {
-//     return getID(lexer, lexer->curr_char);
-// }
+//     // Check for char related tokens
+//     if (isLetter_e2z(lexer->curr_char) || isLetter_b2d(lexer->curr_char) || lexer->curr_char == '_' || lexer->curr_char == '#' || lexer->curr_char == 'a')
+//     {
+//         return get_char_tk(lexer, lexer->curr_char);
+//     }
 
-// // Check for Integer or Decimal number
-// if (isDigit(lexer->curr_char))
-// {
-//     return getNUM(lexer, lexer->curr_char);
-// }
+//     // Check for numeric tokens
+//     if (isDigit(lexer->curr_char))
+//     {
+//         return get_numeric_tk(lexer, lexer->curr_char);
+//     }
 
-// Token token = getSymbol(lexer, lexer->curr_char);
+//     Token token = get_symbol_tk(lexer, lexer->curr_char);
 
-// if (token->type == TK_ILLEGAL)
-// {
-//     char errorString[200];
-//     sprintf(errorString, "Line %d : Error: Bad character input: '%c' at %d:%d", lexer->lineNumber, lexer->curr_char, lexer->lineNumber, lexer->charNumber);
-//     error(errorString);
-// }
+//     if (token->type == TK_ILLEGAL)
+//     {
+//         char errorString[200];
+//         sprintf(errorString, "Line %d - Error: Illegal character input: '%c' at %d:%d", lexer->lineNumber, lexer->curr_char, lexer->lineNumber, lexer->charNumber);
+//         error(errorString);
+//     }
 
-// return token;
+//     return token;
 // }
 
 // private functions (internal)

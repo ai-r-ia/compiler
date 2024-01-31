@@ -25,6 +25,7 @@ struct lexer
     int buffp2;
     int lineNumber, charNumber, prevLineChar;
     bool all_input_read;
+    int state;
 };
 
 // Constructor for Lexer
@@ -45,28 +46,31 @@ Token tokenize(Lexer lexer);
 int getKeyword(String word);
 
 // Checks whether a character is [a-z] | [A-Z]
-bool isChar(char value);
+bool isLetter_a2z_A2Z(char value);
+
+//[a-z]
+bool isLetter_a2z(char value);
+
+// [b-d]
+bool isLetter_b2d(char value);
+
+// [e-z]
+bool isLetter_e2z(char value);
 
 // Checks whether a character is [0-9]
 bool isDigit(char value);
-
-// Checks for record type
-bool isRecord(char value);
-
-// Checks for union type
-bool isUnion(char value);
 
 // Retrieves kind of keyword
 int getKeyword(String word);
 
 // Retrieves ID token
-Token getID(Lexer lexer, char curr);
+Token get_char_tk(Lexer lexer);
 
 // Retrieves NUM / RNUM token
-Token getNUM(Lexer lexer, char curr);
+Token get_numeric_tk(Lexer lexer);
 
 // Retrieves Symbol Token
-Token getSymbol(Lexer lexer, char curr);
+Token get_symbol_tk(Lexer lexer);
 
 // private functions (internal)
 
@@ -79,4 +83,46 @@ void _readFile(Lexer lexer);
 // Closes the File pointer in the lexer
 void _closeFile(Lexer lexer);
 
+// records lexical error
+void _lexical_error(Lexer lexer);
+
+/*  states
+-1: error
+0: start- checks whitespaces and eof
+1: get_char_tk
+2: get_numeric_tk
+3: get_symbol_tk
+_____________________________________________
+In character based tokens: 13 states
+4: if [b-d]
+5: if [a |e-z] | [a-z] and check Keyword
+6: ret tk_fieldid
+7: from 4 accepts [2-7] to transition, loops on [b-d]
+8: loops on [2-7]
+9: ret tk_id
+
+10: if [_]
+11: loops on [a-z|A-Z], check keyword
+12: loops on [0-9]
+13: ret tk_funid
+
+14: if[#]
+15: loops on [a-z]
+16: ret tk_ruid
+________________________________________________
+
+In digit based tokens: 10 states
+17: if [.]
+18: ret tk_num
+19: if [0-9] after 17
+20: if [0-9] after 19
+21: if [E]
+22: if [+|-]
+23: if [0-9] after 22
+24: if [0-9] after 23
+25: ret tk_rnum
+__________________________________________________
+
+
+*/
 #endif

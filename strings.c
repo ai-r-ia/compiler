@@ -22,7 +22,7 @@ String init_str()
     return str;
 }
 
-String buildString(char *a)
+String char_to_string(char *a)
 {
     size_t n = 0;
     String str = init_str();

@@ -8,11 +8,11 @@ void test_hash_table()
     int len = sizeof(keyword_token_value) / sizeof(int);
 
     for(int i = 0; i<len; i++){
-        insert_item(table, buildString(keyword_type_list[i]), keyword_token_value[i]);
+        insert_item(table, char_to_string(keyword_type_list[i]), keyword_token_value[i]);
     }
 
     int ind = 3;
-    int value = get_value(table, buildString(keyword_type_list[ind]));
+    int value = get_value(table, char_to_string(keyword_type_list[ind]));
 
     if (value != keyword_token_value[ind]){
         error("Incorrect value.1");
@@ -20,7 +20,7 @@ void test_hash_table()
     }
 
     ind = rand() % len;
-    value = get_value(table, buildString(keyword_type_list[ind]));
+    value = get_value(table, char_to_string(keyword_type_list[ind]));
 
     if (value != keyword_token_value[ind])
     {
@@ -29,7 +29,7 @@ void test_hash_table()
     }
 
      ind = rand() % len;
-     value = get_value(table, buildString(keyword_type_list[ind]));
+     value = get_value(table, char_to_string(keyword_type_list[ind]));
 
     if (value != keyword_token_value[ind])
     {
@@ -38,7 +38,7 @@ void test_hash_table()
     }
 
     ind = rand() % len;
-    value = get_value(table, buildString(keyword_type_list[ind]));
+    value = get_value(table, char_to_string(keyword_type_list[ind]));
 
     if (value != keyword_token_value[ind])
     {
@@ -46,7 +46,7 @@ void test_hash_table()
         exit(-1);
     }
 
-    value = get_value(table, buildString("kaiwalya"));
+    value = get_value(table, char_to_string("kaiwalya"));
 
     if (value != -1)
     {

@@ -16,7 +16,7 @@ struct string
 
 String init_str();
 
-String buildString(char *a);
+String char_to_string(char *a);
 
 void append(String str, char val);
 

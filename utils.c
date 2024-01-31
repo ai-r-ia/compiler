@@ -36,7 +36,7 @@ String rand_string()
 Token rand_token()
 {
     int type = rand() % 58; //(tk_illegal +1)
-    String value = buildString(token_type_list[type]);
+    String value = char_to_string(token_type_list[type]);
     Token tk = init_Token(type, value, rand() % 1000, rand() % 1000);
     return tk;
 }
