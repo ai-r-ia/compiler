@@ -12,7 +12,6 @@ Lexer init_lexer(char *filename)
     lexer->buff1 = (char *)malloc(sizeof(char) * (lexer->BUFF_SIZE1 + 1));
     lexer->buff2 = (char *)malloc(sizeof(char) * (lexer->BUFF_SIZE2 + 1));
 
-    lexer->all_input_read = false;
     lexer->BUFF_NUM = 1;
     _readFile(lexer);
 
@@ -84,10 +83,10 @@ char getNextCharacter(Lexer lexer) // TODO: test this and work out doublebufferi
     if (res == '\n')
     {
         lexer->lineNumber++;
-        lexer->prevLineChar = lexer->curr_char; // TODO: check if this is needed
+        lexer->prevLineChar = lexer->curr_char;
         lexer->charNumber = 1;
     }
-    return res;
+    return lexer->curr_char = res;
 }
 
 /* check at the bottom of lexer.c for all TD states
@@ -128,7 +127,7 @@ Token get_numeric_tk(Lexer lexer)
                 append(lexeme, lexer->curr_char);
             }
             else
-                lexer->state = -1; // error
+                lexer->state = 505; // error
             break;
         case 18:
             return init_Token(TK_NUM, lexeme, lexer->lineNumber, lexer->charNumber);
@@ -140,7 +139,7 @@ Token get_numeric_tk(Lexer lexer)
                 append(lexeme, lexer->curr_char);
             }
             else
-                lexer->state = -1; // error
+                lexer->state = 505; // error
             break;
         case 20:
             lexer->curr_char = getNextCharacter(lexer);
@@ -165,7 +164,7 @@ Token get_numeric_tk(Lexer lexer)
                 append(lexeme, lexer->curr_char);
             }
             else
-                lexer->state = -1; // error
+                lexer->state = 505; // error
             break;
 
         case 23:
@@ -176,14 +175,16 @@ Token get_numeric_tk(Lexer lexer)
                 append(lexeme, lexer->curr_char);
             }
             else
-                lexer->state = -1; // error
+                lexer->state = 505; // error
             break;
         case 24: // TODO: check if this can be skipped
             lexer->state = 25;
             break;
         case 25:
             return init_Token(TK_RNUM, lexeme, lexer->lineNumber, lexer->charNumber);
-        case -1:
+        case 505:
+
+            break;
             // lexical error TODO:
         }
     }
@@ -195,19 +196,22 @@ Token get_numeric_tk(Lexer lexer)
 6 : ret tk_fieldid
 7 : from 4 accepts[2 - 7] to transition, loops on[b - d]
 8 : loops on[2 - 7]
-9 : ret tk_id
+9 : ret tk_id NOTE: __REMOVED__
 10 : if[_]
 11 : loops on[a - z | A - Z], check keyword
 12 : loops on[0 - 9]
-13 : ret tk_funid
+13 : ret tk_funid  NOTE: __REMOVED__
 14 : if[#]
 15 : loops on[a - z]
-16 : ret tk_ruid
+16 : ret tk_ruid      NOTE: __REMOVED__
 */
 Token get_char_tk(Lexer lexer)
 {
     String lexeme = init_str();
     append(lexeme, lexer->curr_char);
+    int keyword;
+    bool flag;
+
     if (isLetter_b2d(lexer->curr_char))
         lexer->state = 4;
     else if (lexer->curr_char == 'a' || isLetter_e2z(lexer->curr_char))
@@ -218,174 +222,179 @@ Token get_char_tk(Lexer lexer)
         lexer->state = 14;
     else
         error("Anamoly in char received at get_char_tk.");
-    while (1)
+
+    switch (lexer->state)
     {
-        switch (lexer->state)
+    case 4:
+        getNextCharacter(lexer);
+        if (isDigit_2_7(lexer->curr_char))
         {
-        case 4:
-            lexer->curr_char = getNextCharacter(lexer);
-            if (isDigit_2_7(lexer->curr_char))
-            {
-                lexer->state = 7;
-                append(lexeme, lexer->curr_char);
-            }
-            else if (isLetter_a2z(lexer->curr_char))
-            {
-                lexer->state = 5;
-                append(lexeme, lexer->curr_char);
-            }
-            else
-                lexer->state = -1; // error
-            break;
+            append(lexeme, lexer->curr_char);
+            lexer->state = 7; // ret fn 7
+        }
+        if (isLetter_a2z(lexer->curr_char))
+        {
+            append(lexeme, lexer->curr_char);
+            lexer->state = 5; // ret fn 5
+        }
+        // error
+        return init_Token(TK_ILLEGAL, lexeme, lexer->lineNumber, lexer->charNumber);
 
-        case 5:
-            int keyword = getKeyword(lexeme);
-            // TODO: check init_token type
+    case 5:
+        flag = false;
+        while (lexer->fp && isLetter_a2z(lexer->curr_char))
+        {
+            if (flag)
+                append(lexeme, lexer->curr_char);
+
+            keyword = getKeyword(lexeme);
             if (keyword != -1)
+                // TODO: check init_token type
                 return init_Token(keyword_token_value[keyword], lexeme, lexer->lineNumber, lexer->charNumber);
 
-            lexer->curr_char = getNextCharacter(lexer);
-            if (!isLetter_a2z(lexer->curr_char))
-                lexer->state = 6;
-            else
+            getNextCharacter(lexer);
+            flag = true;
+        }
+
+        return init_Token(TK_FIELDID, lexeme, lexer->lineNumber, lexer->charNumber);
+
+    case 7:
+        flag = false;
+        while (lexer->fp && isLetter_b2d(lexer->curr_char))
+        {
+            if (flag)
                 append(lexeme, lexer->curr_char);
-            break;
 
-        case 6:
-            return init_Token(TK_FIELDID, lexeme, lexer->lineNumber, lexer->charNumber);
+            getNextCharacter(lexer);
 
-        case 7:
-            lexer->curr_char = getNextCharacter(lexer);
             if (isDigit_2_7(lexer->curr_char))
             {
-                lexer->state = 8;
                 append(lexeme, lexer->curr_char);
+                lexer->state = 8; // ret fn 8
             }
-            else if (!isLetter_b2d(lexer->curr_char) && !isDigit_2_7(lexer->curr_char))
-            {
-                lexer->state = 9;
-            }
-            else
-                lexer->state = -1; // error
-            break;
 
-        case 8:
-            lexer->curr_char = getNextCharacter(lexer);
-            if (!isDigit_2_7(lexer->curr_char))
-                lexer->state = 9;
-            break;
+            flag = true;
+        }
 
-        case 9:
-            return init_Token(TK_ID, lexeme, lexer->lineNumber, lexer->charNumber);
+        return init_Token(TK_ID, lexeme, lexer->lineNumber, lexer->charNumber);
 
-        case 10:
-            lexer->curr_char = getNextCharacter(lexer);
-            if (isLetter_a2z_A2Z(lexer->curr_char))
-            {
-                lexer->state = 11;
+    case 8:
+        flag = false;
+        while (lexer->fp && isLetter_b2d(lexer->curr_char))
+        {
+            if (flag)
                 append(lexeme, lexer->curr_char);
-            }
-            else
-                lexer->state = -1; // error
-            break;
+            getNextCharacter(lexer);
+            flag = true;
+        }
 
-        case 11:
-            int keyword = getKeyword(lexeme);
-            // TODO: check init_token type
-            if (keyword != -1)
-                return init_Token(keyword_token_value[keyword], lexeme, lexer->lineNumber, lexer->charNumber);
+        return init_Token(TK_ID, lexeme, lexer->lineNumber, lexer->charNumber);
 
-            lexer->curr_char = getNextCharacter(lexer);
+    case 10:
+        getNextCharacter(lexer);
+        if (isLetter_a2z_A2Z(lexer->curr_char))
+        {
+            append(lexeme, lexer->curr_char);
+            lexer->state = 11; // ret fn 11
+        }
+        // error
+        return init_Token(TK_ILLEGAL, lexeme, lexer->lineNumber, lexer->charNumber);
+
+    case 11:
+        flag = false;
+        while (lexer->fp && isLetter_a2z_A2Z(lexer->curr_char))
+        {
+            if (flag)
+                append(lexeme, lexer->curr_char);
+
+            keyword = getKeyword(lexeme);
+            if (keyword == 17)
+                return init_Token(TK_MAIN, lexeme, lexer->lineNumber, lexer->charNumber);
+
+            getNextCharacter(lexer);
+
             if (isDigit_0_9(lexer->curr_char))
             {
-                lexer->state = 12;
                 append(lexeme, lexer->curr_char);
+                lexer->state = 12; // ret fn 12
             }
-            else if (!isLetter_a2z_A2Z(lexer->curr_char) && !isDigit_0_9(lexer->curr_char))
-            {
-                lexer->state = 13;
-            }
-            else
-                lexer->state = -1; // error
-            break;
 
-        case 12:
-            lexer->curr_char = getNextCharacter(lexer);
-            if (!isDigit_0_9(lexer->curr_char))
-                lexer->state = 13;
-            break;
-
-        case 13:
-            return init_Token(TK_FUNID, lexeme, lexer->lineNumber, lexer->charNumber);
-
-        case 14:
-            lexer->curr_char = getNextCharacter(lexer);
-            if (isLetter_a2z(lexer->curr_char))
-            {
-                lexer->state = 15;
-                append(lexeme, lexer->curr_char);
-            }
-            else
-                lexer->state = -1; // error
-            break;
-        case 15:
-            lexer->curr_char = getNextCharacter(lexer);
-            if (!isLetter_a2z(lexer->curr_char))
-                lexer->state = 16;
-            break;
-        case 16:
-            return init_Token(TK_RUID, lexeme, lexer->lineNumber, lexer->charNumber);
+            flag = true;
         }
+
+        return init_Token(TK_FUNID, lexeme, lexer->lineNumber, lexer->charNumber);
+
+    case 12:
+        flag = false;
+        while (lexer->fp && isDigit_0_9(lexer->curr_char))
+        {
+            if (flag)
+                append(lexeme, lexer->curr_char);
+            getNextCharacter(lexer);
+            flag = true;
+        }
+
+        return init_Token(TK_FUNID, lexeme, lexer->lineNumber, lexer->charNumber);
+
+    case 14:
+        getNextCharacter(lexer);
+        if (isLetter_a2z(lexer->curr_char))
+        {
+            append(lexeme, lexer->curr_char);
+            lexer->state = 15; // ret fn 15
+        }
+        // error
+        return init_Token(TK_ILLEGAL, lexeme, lexer->lineNumber, lexer->charNumber);
+
+    case 15:
+        flag = false;
+        while (lexer->fp && isLetter_a2z(lexer->curr_char))
+        {
+            if (flag)
+                append(lexeme, lexer->curr_char);
+            getNextCharacter(lexer);
+            flag = true;
+        }
+
+        return init_Token(TK_RUID, lexeme, lexer->lineNumber, lexer->charNumber);
     }
+}
+
+Token get_symbol_tk(Lexer lexer)
+{
 }
 
 Token tokenize(Lexer lexer)
 {
-    while (1)
+    Token tk;
+    getNextCharacter(lexer); // TODO: check via boolean
+
+    // whitespaces
+    if (lexer->curr_char == ' ' || lexer->curr_char == '\t')
+        return tokenize(lexer);
+    // eof
+    if (lexer->curr_char == '\0')
     {
-        switch (lexer->state)
-        {
-
-        // whitespaces and eof
-        case 0:
-            lexer->curr_char = getNextCharacter(lexer);
-            if (lexer->curr_char == ' ' || lexer->curr_char == '\t')
-                return tokenize(lexer);
-            if (lexer->curr_char == '\0')
-                _closeFile(lexer); // TODO: check if tk_eof needed and check if condtn
-            else
-                lexer->state = 1;
-            break;
-
-        // initial state for letter based tokens
-        case 1:
-            lexer->curr_char = getNextCharacter(lexer);
-            if (isLetter_a2z(lexer->curr_char) || lexer->curr_char == '_' || lexer->curr_char == '#')
-                return get_char_tk(lexer);
-            lexer->state = 2;
-            break;
-
-        // initial state for digit based tokens
-        case 2:
-            lexer->curr_char = getNextCharacter(lexer);
-            if (isDigit_0_9(lexer->curr_char))
-                return get_numeric_tk(lexer);
-            lexer->state = 3;
-            break;
-        // initial state for symbolic tokens
-        case 3:
-            Token tk = get_symbol_tk(lexer);
-            if (tk->type == TK_ILLEGAL)
-            {
-                char errorString[200];
-                sprintf(errorString, "Line %d - Error: Illegal character input: '%c' at %d:%d", lexer->lineNumber, lexer->curr_char, lexer->lineNumber, lexer->charNumber);
-                error(errorString);
-            }
-            lexer->state = 0;
-            return tk;
-        }
+        _closeFile(lexer);
+        return -1;
     }
+    // initial state for letter based tokens
+    if (isLetter_a2z(lexer->curr_char) || lexer->curr_char == '_' || lexer->curr_char == '#')
+        return get_char_tk(lexer);
+
+    // initial state for digit based tokens
+    if (isDigit_0_9(lexer->curr_char))
+        return get_numeric_tk(lexer);
+
+    // initial state for symbolic tokens
+    if (isSymbol(lexer->curr_char))
+        return get_symbol_tk(lexer);
+
+    String illegal = init_str();
+    append(illegal, lexer->curr_char);
+    return init_Token(TK_ILLEGAL, illegal, lexer->lineNumber, lexer->charNumber);
 }
+
 // Token tokenize(Lexer lexer)
 // {
 //     lexer->curr_char = getNextCharacter(lexer);
@@ -445,57 +454,46 @@ void _openFile(Lexer lexer)
 void _readFile(Lexer lexer)
 {
 
-    size_t fr;
+    char err_text[300];
 
+    // eof reached
+    if (!lexer->fp)
+    {
+        sprintf(err_text, "File: %s is closed", lexer->filename);
+        error(err_text);
+        return;
+        // exit(1);
+    }
+
+    size_t fr;
+    char *buff;
     if (lexer->BUFF_NUM == 1)
-        fr = fread(lexer->buff1, 1, lexer->BUFF_SIZE1, lexer->fp);
+        buff = lexer->buff1;
     else
-        fr = fread(lexer->buff2, 1, lexer->BUFF_SIZE2, lexer->fp);
+        buff = lexer->buff2;
+
+    memset(buff, '\0', BUFFER_SIZE + 1);
+    fr = fread(buff, 1, BUFFER_SIZE, lexer->fp);
 
     // error handling
-    if (fr != BUFFER_SIZE)
+    if (feof(lexer->fp))
+        _closeFile(lexer);
+    else if (fr != BUFFER_SIZE)
     {
-        char err_text[300];
-
-        // eof reached
-        if (feof(lexer->fp) && !lexer->all_input_read)
-        {
-            if (lexer->BUFF_NUM == 1)
-                lexer->buff1[fr + 1] = '\0';
-            else
-                lexer->buff2[fr + 1] = '\0';
-            lexer->all_input_read = true;
-            // sprintf(err_text, "Error while reading file: %s. Unexpected end of file", lexer->filename);
-            // error(err_text);
-            info("EOF reached");
-            // exit(1);
-        }
-
         // file reading error
-        else if (ferror(lexer->fp))
+        if (ferror(lexer->fp))
         {
             sprintf(err_text, "Error while reading file: %s", lexer->filename);
             error(err_text);
             exit(1);
         }
-
-        else if (lexer->all_input_read)
-        {
-            info("All input has already been read.");
-        }
     }
     clearerr(lexer->fp);
 
     if (lexer->BUFF_NUM == 1)
-    {
         lexer->buffp1 = 0;
-        lexer->buff1[lexer->BUFF_SIZE1] = '\0';
-    }
     else
-    {
         lexer->buffp2 = 0;
-        lexer->buff2[lexer->BUFF_SIZE2] = '\0';
-    }
 }
 
 void _closeFile(Lexer lexer)

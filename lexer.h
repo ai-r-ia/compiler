@@ -10,7 +10,7 @@ static int BUFFER_SIZE = 256;
 typedef struct lexer *Lexer;
 struct lexer
 {
-    int BUFF_SIZE1; // occupied buffer1
+    int BUFF_SIZE1; // occupied buffer1 //TODO: REMOVE
     int BUFF_SIZE2; // occupied buffer2
     int BUFF_NUM;
     FILE *fp;
@@ -24,7 +24,6 @@ struct lexer
     int buffp1;
     int buffp2;
     int lineNumber, charNumber, prevLineChar;
-    bool all_input_read;
     int state;
 };
 
@@ -40,10 +39,6 @@ char getNextCharacter(Lexer lexer);
 // Gets the lex token from file
 // Also, increments the file pointer
 Token tokenize(Lexer lexer);
-
-// Checks whether word is a keyword or not
-// if it is a keyword it gives the appropriate LexicalTokens
-int getKeyword(String word);
 
 // Checks whether a character is [a-z] | [A-Z]
 bool isLetter_a2z_A2Z(char value);
@@ -62,6 +57,9 @@ bool isDigit_0_9(char value);
 
 //[2-7]
 bool isDigit_2_7(char value);
+
+//for valid symbols (except [_],[#])
+bool isSymbol(char value);
 
 // Retrieves kind of keyword
 int getKeyword(String word);
