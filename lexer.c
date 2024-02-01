@@ -583,47 +583,6 @@ Token tokenize(Lexer lexer)
     return init_Token(TK_ILLEGAL, illegal, lexer->lineNumber, lexer->charNumber);
 }
 
-// Token tokenize(Lexer lexer)
-// {
-//     lexer->curr_char = getNextCharacter(lexer);
-
-//     // Check whether EOF
-//     if (lexer->curr_char == '\0') // TODO: check
-//     {
-//         _closeFile(lexer);
-//         return iToken(TK_EOF, NULL, NULL, lexer->lineNumber, lexer->charNumber);
-//     }
-
-//     // Ignore whitespaces
-//     if (lexer->curr_char == ' ' || lexer->curr_char == '\t')
-//     {
-//         return tokenize(lexer);
-//     }
-
-//     // Check for char related tokens
-//     if (isLetter_e2z(lexer->curr_char) || isLetter_b2d(lexer->curr_char) || lexer->curr_char == '_' || lexer->curr_char == '#' || lexer->curr_char == 'a')
-//     {
-//         return get_char_tk(lexer, lexer->curr_char);
-//     }
-
-//     // Check for numeric tokens
-//     if (isDigit(lexer->curr_char))
-//     {
-//         return get_numeric_tk(lexer, lexer->curr_char);
-//     }
-
-//     Token token = get_symbol_tk(lexer, lexer->curr_char);
-
-//     if (token->type == TK_ILLEGAL)
-//     {
-//         char errorString[200];
-//         sprintf(errorString, "Line %d - Error: Illegal character input: '%c' at %d:%d", lexer->lineNumber, lexer->curr_char, lexer->lineNumber, lexer->charNumber);
-//         error(errorString);
-//     }
-
-//     return token;
-// }
-
 // private functions (internal)
 
 void _openFile(Lexer lexer)
