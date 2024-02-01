@@ -22,37 +22,55 @@ Lexer init_lexer(char *filename)
     lexer->fwd_ptr = 0;
     lexer->lineNumber = 1;
     lexer->charNumber = 1;
-    lexer->state = 0;
     // _closeFile(lexer);
     return lexer;
 }
 
-// void loadBuffer(Lexer lexer, String data)
-// {
-//     char *buffer;
+// Checks whether a character is [a-z] | [A-Z]
+bool isLetter_a2z_A2Z(char value)
+{
+    return (value >= 'A' && value <= 'Z') || (value >= 'a' && value <= 'z');
+}
 
-//     if (lexer->BUFF_NUM == 2)
-//     {
-//         lexer->BUFF_SIZE1 = data->size + 1;
-//         buffer = lexer->buff1;
-//     }
-//     else
-//     {
-//         lexer->BUFF_SIZE2 = data->size + 1;
-//         buffer = lexer->buff2;
-//     }
+//[a-z]
+bool isLetter_a2z(char value)
+{
+    return (value >= 'a' && value <= 'z');
+}
 
-//     for (int i = 0; i < data->size; i++)
-//     {
-//         buffer[i] = data->text[i];
-//     }
+// [b-d]
+bool isLetter_b2d(char value)
+{
+    return (value >= 'b' && value <= 'd');
+}
 
-//     buffer[data->size] = '\0';
-//     if (lexer->BUFF_NUM == 2)
-//         lexer->buff1 = buffer;
-//     else
-//         lexer->buff2 = buffer;
-// }
+// [e-z]
+bool isLetter_e2z(char value)
+{
+    return (value >= 'e' && value <= 'z');
+}
+
+// Checks whether a character is [0-9]
+bool isDigit_0_9(char value)
+{
+    return value >= '0' && value <= '9';
+}
+
+//[2-7]
+bool isDigit_2_7(char value)
+{
+    return value >= '2' && value <= '7';
+}
+
+// for valid symbols (except [_],[#])
+bool isSymbol(char value)
+{
+    return value == '<' || value == '>' || value == '%' || value == '[' ||
+           value == ']' || value == ',' || value == ';' || value == ':' ||
+           value == '.' || value == '(' || value == ')' || value == '+' ||
+           value == '-' || value == '*' || value == '/' || value == '&' ||
+           value == '@' || value == '~' || value == '=' || value == '!';
+}
 
 char getNextCharacter(Lexer lexer) // TODO: test this and work out doublebuffering mechanism
 {
@@ -93,100 +111,99 @@ char getNextCharacter(Lexer lexer) // TODO: test this and work out doublebufferi
 
 In digit based tokens: 10 states
 17: if [.]
-18: ret tk_num
+18: ret tk_num        NOTE: removed
 19: if [0-9] after 17
 20: if [0-9] after 19
 21: if [E]
 22: if [+|-]
 23: if [0-9] after 22
-24: if [0-9] after 23
-25: ret tk_rnum
+24: if [0-9] after 23 NOTE: removed
+25: ret tk_rnum       NOTE: removed
 */
 Token get_numeric_tk(Lexer lexer)
 {
     String lexeme = init_str();
-    append(lexeme, lexer->curr_char);
-    while (1)
+    int state = 2;
+
+    while (lexer->fp && isDigit_0_9(lexer->curr_char))
     {
-        switch (lexer->state)
+        append(lexeme, lexer->curr_char);
+        getNextCharacter(lexer);
+    }
+
+    if (lexer->curr_char == '.')
+    {
+        append(lexeme, lexer->curr_char);
+        state = 17; // ret fn 17
+    }
+
+    return init_Token(TK_NUM, lexeme, lexer->lineNumber, lexer->charNumber);
+
+    switch (state)
+    {
+    case 17:
+        getNextCharacter(lexer);
+        if (isDigit_0_9(lexer->curr_char))
         {
-        case 2:
-            lexer->curr_char = getNextCharacter(lexer);
-            if (lexer->curr_char == '.')
-                lexer->state = 17;
-            if (!isDigit_0_9(lexer->curr_char) && lexer->curr_char != '.')
-                lexer->state = 18;
-            if (isDigit_0_9(lexer->curr_char) || lexer->curr_char == '.')
-                append(lexeme, lexer->curr_char);
-            break;
-        case 17:
-            lexer->curr_char = getNextCharacter(lexer);
-            if (isDigit_0_9(lexer->curr_char))
-            {
-                lexer->state = 19;
-                append(lexeme, lexer->curr_char);
-            }
-            else
-                lexer->state = 505; // error
-            break;
-        case 18:
-            return init_Token(TK_NUM, lexeme, lexer->lineNumber, lexer->charNumber);
-        case 19:
-            lexer->curr_char = getNextCharacter(lexer);
-            if (isDigit_0_9(lexer->curr_char))
-            {
-                lexer->state = 20;
-                append(lexeme, lexer->curr_char);
-            }
-            else
-                lexer->state = 505; // error
-            break;
-        case 20:
-            lexer->curr_char = getNextCharacter(lexer);
-            if (lexer->curr_char == 'E')
-            {
-                lexer->state = 21;
-                append(lexeme, lexer->curr_char);
-            }
-            else
-                lexer->state = 25; // error
-            break;
-        case 21:
-            lexer->curr_char = getNextCharacter(lexer);
-            if ((lexer->curr_char == '+') || (lexer->curr_char == '-'))
-            {
-                lexer->state = 22;
-                append(lexeme, lexer->curr_char);
-            }
-            else if (isDigit_0_9(lexer->curr_char))
-            {
-                lexer->state = 23;
-                append(lexeme, lexer->curr_char);
-            }
-            else
-                lexer->state = 505; // error
-            break;
-
-        case 23:
-            lexer->curr_char = getNextCharacter(lexer);
-            if (isDigit_0_9(lexer->curr_char))
-            {
-                lexer->state = 24;
-                append(lexeme, lexer->curr_char);
-            }
-            else
-                lexer->state = 505; // error
-            break;
-        case 24: // TODO: check if this can be skipped
-            lexer->state = 25;
-            break;
-        case 25:
-            return init_Token(TK_RNUM, lexeme, lexer->lineNumber, lexer->charNumber);
-        case 505:
-
-            break;
-            // lexical error TODO:
+            append(lexeme, lexer->curr_char);
+            state = 19; // ret fn 19
         }
+        // error
+        return init_Token(TK_ILLEGAL, lexeme, lexer->lineNumber, lexer->charNumber);
+
+    case 19:
+        getNextCharacter(lexer);
+        if (isDigit_0_9(lexer->curr_char))
+        {
+            append(lexeme, lexer->curr_char);
+            state = 20; // ret fn 20
+        }
+        // error
+        return init_Token(TK_ILLEGAL, lexeme, lexer->lineNumber, lexer->charNumber);
+
+    case 20:
+        getNextCharacter(lexer);
+        if (lexer->curr_char == 'E')
+        {
+            append(lexeme, lexer->curr_char);
+            state = 21; // ret fn 21
+        }
+        return init_Token(TK_RNUM, lexeme, lexer->lineNumber, lexer->charNumber);
+
+    case 21:
+        getNextCharacter(lexer);
+        if ((lexer->curr_char == '+') || (lexer->curr_char == '-'))
+        {
+            append(lexeme, lexer->curr_char);
+            state = 22; // ret fn 22
+        }
+        else if (isDigit_0_9(lexer->curr_char))
+        {
+            append(lexeme, lexer->curr_char);
+            state = 23; // ret fn 23
+        }
+        // error
+        return init_Token(TK_ILLEGAL, lexeme, lexer->lineNumber, lexer->charNumber);
+
+    case 22:
+        getNextCharacter(lexer);
+        if (isDigit_0_9(lexer->curr_char))
+        {
+            append(lexeme, lexer->curr_char);
+            state = 23; // ret fn 23
+        }
+        // error
+        return init_Token(TK_ILLEGAL, lexeme, lexer->lineNumber, lexer->charNumber);
+
+    case 23:
+        getNextCharacter(lexer);
+        if (isDigit_0_9(lexer->curr_char))
+        {
+            append(lexeme, lexer->curr_char);
+            return init_Token(TK_RNUM, lexeme, lexer->lineNumber, lexer->charNumber);
+        }
+        // error
+        return init_Token(TK_ILLEGAL, lexeme, lexer->lineNumber, lexer->charNumber);
     }
 }
 
@@ -211,31 +228,32 @@ Token get_char_tk(Lexer lexer)
     append(lexeme, lexer->curr_char);
     int keyword;
     bool flag;
+    int state = 1;
 
     if (isLetter_b2d(lexer->curr_char))
-        lexer->state = 4;
+        state = 4;
     else if (lexer->curr_char == 'a' || isLetter_e2z(lexer->curr_char))
-        lexer->state = 5;
+        state = 5;
     else if (lexer->curr_char == '_')
-        lexer->state = 10;
+        state = 10;
     else if (lexer->curr_char == '#')
-        lexer->state = 14;
+        state = 14;
     else
         error("Anamoly in char received at get_char_tk.");
 
-    switch (lexer->state)
+    switch (state)
     {
     case 4:
         getNextCharacter(lexer);
         if (isDigit_2_7(lexer->curr_char))
         {
             append(lexeme, lexer->curr_char);
-            lexer->state = 7; // ret fn 7
+            state = 7; // ret fn 7
         }
         if (isLetter_a2z(lexer->curr_char))
         {
             append(lexeme, lexer->curr_char);
-            lexer->state = 5; // ret fn 5
+            state = 5; // ret fn 5
         }
         // error
         return init_Token(TK_ILLEGAL, lexeme, lexer->lineNumber, lexer->charNumber);
@@ -270,7 +288,7 @@ Token get_char_tk(Lexer lexer)
             if (isDigit_2_7(lexer->curr_char))
             {
                 append(lexeme, lexer->curr_char);
-                lexer->state = 8; // ret fn 8
+                state = 8; // ret fn 8
             }
 
             flag = true;
@@ -295,7 +313,7 @@ Token get_char_tk(Lexer lexer)
         if (isLetter_a2z_A2Z(lexer->curr_char))
         {
             append(lexeme, lexer->curr_char);
-            lexer->state = 11; // ret fn 11
+            state = 11; // ret fn 11
         }
         // error
         return init_Token(TK_ILLEGAL, lexeme, lexer->lineNumber, lexer->charNumber);
@@ -316,7 +334,7 @@ Token get_char_tk(Lexer lexer)
             if (isDigit_0_9(lexer->curr_char))
             {
                 append(lexeme, lexer->curr_char);
-                lexer->state = 12; // ret fn 12
+                state = 12; // ret fn 12
             }
 
             flag = true;
@@ -341,7 +359,7 @@ Token get_char_tk(Lexer lexer)
         if (isLetter_a2z(lexer->curr_char))
         {
             append(lexeme, lexer->curr_char);
-            lexer->state = 15; // ret fn 15
+            state = 15; // ret fn 15
         }
         // error
         return init_Token(TK_ILLEGAL, lexeme, lexer->lineNumber, lexer->charNumber);

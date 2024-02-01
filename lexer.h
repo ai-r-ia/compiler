@@ -24,7 +24,6 @@ struct lexer
     int buffp1;
     int buffp2;
     int lineNumber, charNumber, prevLineChar;
-    int state;
 };
 
 // Constructor for Lexer
