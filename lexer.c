@@ -231,15 +231,16 @@ Token get_char_tk(Lexer lexer)
     int state = 1;
 
     if (isLetter_b2d(lexer->curr_char))
-        state = 4;
-    else if (lexer->curr_char == 'a' || isLetter_e2z(lexer->curr_char))
-        state = 5;
-    else if (lexer->curr_char == '_')
-        state = 10;
-    else if (lexer->curr_char == '#')
-        state = 14;
-    else
-        error("Anamoly in char received at get_char_tk.");
+        state = 4; // ret fn 4
+    if (lexer->curr_char == 'a' || isLetter_e2z(lexer->curr_char))
+        state = 5; // ret fn 5
+    if (lexer->curr_char == '_')
+        state = 10; // ret fn 10
+    if (lexer->curr_char == '#')
+        state = 14; // ret fn 14
+
+    // error --> should never occur here
+    return init_Token(TK_ILLEGAL, lexeme, lexer->lineNumber, lexer->charNumber);
 
     switch (state)
     {
@@ -380,6 +381,175 @@ Token get_char_tk(Lexer lexer)
 
 Token get_symbol_tk(Lexer lexer)
 {
+    String lexeme = init_str();
+    append(lexeme, lexer->curr_char);
+
+    if (lexer->curr_char == '<')
+    {
+        getNextCharacter(lexer);
+
+        if (lexer->curr_char == '-')
+        {
+            append(lexeme, lexer->curr_char);
+            getNextCharacter(lexer);
+
+            if (lexer->curr_char == '-')
+            {
+                append(lexeme, lexer->curr_char);
+                getNextCharacter(lexer);
+
+                if (lexer->curr_char == '-')
+                {
+                    append(lexeme, lexer->curr_char);
+                    return init_Token(TK_ASSIGNOP, lexeme, lexer->lineNumber, lexer->charNumber);
+                }
+
+                // error
+                return init_Token(TK_ILLEGAL, lexeme, lexer->lineNumber, lexer->charNumber);
+            }
+
+            // error
+            return init_Token(TK_ILLEGAL, lexeme, lexer->lineNumber, lexer->charNumber);
+        }
+        if (lexer->curr_char == '=')
+        {
+            append(lexeme, lexer->curr_char);
+            return init_Token(TK_LE, lexeme, lexer->lineNumber, lexer->charNumber);
+        }
+
+        return init_Token(TK_LT, lexeme, lexer->lineNumber, lexer->charNumber);
+    }
+    if (lexer->curr_char == '>')
+    {
+        getNextCharacter(lexer);
+
+        if (lexer->curr_char == '=')
+        {
+            append(lexeme, lexer->curr_char);
+            return init_Token(TK_GE, lexeme, lexer->lineNumber, lexer->charNumber);
+        }
+        return init_Token(TK_GT, lexeme, lexer->lineNumber, lexer->charNumber);
+    }
+
+    if (lexer->curr_char == '&')
+    {
+        getNextCharacter(lexer);
+
+        if (lexer->curr_char == '&')
+        {
+            append(lexeme, lexer->curr_char);
+            getNextCharacter(lexer);
+
+            if (lexer->curr_char == '&')
+            {
+                append(lexeme, lexer->curr_char);
+                return init_Token(TK_AND, lexeme, lexer->lineNumber, lexer->charNumber);
+            }
+
+            // error
+            return init_Token(TK_ILLEGAL, lexeme, lexer->lineNumber, lexer->charNumber);
+        }
+
+        // error
+        return init_Token(TK_ILLEGAL, lexeme, lexer->lineNumber, lexer->charNumber);
+    }
+
+    if (lexer->curr_char == '@')
+    {
+        getNextCharacter(lexer);
+
+        if (lexer->curr_char == '@')
+        {
+            append(lexeme, lexer->curr_char);
+            getNextCharacter(lexer);
+
+            if (lexer->curr_char == '@')
+            {
+                append(lexeme, lexer->curr_char);
+                return init_Token(TK_OR, lexeme, lexer->lineNumber, lexer->charNumber);
+            }
+
+            // error
+            return init_Token(TK_ILLEGAL, lexeme, lexer->lineNumber, lexer->charNumber);
+        }
+
+        // error
+        return init_Token(TK_ILLEGAL, lexeme, lexer->lineNumber, lexer->charNumber);
+    }
+
+    if (lexer->curr_char == '=')
+    {
+        getNextCharacter(lexer);
+
+        if (lexer->curr_char == '=')
+        {
+            append(lexeme, lexer->curr_char);
+            return init_Token(TK_EQ, lexeme, lexer->lineNumber, lexer->charNumber);
+        }
+
+        // error
+        return init_Token(TK_ILLEGAL, lexeme, lexer->lineNumber, lexer->charNumber);
+    }
+
+    if (lexer->curr_char == '!')
+    {
+        getNextCharacter(lexer);
+
+        if (lexer->curr_char == '=')
+        {
+            append(lexeme, lexer->curr_char);
+            return init_Token(TK_NE, lexeme, lexer->lineNumber, lexer->charNumber);
+        }
+
+        // error
+        return init_Token(TK_ILLEGAL, lexeme, lexer->lineNumber, lexer->charNumber);
+    }
+
+    // NOTE: to be removed, comments needn't be tokenized, simply skipped
+    if (lexer->curr_char == '%')
+        return init_Token(TK_COMMENT, lexeme, lexer->lineNumber, lexer->charNumber);
+
+    if (lexer->curr_char == '[')
+        return init_Token(TK_SQL, lexeme, lexer->lineNumber, lexer->charNumber);
+
+    if (lexer->curr_char == ']')
+        return init_Token(TK_SQR, lexeme, lexer->lineNumber, lexer->charNumber);
+
+    if (lexer->curr_char == ',')
+        return init_Token(TK_COMMA, lexeme, lexer->lineNumber, lexer->charNumber);
+
+    if (lexer->curr_char == ';')
+        return init_Token(TK_SEM, lexeme, lexer->lineNumber, lexer->charNumber);
+
+    if (lexer->curr_char == ':')
+        return init_Token(TK_COLON, lexeme, lexer->lineNumber, lexer->charNumber);
+
+    if (lexer->curr_char == '.')
+        return init_Token(TK_DOT, lexeme, lexer->lineNumber, lexer->charNumber);
+
+    if (lexer->curr_char == '(')
+        return init_Token(TK_OP, lexeme, lexer->lineNumber, lexer->charNumber);
+
+    if (lexer->curr_char == ')')
+        return init_Token(TK_CL, lexeme, lexer->lineNumber, lexer->charNumber);
+
+    if (lexer->curr_char == '+')
+        return init_Token(TK_PLUS, lexeme, lexer->lineNumber, lexer->charNumber);
+
+    if (lexer->curr_char == '-')
+        return init_Token(TK_MINUS, lexeme, lexer->lineNumber, lexer->charNumber);
+
+    if (lexer->curr_char == '*')
+        return init_Token(TK_MUL, lexeme, lexer->lineNumber, lexer->charNumber);
+
+    if (lexer->curr_char == '/')
+        return init_Token(TK_DIV, lexeme, lexer->lineNumber, lexer->charNumber);
+
+    if (lexer->curr_char == '~')
+        return init_Token(TK_NOT, lexeme, lexer->lineNumber, lexer->charNumber);
+
+    // error --> should never occur here
+    return init_Token(TK_ILLEGAL, lexeme, lexer->lineNumber, lexer->charNumber);
 }
 
 Token tokenize(Lexer lexer)
