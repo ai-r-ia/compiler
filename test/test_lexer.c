@@ -11,6 +11,7 @@ void test_lexer()
 
     bool flag = false;
 
+    printf("%s \n", lexer->buff1);
     while ((lexer->fp))
     {
         // printf("%s\n", token_type_list[tk->type]);
@@ -24,10 +25,11 @@ void test_lexer()
         if (!flag)
         {
             tk = tokenize(lexer, true);
-            if (tk!= NULL && tk->type == 57)
+            if (tk != NULL && tk->type == 57)
                 flag = true;
         }
     }
+    // if(tk) push_back(vec, tk);
 
     for (int i = 0; i < vec->size; i++)
     {

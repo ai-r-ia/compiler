@@ -624,9 +624,9 @@ void _readFile(Lexer lexer)
     fr = fread(buff, 1, BUFFER_SIZE, lexer->fp);
 
     // error handling
-    if (feof(lexer->fp))
-        _closeFile(lexer);  //DEBUG:
-    else if (fr != BUFFER_SIZE)
+    // if (feof(lexer->fp))
+    //     _closeFile(lexer);  //DEBUG:
+     if (fr != BUFFER_SIZE)
     {
         // file reading error
         if (ferror(lexer->fp))

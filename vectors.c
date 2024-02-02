@@ -51,6 +51,7 @@ void put(Vector vec, size_t ind, void *value)
 
 void push_back(Vector vec, void *value)
 {
+
     if (vec->size >= vec->memory_size)
     {
         _realloc_vector(vec);
@@ -59,7 +60,6 @@ void push_back(Vector vec, void *value)
     _put(vec, vec->size, value);
 
     vec->size++;
-    // TODO: internal put ignoring index, in put too
     // NOTE: test this
 }
 
