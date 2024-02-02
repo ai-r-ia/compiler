@@ -22,18 +22,20 @@ void test_lexer()
             tk = tokenize(lexer, false);
             flag = false;
         }
-        if (!flag)
+        else if (!flag)
         {
             tk = tokenize(lexer, true);
             if (tk != NULL && tk->type == 57)
                 flag = true;
         }
     }
-    // if(tk) push_back(vec, tk);
 
     for (int i = 0; i < vec->size; i++)
     {
-        printf("%s\n", token_type_list[((Token)get(vec, i))->type]);
+        printf("%s", token_type_list[((Token)get(vec, i))->type]);
+        if (((Token)get(vec, i))->type == 57)
+            printf(" error: %s", (((Token)get(vec, i))->value)->text);
+        printf("\n");
     }
 
     success("LEXER tested successfully.");
