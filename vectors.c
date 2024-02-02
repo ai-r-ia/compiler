@@ -2,7 +2,7 @@
 
 // all private methods begin with "_"(underscore)
 
-Vector initialize_vector(enum DATATYPE DATATYPE)
+Vector init_vector(enum DATATYPE DATATYPE)
 {
     Vector vec = (Vector)malloc(sizeof(struct vector));
     _malloc_vector(vec, DATATYPE);
@@ -106,7 +106,7 @@ Vector copy_vector(Vector destination, Vector source)
 {
     if (destination == NULL)
     {
-        destination = initialize_vector(source->DATATYPE);
+        destination = init_vector(source->DATATYPE);
     }
 
     destination->DATATYPE = source->DATATYPE;

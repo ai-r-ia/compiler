@@ -44,7 +44,7 @@ struct vector
     size_t size;
 };
 
-Vector initialize_vector(enum DATATYPE DATATYPE);
+Vector init_vector(enum DATATYPE DATATYPE);
 
 // void enqueue(vector *vector, void *data); //stack-like oper
 

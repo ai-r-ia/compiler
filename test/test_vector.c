@@ -24,7 +24,7 @@ void test_vector()
 void test_vector_int_all_operations()
 {
     info("Testing for INT\n");
-    Vector vec = initialize_vector(INT);
+    Vector vec = init_vector(INT);
 
     int not_in_vec = rand();
     size_t index = rand() % MIN_SIZE;
@@ -116,7 +116,7 @@ void test_vector_int_all_operations()
 void test_vector_char_all_operations()
 {
     info("Testing for CHAR\n");
-    Vector vec = initialize_vector(CHAR);
+    Vector vec = init_vector(CHAR);
 
     char not_in_vec = rand_char(); // TODO:
     size_t index = rand() % MIN_SIZE;
@@ -208,7 +208,7 @@ void test_vector_char_all_operations()
 void test_vector_int_ptr_all_operations()
 {
     info("Testing for INT_PTR\n");
-    Vector vec = initialize_vector(INT_PTR); // TODO:
+    Vector vec = init_vector(INT_PTR); // TODO:
 
     int *not_in_vec = rand_int_ptr(); // TODO:
     size_t index = rand() % MIN_SIZE;
@@ -300,7 +300,7 @@ void test_vector_int_ptr_all_operations()
 void test_vector_char_ptr_all_operations()
 {
     info("Testing for CHAR_PTR\n");
-    Vector vec = initialize_vector(CHAR_PTR);
+    Vector vec = init_vector(CHAR_PTR);
 
     char *not_in_vec = rand_char_ptr(); // TODO:
     size_t index = rand() % MIN_SIZE;
@@ -392,7 +392,7 @@ void test_vector_char_ptr_all_operations()
 void test_vector_string_all_operations()
 {
     info("Testing for STRING\n");
-    Vector vec = initialize_vector(STRING);
+    Vector vec = init_vector(STRING);
 
     String not_in_vec = rand_string(); // TODO:
     size_t index = rand() % MIN_SIZE;
@@ -496,7 +496,7 @@ void test_vector_string_all_operations()
 void test_vector_token_all_operations()
 {
     info("Testing for TOKEN\n");
-    Vector vec = initialize_vector(TOKEN);
+    Vector vec = init_vector(TOKEN);
 
     Token not_in_vec = rand_token(); // TODO:
     size_t index = rand() % MIN_SIZE;
@@ -600,7 +600,7 @@ void test_vector_token_all_operations()
 void test_vector_hash_node_all_operations()
 {
     info("Testing for HASHNODE\n");
-    Vector vec = initialize_vector(HASHNODE);
+    Vector vec = init_vector(HASHNODE);
 
     HashNode not_in_vec = rand_hash_node(); // TODO:
     size_t index = rand() % MIN_SIZE;
@@ -704,7 +704,7 @@ void test_vector_hash_node_all_operations()
 void test_vector_of_vector_all_operations()
 {
     info("Testing for VECTOR\n");
-    Vector vec = initialize_vector(VECTOR);
+    Vector vec = init_vector(VECTOR);
 
     Vector not_in_vec = rand_vector(HASHNODE); // TODO:
     size_t index = rand() % MIN_SIZE;
@@ -770,7 +770,7 @@ void test_vector_of_vector_all_operations()
     }
 
     Vector next = ((Vector)get(vec, index + 1)); // TODO:
-    Vector next_val = initialize_vector(HASHNODE);
+    Vector next_val = init_vector(HASHNODE);
     next_val = copy_vector(next_val, next);
 
     // for (int i = 0; i < vec->size; i++)

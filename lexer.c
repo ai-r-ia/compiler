@@ -552,19 +552,20 @@ Token get_symbol_tk(Lexer lexer)
     return init_Token(TK_ILLEGAL, lexeme, lexer->lineNumber, lexer->charNumber);
 }
 
-Token tokenize(Lexer lexer)
+Token tokenize(Lexer lexer, bool readNext)
 {
-    Token tk;
-    getNextCharacter(lexer); // TODO: check via boolean
+    if (readNext)
+        getNextCharacter(lexer);
 
     // whitespaces
-    if (lexer->curr_char == ' ' || lexer->curr_char == '\t')
-        return tokenize(lexer);
+    if (lexer->curr_char == ' ' || lexer->curr_char == '\t' || lexer->curr_char == '\n')
+        return tokenize(lexer, true);
+
     // eof
     if (lexer->curr_char == '\0')
     {
         _closeFile(lexer);
-        return -1;
+        return NULL; // TODO: check if tk_eof needed
     }
     // initial state for letter based tokens
     if (isLetter_a2z(lexer->curr_char) || lexer->curr_char == '_' || lexer->curr_char == '#')
@@ -624,7 +625,7 @@ void _readFile(Lexer lexer)
 
     // error handling
     if (feof(lexer->fp))
-        _closeFile(lexer);
+        _closeFile(lexer);  //DEBUG:
     else if (fr != BUFFER_SIZE)
     {
         // file reading error
@@ -634,8 +635,8 @@ void _readFile(Lexer lexer)
             error(err_text);
             exit(1);
         }
+        clearerr(lexer->fp);
     }
-    clearerr(lexer->fp);
 
     if (lexer->BUFF_NUM == 1)
         lexer->buffp1 = 0;

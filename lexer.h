@@ -37,7 +37,7 @@ char getNextCharacter(Lexer lexer);
 
 // Gets the lex token from file
 // Also, increments the file pointer
-Token tokenize(Lexer lexer);
+Token tokenize(Lexer lexer, bool readNext);
 
 // Checks whether a character is [a-z] | [A-Z]
 bool isLetter_a2z_A2Z(char value);
@@ -57,7 +57,7 @@ bool isDigit_0_9(char value);
 //[2-7]
 bool isDigit_2_7(char value);
 
-//for valid symbols (except [_],[#])
+// for valid symbols (except [_],[#])
 bool isSymbol(char value);
 
 // Retrieves kind of keyword

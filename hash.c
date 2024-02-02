@@ -5,11 +5,11 @@ const long long mod = 1e9 + 9;
 HashTable init_table()
 {
     HashTable tb = (HashTable)malloc(sizeof(hash_table));
-    tb->items = initialize_vector(VECTOR);
+    tb->items = init_vector(VECTOR);
 
     for (int i = 0; i < TABLE_SIZE; i++)
     {
-        push_back(tb->items, initialize_vector(HASHNODE));
+        push_back(tb->items, init_vector(HASHNODE));
     }
 
     tb->count = 0;

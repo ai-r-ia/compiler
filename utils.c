@@ -49,7 +49,7 @@ HashNode rand_hash_node() // rename
 
 Vector rand_vector(enum DATATYPE type)
 {
-    Vector vec = initialize_vector(HASHNODE);
+    Vector vec = init_vector(HASHNODE);
 
     int len = rand() % 10;
     for (int i = 0; i < len; i++)
