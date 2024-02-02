@@ -2,7 +2,7 @@
 
 // all private methods begin with "_"(underscore)
 
-Vector initialize_vector(enum DATATYPE DATATYPE)
+Vector init_vector(enum DATATYPE DATATYPE)
 {
     Vector vec = (Vector)malloc(sizeof(struct vector));
     _malloc_vector(vec, DATATYPE);
@@ -51,6 +51,7 @@ void put(Vector vec, size_t ind, void *value)
 
 void push_back(Vector vec, void *value)
 {
+
     if (vec->size >= vec->memory_size)
     {
         _realloc_vector(vec);
@@ -59,7 +60,6 @@ void push_back(Vector vec, void *value)
     _put(vec, vec->size, value);
 
     vec->size++;
-    // TODO: internal put ignoring index, in put too
     // NOTE: test this
 }
 
@@ -106,7 +106,7 @@ Vector copy_vector(Vector destination, Vector source)
 {
     if (destination == NULL)
     {
-        destination = initialize_vector(source->DATATYPE);
+        destination = init_vector(source->DATATYPE);
     }
 
     destination->DATATYPE = source->DATATYPE;
