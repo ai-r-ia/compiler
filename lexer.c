@@ -125,6 +125,9 @@ Token get_numeric_tk(Lexer lexer)
     String lexeme = init_str();
     int state = 2;
 
+    int keyword;
+    int flag;
+
     while (lexer->fp && isDigit_0_9(lexer->curr_char))
     {
         append(lexeme, lexer->curr_char);
@@ -134,7 +137,7 @@ Token get_numeric_tk(Lexer lexer)
     if (lexer->curr_char == '.')
     {
         append(lexeme, lexer->curr_char);
-        state = 17; // ret fn 17
+        return handle_num_state_17(lexer, lexeme, flag, keyword); // ret fn 17
     }
 
     return init_Token(TK_NUM, lexeme, lexer->lineNumber, lexer->charNumber);
