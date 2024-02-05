@@ -1,10 +1,9 @@
 #include "test_lexer.h"
 
-// Note: run this file from the test folder to avoid errors. Running from lexer.c or ../ directory will cause errors.
 void test_lexer()
 {
     info("testing LEXER");
-    Lexer lexer = init_lexer("test.txt");
+    Lexer lexer = init_lexer("test/test.txt");
 
     Token tk = tokenize(lexer, true);
     Vector vec = init_vector(TOKEN);
