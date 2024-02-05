@@ -138,74 +138,154 @@ Token get_numeric_tk(Lexer lexer)
     }
 
     return init_Token(TK_NUM, lexeme, lexer->lineNumber, lexer->charNumber);
+}
 
-    switch (state)
+Token handle_num_state_17(Lexer lexer, String lexeme, bool flag, int keyword){
+
+    getNextCharacter(lexer);
+        if (isDigit_0_9(lexer->curr_char))
+        {
+            append(lexeme, lexer->curr_char);
+            return handle_num_state_19(lexer, lexeme, flag, keyword);
+        }
+        // error
+    return init_Token(TK_ILLEGAL, lexeme, lexer->lineNumber, lexer->charNumber);
+}
+
+Token handle_num_state_19(Lexer lexer, String lexeme, bool flag, int keyword){
+
+    getNextCharacter(lexer);
+        if (isDigit_0_9(lexer->curr_char))
+        {
+            append(lexeme, lexer->curr_char);
+            return handle_num_state_20(lexer, lexeme, flag, keyword);
+        }
+        // error
+    return init_Token(TK_ILLEGAL, lexeme, lexer->lineNumber, lexer->charNumber);
+}
+
+Token handle_num_state_20(Lexer lexer, String lexeme, bool flag, int keyword){
+
+    getNextCharacter(lexer);
+        if (isDigit_0_9(lexer->curr_char))
+        {
+            append(lexeme, lexer->curr_char);
+            return handle_num_state_21(lexer, lexeme, flag, keyword);
+        }
+        // error
+    return init_Token(TK_ILLEGAL, lexeme, lexer->lineNumber, lexer->charNumber);
+}
+
+Token handle_num_state_21(Lexer lexer, String lexeme, bool flag, int keyword){
+
+    getNextCharacter(lexer);
+    if ((lexer->curr_char == '+') || (lexer->curr_char == '-'))
     {
-    case 17:
-        getNextCharacter(lexer);
+        append(lexeme, lexer->curr_char);
+        return handle_num_state_22(lexer, lexeme, flag, keyword); // ret fn 22
+    }
+    else if (isDigit_0_9(lexer->curr_char))
+    {
+        append(lexeme, lexer->curr_char);
+        return handle_num_state_23(lexer, lexeme, flag, keyword); // ret fn 23
+    }
+    // error
+    return init_Token(TK_ILLEGAL, lexeme, lexer->lineNumber, lexer->charNumber);
+}
+
+Token handle_num_state_22(Lexer lexer, String lexeme, bool flag, int keyword){
+
+    getNextCharacter(lexer);
         if (isDigit_0_9(lexer->curr_char))
         {
             append(lexeme, lexer->curr_char);
-            state = 19; // ret fn 19
+            return handle_num_state_23(lexer, lexeme, flag, keyword);
         }
         // error
-        return init_Token(TK_ILLEGAL, lexeme, lexer->lineNumber, lexer->charNumber);
+    return init_Token(TK_ILLEGAL, lexeme, lexer->lineNumber, lexer->charNumber);
+}
 
-    case 19:
-        getNextCharacter(lexer);
-        if (isDigit_0_9(lexer->curr_char))
-        {
-            append(lexeme, lexer->curr_char);
-            state = 20; // ret fn 20
-        }
-        // error
-        return init_Token(TK_ILLEGAL, lexeme, lexer->lineNumber, lexer->charNumber);
+Token handle_num_state_23(Lexer lexer, String lexeme, bool flag, int keyword){
 
-    case 20:
-        getNextCharacter(lexer);
-        if (lexer->curr_char == 'E')
-        {
-            append(lexeme, lexer->curr_char);
-            state = 21; // ret fn 21
-        }
-        return init_Token(TK_RNUM, lexeme, lexer->lineNumber, lexer->charNumber);
-
-    case 21:
-        getNextCharacter(lexer);
-        if ((lexer->curr_char == '+') || (lexer->curr_char == '-'))
-        {
-            append(lexeme, lexer->curr_char);
-            state = 22; // ret fn 22
-        }
-        else if (isDigit_0_9(lexer->curr_char))
-        {
-            append(lexeme, lexer->curr_char);
-            state = 23; // ret fn 23
-        }
-        // error
-        return init_Token(TK_ILLEGAL, lexeme, lexer->lineNumber, lexer->charNumber);
-
-    case 22:
-        getNextCharacter(lexer);
-        if (isDigit_0_9(lexer->curr_char))
-        {
-            append(lexeme, lexer->curr_char);
-            state = 23; // ret fn 23
-        }
-        // error
-        return init_Token(TK_ILLEGAL, lexeme, lexer->lineNumber, lexer->charNumber);
-
-    case 23:
-        getNextCharacter(lexer);
+    getNextCharacter(lexer);
         if (isDigit_0_9(lexer->curr_char))
         {
             append(lexeme, lexer->curr_char);
             return init_Token(TK_RNUM, lexeme, lexer->lineNumber, lexer->charNumber);
         }
         // error
-        return init_Token(TK_ILLEGAL, lexeme, lexer->lineNumber, lexer->charNumber);
-    }
+    return init_Token(TK_ILLEGAL, lexeme, lexer->lineNumber, lexer->charNumber);
 }
+
+// commenting out just to keep for reference 
+
+//     switch (state)
+//     {
+//     case 17:
+//         getNextCharacter(lexer);
+//         if (isDigit_0_9(lexer->curr_char))
+//         {
+//             append(lexeme, lexer->curr_char);
+//             state = 19; // ret fn 19
+//         }
+//         // error
+//         return init_Token(TK_ILLEGAL, lexeme, lexer->lineNumber, lexer->charNumber);
+
+//     case 19:
+//         getNextCharacter(lexer);
+//         if (isDigit_0_9(lexer->curr_char))
+//         {
+//             append(lexeme, lexer->curr_char);
+//             state = 20; // ret fn 20
+//         }
+//         // error
+//         return init_Token(TK_ILLEGAL, lexeme, lexer->lineNumber, lexer->charNumber);
+
+//     case 20:
+//         getNextCharacter(lexer);
+//         if (lexer->curr_char == 'E')
+//         {
+//             append(lexeme, lexer->curr_char);
+//             state = 21; // ret fn 21
+//         }
+//         return init_Token(TK_RNUM, lexeme, lexer->lineNumber, lexer->charNumber);
+
+//     case 21:
+//         getNextCharacter(lexer);
+//         if ((lexer->curr_char == '+') || (lexer->curr_char == '-'))
+//         {
+//             append(lexeme, lexer->curr_char);
+//             state = 22; // ret fn 22
+//         }
+//         else if (isDigit_0_9(lexer->curr_char))
+//         {
+//             append(lexeme, lexer->curr_char);
+//             state = 23; // ret fn 23
+//         }
+//         // error
+//         return init_Token(TK_ILLEGAL, lexeme, lexer->lineNumber, lexer->charNumber);
+
+//     case 22:
+//         getNextCharacter(lexer);
+//         if (isDigit_0_9(lexer->curr_char))
+//         {
+//             append(lexeme, lexer->curr_char);
+//             state = 23; // ret fn 23
+//         }
+//         // error
+//         return init_Token(TK_ILLEGAL, lexeme, lexer->lineNumber, lexer->charNumber);
+
+//     case 23:
+//         getNextCharacter(lexer);
+//         if (isDigit_0_9(lexer->curr_char))
+//         {
+//             append(lexeme, lexer->curr_char);
+//             return init_Token(TK_RNUM, lexeme, lexer->lineNumber, lexer->charNumber);
+//         }
+//         // error
+//         return init_Token(TK_ILLEGAL, lexeme, lexer->lineNumber, lexer->charNumber);
+//     }
+// }
 
 /*In character based tokens : 13 states
 4 : if[b - d]
