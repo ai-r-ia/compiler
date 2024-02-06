@@ -35,9 +35,11 @@ Lexer init_lexer(char *filename);
 // Gives next character in lexer
 char getNextCharacter(Lexer lexer);
 
+// retracts the forward pointer in the buffer
+void retract(Lexer lexer);
+
 // Gets the lex token from file
-// Also, increments the file pointer
-Token tokenize(Lexer lexer, bool readNext);
+Token tokenize(Lexer lexer);
 
 // Checks whether a character is [a-z] | [A-Z]
 bool isLetter_a2z_A2Z(char value);

@@ -72,7 +72,7 @@ bool isSymbol(char value)
            value == '@' || value == '~' || value == '=' || value == '!';
 }
 
-char getNextCharacter(Lexer lexer) // TODO: test this and work out doublebuffering mechanism
+char getNextCharacter(Lexer lexer)
 {
     char res;
     if (lexer->BUFF_NUM == 1)
@@ -105,6 +105,27 @@ char getNextCharacter(Lexer lexer) // TODO: test this and work out doublebufferi
         lexer->charNumber = 1;
     }
     return lexer->curr_char = res;
+}
+
+// retraction
+void retract(Lexer lexer)
+{
+    char *buffer;
+    if (lexer->BUFF_NUM == 1)
+        buffer = lexer->buff1;
+    else
+        buffer = lexer->buff2;
+
+    // eof
+    if (lexer->fwd_ptr != '\0')
+        lexer->fwd_ptr--;
+
+    lexer->charNumber--;
+    if (buffer[lexer->fwd_ptr] == '\n')
+    {
+        lexer->lineNumber--;
+        lexer->charNumber = lexer->prevLineChar;
+    }
 }
 
 /* check at the bottom of lexer.c for all TD states
@@ -405,10 +426,13 @@ Token get_symbol_tk(Lexer lexer)
                 }
 
                 // error
+                retract(lexer);
                 return init_Token(TK_ILLEGAL, lexeme, lexer->lineNumber, lexer->charNumber);
             }
 
             // error
+            retract(lexer);
+
             return init_Token(TK_ILLEGAL, lexeme, lexer->lineNumber, lexer->charNumber);
         }
         if (lexer->curr_char == '=')
@@ -416,6 +440,8 @@ Token get_symbol_tk(Lexer lexer)
             append(lexeme, lexer->curr_char);
             return init_Token(TK_LE, lexeme, lexer->lineNumber, lexer->charNumber);
         }
+
+        retract(lexer);
 
         return init_Token(TK_LT, lexeme, lexer->lineNumber, lexer->charNumber);
     }
@@ -428,6 +454,8 @@ Token get_symbol_tk(Lexer lexer)
             append(lexeme, lexer->curr_char);
             return init_Token(TK_GE, lexeme, lexer->lineNumber, lexer->charNumber);
         }
+        retract(lexer);
+
         return init_Token(TK_GT, lexeme, lexer->lineNumber, lexer->charNumber);
     }
 
@@ -447,10 +475,14 @@ Token get_symbol_tk(Lexer lexer)
             }
 
             // error
+            retract(lexer);
+
             return init_Token(TK_ILLEGAL, lexeme, lexer->lineNumber, lexer->charNumber);
         }
 
         // error
+        retract(lexer);
+
         return init_Token(TK_ILLEGAL, lexeme, lexer->lineNumber, lexer->charNumber);
     }
 
@@ -470,10 +502,14 @@ Token get_symbol_tk(Lexer lexer)
             }
 
             // error
+            retract(lexer);
+
             return init_Token(TK_ILLEGAL, lexeme, lexer->lineNumber, lexer->charNumber);
         }
 
         // error
+        retract(lexer);
+
         return init_Token(TK_ILLEGAL, lexeme, lexer->lineNumber, lexer->charNumber);
     }
 
@@ -488,6 +524,8 @@ Token get_symbol_tk(Lexer lexer)
         }
 
         // error
+        retract(lexer);
+
         return init_Token(TK_ILLEGAL, lexeme, lexer->lineNumber, lexer->charNumber);
     }
 
@@ -502,6 +540,8 @@ Token get_symbol_tk(Lexer lexer)
         }
 
         // error
+        retract(lexer);
+
         return init_Token(TK_ILLEGAL, lexeme, lexer->lineNumber, lexer->charNumber);
     }
 
@@ -549,17 +589,18 @@ Token get_symbol_tk(Lexer lexer)
         return init_Token(TK_NOT, lexeme, lexer->lineNumber, lexer->charNumber);
 
     // error --> should never occur here
+    retract(lexer);
+
     return init_Token(TK_ILLEGAL, lexeme, lexer->lineNumber, lexer->charNumber);
 }
 
-Token tokenize(Lexer lexer, bool readNext)
+Token tokenize(Lexer lexer)
 {
-    if (readNext)
-        getNextCharacter(lexer);
+    getNextCharacter(lexer);
 
     // whitespaces
     if (lexer->curr_char == ' ' || lexer->curr_char == '\t' || lexer->curr_char == '\n')
-        return tokenize(lexer, true);
+        return tokenize(lexer);
 
     // eof
     if (lexer->curr_char == '\0')
@@ -626,7 +667,7 @@ void _readFile(Lexer lexer)
     // error handling
     // if (feof(lexer->fp))
     //     _closeFile(lexer);  //DEBUG:
-     if (fr != BUFFER_SIZE)
+    if (fr != BUFFER_SIZE)
     {
         // file reading error
         if (ferror(lexer->fp))
