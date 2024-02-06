@@ -3,7 +3,8 @@
 void test_lexer()
 {
     info("testing LEXER");
-    Lexer lexer = init_lexer("test.txt");
+    // Lexer lexer = init_lexer("test.txt");
+    Lexer lexer = init_lexer("test_char.txt");
 
     Token tk = tokenize(lexer);
     // printf("fwd0 %d \n", lexer->fwd_ptr);
@@ -11,8 +12,6 @@ void test_lexer()
     Vector vec = init_vector(TOKEN);
     // push_back(vec, tk1);
 
-    bool flag = false;
-    bool tk1_read = false;
     // Token tk = NULL;
     printf("%s \n", lexer->buff1);
     while ((lexer->fp))

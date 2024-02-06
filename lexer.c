@@ -72,6 +72,31 @@ bool isSymbol(char value)
            value == '@' || value == '~' || value == '=' || value == '!';
 }
 
+// gets keyword TODO:
+int getKeyword(String word)
+{
+    return -1;
+}
+
+Token error_function(Lexer lexer, String lexeme, enum TOKEN_TYPE type)
+{
+
+    if ((lexer->curr_char == ' ') || (lexer->curr_char == '\t') || (lexer->curr_char == '\n') || isSymbol(lexer->curr_char) || (lexer->curr_char == '\0'))
+    {
+        retract(lexer);
+        return init_Token(type, lexeme, lexer->lineNumber, lexer->charNumber);
+    }
+
+    while (((lexer->curr_char != ' ') && (lexer->curr_char != '\t') && (lexer->curr_char != '\n') && (lexer->curr_char != '\0') && (!isSymbol(lexer->curr_char))))
+    {
+        append(lexeme, lexer->curr_char);
+        getNextCharacter(lexer);
+    }
+
+    retract(lexer);
+    return init_Token(TK_ILLEGAL, lexeme, lexer->lineNumber, lexer->charNumber);
+}
+
 char getNextCharacter(Lexer lexer)
 {
     char res;
@@ -259,26 +284,32 @@ Token get_numeric_tk(Lexer lexer)
     If the current character is '_', it transitions to state 10.
     If the current character is '#', it transitions to state 14.
 */
-Token get_char_tk(Lexer lexer) {
+Token get_char_tk(Lexer lexer)
+{
     String lexeme = init_str();
     append(lexeme, lexer->curr_char);
     int keyword;
     bool flag;
 
-    if (isLetter_b2d(lexer->curr_char)) {
+    if (isLetter_b2d(lexer->curr_char))
+    {
         return handle_state_4(lexer, lexeme, flag, keyword); // ret fn 4
     }
-    if (lexer->curr_char == 'a' || isLetter_e2z(lexer->curr_char)) {
-        return handle_state_5(lexer,  lexeme, flag, keyword); // ret fn 5
+    if (lexer->curr_char == 'a' || isLetter_e2z(lexer->curr_char))
+    {
+        return get_tk_fieldid(lexer, lexeme, flag, keyword); // ret fn 5
     }
-    if (lexer->curr_char == '_') {
-        return handle_state_10(lexer, lexeme, flag, keyword); // ret fn 10
+    if (lexer->curr_char == '_')
+    {
+        return get_tk_funid(lexer, lexeme, flag, keyword); // ret fn 10
     }
-    if (lexer->curr_char == '#') {
-        return handle_state_14(lexer, lexeme, flag, keyword); // ret fn 14
+    if (lexer->curr_char == '#')
+    {
+        return get_tk_ruid(lexer, lexeme, flag, keyword); // ret fn 14
     }
 
     // error --> should never occur here
+    retract(lexer);
     return init_Token(TK_ILLEGAL, lexeme, lexer->lineNumber, lexer->charNumber);
 }
 
@@ -288,18 +319,24 @@ Token get_char_tk(Lexer lexer) {
     If the current character is a letter in the range [a-z], it transitions to state 5.
     Otherwise, it is considered an illegal character.
 */
-Token handle_state_4(Lexer lexer, String lexeme, bool flag, int keyword) {
+Token handle_state_4(Lexer lexer, String lexeme, bool flag, int keyword)
+{
+    info("in state 4");
+
     getNextCharacter(lexer);
 
-    if (isDigit_2_7(lexer->curr_char)) {
+    if (isDigit_2_7(lexer->curr_char))
+    {
         append(lexeme, lexer->curr_char);
         return handle_state_7(lexer, lexeme, flag, keyword); // ret fn 7
     }
-    if (isLetter_a2z(lexer->curr_char)) {
+    if (isLetter_a2z(lexer->curr_char))
+    {
         append(lexeme, lexer->curr_char);
-        return handle_state_5(lexer, lexeme, flag, keyword);; // ret fn 5
+        return get_tk_fieldid(lexer, lexeme, flag, keyword);
     }
     // error
+    retract(lexer);
     return init_Token(TK_ILLEGAL, lexeme, lexer->lineNumber, lexer->charNumber);
 }
 
@@ -308,22 +345,33 @@ Token handle_state_4(Lexer lexer, String lexeme, bool flag, int keyword) {
     If the current character is a letter in the range [a-z], it transitions to state 5.
     Otherwise, it is considered an illegal character.
 */
-Token handle_state_5(Lexer lexer, String lexeme, bool flag, int keyword) {
+Token get_tk_fieldid(Lexer lexer, String lexeme, bool flag, int keyword)
+{
+    info("in state 5 or fieldid");
     flag = false;
-    while (lexer->fp && isLetter_a2z(lexer->curr_char)) {
-        if (flag) {
+    while (lexer->fp && isLetter_a2z(lexer->curr_char))
+    {
+        if (flag)
+        {
             append(lexeme, lexer->curr_char);
         }
 
-        keyword = getKeyword(lexeme);
-        if (keyword != -1) {
-            // TODO: check init_token type
-            return init_Token(keyword_token_value[keyword], lexeme, lexer->lineNumber, lexer->charNumber);
-        }
         getNextCharacter(lexer);
         flag = true;
     }
-    return init_Token(TK_FIELDID, lexeme, lexer->lineNumber, lexer->charNumber);
+
+    if ((lexer->curr_char == ' ') || (lexer->curr_char == '\t') || (lexer->curr_char == '\n') || isSymbol(lexer->curr_char) || (lexer->curr_char == '\0'))
+    {
+        keyword = getKeyword(lexeme);
+        if (keyword != -1)
+        {
+            // TODO: check init_token type
+            retract(lexer);
+            return init_Token(keyword_token_value[keyword], lexeme, lexer->lineNumber, lexer->charNumber);
+        }
+    }
+
+    return error_function(lexer, lexeme, TK_FIELDID);
 }
 
 /*
@@ -331,23 +379,24 @@ Token handle_state_5(Lexer lexer, String lexeme, bool flag, int keyword) {
     If the current character is in the range [2-7], it transitions to state 8.
     Otherwise, it is considered an illegal character.
 */
-Token handle_state_7(Lexer lexer, String lexeme, bool flag, int keyword) {
-    flag = false;
-    while (lexer->fp && isLetter_b2d(lexer->curr_char)) {
-        if (flag) {
-            append(lexeme, lexer->curr_char);
-        }
+Token handle_state_7(Lexer lexer, String lexeme, bool flag, int keyword)
+{
+    info("in state 7");
+    getNextCharacter(lexer);
+    while (lexer->fp && isLetter_b2d(lexer->curr_char))
+    {
 
+        append(lexeme, lexer->curr_char);
         getNextCharacter(lexer);
 
-        if (isDigit_2_7(lexer->curr_char)) {
+        if (isDigit_2_7(lexer->curr_char))
+        {
             append(lexeme, lexer->curr_char);
-            return handle_state_8(lexer, lexeme, flag, keyword);; // ret fn 8
+            return handle_state_8(lexer, lexeme, flag, keyword);
         }
-        flag = true;
     }
 
-    return init_Token(TK_ID, lexeme, lexer->lineNumber, lexer->charNumber);
+    return error_function(lexer, lexeme, TK_ID);
 }
 
 /*
@@ -355,67 +404,98 @@ Token handle_state_7(Lexer lexer, String lexeme, bool flag, int keyword) {
     If the current character is a letter in the range [a-z], it transitions to state 11.
     Otherwise, it is considered an illegal character.
 */
-Token handle_state_8(Lexer lexer, String lexeme, bool flag, int keyword) {
+Token handle_state_8(Lexer lexer, String lexeme, bool flag, int keyword)
+{
+    info("in state 8");
+
     flag = false;
-    while (lexer->fp && isLetter_b2d(lexer->curr_char)) {
-        if (flag) {
+    while (lexer->fp && isDigit_2_7(lexer->curr_char))
+    {
+        if (flag)
+        {
             append(lexeme, lexer->curr_char);
         }
         getNextCharacter(lexer);
         flag = true;
     }
-    return init_Token(TK_ID, lexeme, lexer->lineNumber, lexer->charNumber);
+    return error_function(lexer, lexeme, TK_ID);
 }
 
-Token handle_state_10(Lexer lexer, String lexeme, bool flag, int keyword) {
+Token get_tk_funid(Lexer lexer, String lexeme, bool flag, int keyword)
+{
+    info("in funid");
+
     getNextCharacter(lexer);
-    if (isLetter_a2z_A2Z(lexer->curr_char)) {
+    if (isLetter_a2z_A2Z(lexer->curr_char))
+    {
         append(lexeme, lexer->curr_char);
         return handle_state_11(lexer, lexeme, flag, keyword); // ret fn 11
     }
     // error
+    retract(lexer);
     return init_Token(TK_ILLEGAL, lexeme, lexer->lineNumber, lexer->charNumber);
 }
 
-Token handle_state_11(Lexer lexer, String lexeme, bool flag, int keyword) {
+Token handle_state_11(Lexer lexer, String lexeme, bool flag, int keyword)
+{
+    info("in state 11");
+
     flag = false;
-    while (lexer->fp && isLetter_a2z_A2Z(lexer->curr_char)) {
-        if (flag) {
+    while (lexer->fp && isLetter_a2z_A2Z(lexer->curr_char))
+    {
+        if (flag)
+        {
             append(lexeme, lexer->curr_char);
         }
 
+        getNextCharacter(lexer);
+
+        if (isDigit_0_9(lexer->curr_char))
+        {
+            append(lexeme, lexer->curr_char);
+            return handle_state_12(lexer, lexeme, flag, keyword);
+            ; // ret fn 12
+        }
+        flag = true;
+    }
+    if ((lexer->curr_char == ' ') || (lexer->curr_char == '\t') || (lexer->curr_char == '\n') || isSymbol(lexer->curr_char) || (lexer->curr_char == '\0'))
+    {
         keyword = getKeyword(lexeme);
-        if (keyword == 17) {
+        if (keyword == 17)
+        {
+            retract(lexer);
             return init_Token(TK_MAIN, lexeme, lexer->lineNumber, lexer->charNumber);
         }
-
-        getNextCharacter(lexer);
-
-        if (isDigit_0_9(lexer->curr_char)) {
-            append(lexeme, lexer->curr_char);
-            return handle_state_12(lexer, lexeme, flag, keyword);; // ret fn 12
-        }
-        flag = true;
     }
-    return init_Token(TK_FUNID, lexeme, lexer->lineNumber, lexer->charNumber);
+
+    return error_function(lexer, lexeme, TK_FUNID);
 }
 
-Token handle_state_12(Lexer lexer, String lexeme, bool flag, int keyword) {
+Token handle_state_12(Lexer lexer, String lexeme, bool flag, int keyword)
+{
+    info("in state 12");
+
     flag = false;
-    while (lexer->fp && isDigit_0_9(lexer->curr_char)) {
-        if (flag) {
+    while (lexer->fp && isDigit_0_9(lexer->curr_char))
+    {
+        if (flag)
+        {
             append(lexeme, lexer->curr_char);
         }
         getNextCharacter(lexer);
         flag = true;
     }
-    // error
-    return init_Token(TK_FUNID, lexeme, lexer->lineNumber, lexer->charNumber);
+
+    return error_function(lexer, lexeme, TK_FUNID);
 }
 
-Token handle_state_14(Lexer lexer, String lexeme, bool flag, int keyword) {
+Token get_tk_ruid(Lexer lexer, String lexeme, bool flag, int keyword)
+{
+    info("in state ruid");
+
     getNextCharacter(lexer);
-    if (isLetter_a2z(lexer->curr_char)) {
+    if (isLetter_a2z(lexer->curr_char))
+    {
         append(lexeme, lexer->curr_char);
         return handle_state_15(lexer, lexeme, flag, keyword); // ret fn 15
     }
@@ -423,17 +503,22 @@ Token handle_state_14(Lexer lexer, String lexeme, bool flag, int keyword) {
     return init_Token(TK_ILLEGAL, lexeme, lexer->lineNumber, lexer->charNumber);
 }
 
-Token handle_state_15(Lexer lexer, String lexeme, bool flag, int keyword) {
+Token handle_state_15(Lexer lexer, String lexeme, bool flag, int keyword)
+{
+    info("in state 15");
+
     flag = false;
-    while (lexer->fp && isLetter_a2z(lexer->curr_char)) {
-        if (flag) {
+    while (lexer->fp && isLetter_a2z(lexer->curr_char))
+    {
+        if (flag)
+        {
             append(lexeme, lexer->curr_char);
         }
         getNextCharacter(lexer);
         flag = true;
     }
-    // error
-    return init_Token(TK_RUID, lexeme, lexer->lineNumber, lexer->charNumber);
+
+    return error_function(lexer, lexeme, TK_RUID);
 }
 
 Token get_symbol_tk(Lexer lexer)
