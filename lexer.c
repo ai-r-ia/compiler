@@ -72,19 +72,51 @@ bool isSymbol(char value)
            value == '@' || value == '~' || value == '=' || value == '!';
 }
 
-// gets keyword TODO:
 int getKeyword(String word)
 {
+    for (int i = 0; i < 28; i++)
+    {
+        if (compare(char_to_string(keyword_type_list[i]), word))
+            return i;
+    }
+
     return -1;
 }
 
-Token error_function(Lexer lexer, String lexeme, enum TOKEN_TYPE type)
+Token error_function(Lexer lexer, String lexeme, enum TOKEN_TYPE type, bool others)
 {
+    void *value;
+    char *p;
 
-    if ((lexer->curr_char == ' ') || (lexer->curr_char == '\t') || (lexer->curr_char == '\n') || isSymbol(lexer->curr_char) || (lexer->curr_char == '\0'))
+    switch (type)
+    {
+    case TK_RNUM:
+        value = (double *)malloc(sizeof(double));
+        double d = strtod(lexeme->text, &p);
+        value = &d;
+        break;
+    case TK_NUM:
+        value = (int *)malloc(sizeof(int));
+        int i = atoi(lexeme->text);
+        value = &i;
+        break;
+    case TK_FIELDID:
+    case TK_ID:
+    case TK_FUNID:
+    case TK_RUID:
+    case TK_ILLEGAL:
+        value = (char *)malloc(sizeof(char));
+        value = lexeme->text;
+        break;
+    default:
+        error("No coherent type provided to 'error_function'.");
+        break;
+    }
+
+    if ((lexer->curr_char == ' ') || (lexer->curr_char == '\t') || (lexer->curr_char == '\n') || isSymbol(lexer->curr_char) || (lexer->curr_char == '\0') || others)
     {
         retract(lexer);
-        return init_Token(type, lexeme, lexer->lineNumber, lexer->charNumber);
+        return init_Token(type, lexeme, value, lexer->lineNumber, lexer->charNumber);
     }
 
     while (((lexer->curr_char != ' ') && (lexer->curr_char != '\t') && (lexer->curr_char != '\n') && (lexer->curr_char != '\0') && (!isSymbol(lexer->curr_char))))
@@ -94,7 +126,7 @@ Token error_function(Lexer lexer, String lexeme, enum TOKEN_TYPE type)
     }
 
     retract(lexer);
-    return init_Token(TK_ILLEGAL, lexeme, lexer->lineNumber, lexer->charNumber);
+    return init_Token(TK_ILLEGAL, lexeme, lexeme->text, lexer->lineNumber, lexer->charNumber);
 }
 
 char getNextCharacter(Lexer lexer)
@@ -153,23 +185,9 @@ void retract(Lexer lexer)
     }
 }
 
-/* check at the bottom of lexer.c for all TD states
-
-In digit based tokens: 10 states
-17: if [.]
-18: ret tk_num        NOTE: removed
-19: if [0-9] after 17
-20: if [0-9] after 19
-21: if [E]
-22: if [+|-]
-23: if [0-9] after 22
-24: if [0-9] after 23 NOTE: removed
-25: ret tk_rnum       NOTE: removed
-*/
 Token get_numeric_tk(Lexer lexer)
 {
     String lexeme = init_str();
-    int state = 2;
 
     while (lexer->fp && isDigit_0_9(lexer->curr_char))
     {
@@ -180,95 +198,110 @@ Token get_numeric_tk(Lexer lexer)
     if (lexer->curr_char == '.')
     {
         append(lexeme, lexer->curr_char);
-        state = 17; // ret fn 17
+        Token tk = get_tk_rnum1(lexer, lexeme);
+        if (tk)
+            return tk;
     }
 
-    return init_Token(TK_NUM, lexeme, lexer->lineNumber, lexer->charNumber);
-
-    switch (state)
-    {
-    case 17:
-        getNextCharacter(lexer);
-        if (isDigit_0_9(lexer->curr_char))
-        {
-            append(lexeme, lexer->curr_char);
-            state = 19; // ret fn 19
-        }
-        // error
-        return init_Token(TK_ILLEGAL, lexeme, lexer->lineNumber, lexer->charNumber);
-
-    case 19:
-        getNextCharacter(lexer);
-        if (isDigit_0_9(lexer->curr_char))
-        {
-            append(lexeme, lexer->curr_char);
-            state = 20; // ret fn 20
-        }
-        // error
-        return init_Token(TK_ILLEGAL, lexeme, lexer->lineNumber, lexer->charNumber);
-
-    case 20:
-        getNextCharacter(lexer);
-        if (lexer->curr_char == 'E')
-        {
-            append(lexeme, lexer->curr_char);
-            state = 21; // ret fn 21
-        }
-        return init_Token(TK_RNUM, lexeme, lexer->lineNumber, lexer->charNumber);
-
-    case 21:
-        getNextCharacter(lexer);
-        if ((lexer->curr_char == '+') || (lexer->curr_char == '-'))
-        {
-            append(lexeme, lexer->curr_char);
-            state = 22; // ret fn 22
-        }
-        else if (isDigit_0_9(lexer->curr_char))
-        {
-            append(lexeme, lexer->curr_char);
-            state = 23; // ret fn 23
-        }
-        // error
-        return init_Token(TK_ILLEGAL, lexeme, lexer->lineNumber, lexer->charNumber);
-
-    case 22:
-        getNextCharacter(lexer);
-        if (isDigit_0_9(lexer->curr_char))
-        {
-            append(lexeme, lexer->curr_char);
-            state = 23; // ret fn 23
-        }
-        // error
-        return init_Token(TK_ILLEGAL, lexeme, lexer->lineNumber, lexer->charNumber);
-
-    case 23:
-        getNextCharacter(lexer);
-        if (isDigit_0_9(lexer->curr_char))
-        {
-            append(lexeme, lexer->curr_char);
-            return init_Token(TK_RNUM, lexeme, lexer->lineNumber, lexer->charNumber);
-        }
-        // error
-        return init_Token(TK_ILLEGAL, lexeme, lexer->lineNumber, lexer->charNumber);
-    }
+    retract(lexer);
+    return error_function(lexer, lexeme, TK_NUM, true);
 }
 
-/*
-    In character based tokens : 13 states
-    4 : if[b - d]
-    5 : if[a | e - z] | [a - z] and check Keyword
-    6 : ret tk_fieldid
-    7 : from 4 accepts[2 - 7] to transition, loops on[b - d]
-    8 : loops on[2 - 7]
-    9 : ret tk_id NOTE: __REMOVED__
-    10 : if[_]
-    11 : loops on[a - z | A - Z], check keyword
-    12 : loops on[0 - 9]
-    13 : ret tk_funid  NOTE: __REMOVED__
-    14 : if[#]
-    15 : loops on[a - z]
-    16 : ret tk_ruid      NOTE: __REMOVED__
-*/
+Token get_tk_rnum1(Lexer lexer, String lexeme)
+{
+
+    getNextCharacter(lexer);
+    if (isDigit_0_9(lexer->curr_char))
+    {
+        append(lexeme, lexer->curr_char);
+        return get_tk_rnum2(lexer, lexeme);
+    }
+    // error
+    return NULL;
+}
+
+Token get_tk_rnum2(Lexer lexer, String lexeme)
+{
+
+    getNextCharacter(lexer);
+    if (isDigit_0_9(lexer->curr_char))
+    {
+        append(lexeme, lexer->curr_char);
+        return get_tk_rnum3(lexer, lexeme);
+    }
+    // error
+    retract(lexer);
+    retract(lexer);
+    return NULL;
+}
+
+Token get_tk_rnum3(Lexer lexer, String lexeme)
+{
+
+    getNextCharacter(lexer);
+    if (lexer->curr_char == 'E')
+    {
+        append(lexeme, lexer->curr_char);
+        Token tk = get_tk_rnum4(lexer, lexeme);
+        if (tk)
+            return tk;
+    }
+    // error
+    return error_function(lexer, lexeme, TK_RNUM, true);
+}
+
+Token get_tk_rnum4(Lexer lexer, String lexeme)
+{
+
+    getNextCharacter(lexer);
+    if ((lexer->curr_char == '+') || (lexer->curr_char == '-'))
+    {
+        append(lexeme, lexer->curr_char);
+        return get_tk_rnum5(lexer, lexeme);
+    }
+    else if (isDigit_0_9(lexer->curr_char))
+    {
+        append(lexeme, lexer->curr_char);
+        return get_tk_rnum6(lexer, lexeme);
+    }
+    // error
+    retract(lexer);
+    return NULL;
+}
+
+Token get_tk_rnum5(Lexer lexer, String lexeme)
+{
+
+    getNextCharacter(lexer);
+    if (isDigit_0_9(lexer->curr_char))
+    {
+        append(lexeme, lexer->curr_char);
+        return get_tk_rnum6(lexer, lexeme);
+    }
+
+    // error
+    retract(lexer);
+    retract(lexer);
+    return NULL;
+}
+
+Token get_tk_rnum6(Lexer lexer, String lexeme)
+{
+
+    getNextCharacter(lexer);
+    if (isDigit_0_9(lexer->curr_char))
+    {
+        append(lexeme, lexer->curr_char);
+        getNextCharacter(lexer);
+        return error_function(lexer, lexeme, TK_RNUM, true);
+    }
+    // error
+    retract(lexer);
+    retract(lexer);
+    retract(lexer);
+    return NULL;
+    // return error_function(lexer, lexeme, TK_ILLEGAL, true);
+}
 
 /*
     This function handles character-based tokens.
@@ -288,29 +321,27 @@ Token get_char_tk(Lexer lexer)
 {
     String lexeme = init_str();
     append(lexeme, lexer->curr_char);
-    int keyword;
-    bool flag;
 
     if (isLetter_b2d(lexer->curr_char))
     {
-        return handle_state_4(lexer, lexeme, flag, keyword); // ret fn 4
+        return after_b2d(lexer, lexeme);
     }
     if (lexer->curr_char == 'a' || isLetter_e2z(lexer->curr_char))
     {
-        return get_tk_fieldid(lexer, lexeme, flag, keyword); // ret fn 5
+        return get_tk_fieldid(lexer, lexeme);
     }
     if (lexer->curr_char == '_')
     {
-        return get_tk_funid(lexer, lexeme, flag, keyword); // ret fn 10
+        return get_tk_funid0(lexer, lexeme);
     }
     if (lexer->curr_char == '#')
     {
-        return get_tk_ruid(lexer, lexeme, flag, keyword); // ret fn 14
+        return get_tk_ruid0(lexer, lexeme);
     }
 
     // error --> should never occur here
     retract(lexer);
-    return init_Token(TK_ILLEGAL, lexeme, lexer->lineNumber, lexer->charNumber);
+    return init_Token(TK_ILLEGAL, lexeme, lexeme->text, lexer->lineNumber, lexer->charNumber);
 }
 
 /*
@@ -319,25 +350,24 @@ Token get_char_tk(Lexer lexer)
     If the current character is a letter in the range [a-z], it transitions to state 5.
     Otherwise, it is considered an illegal character.
 */
-Token handle_state_4(Lexer lexer, String lexeme, bool flag, int keyword)
+Token after_b2d(Lexer lexer, String lexeme)
 {
-    info("in state 4");
 
     getNextCharacter(lexer);
 
     if (isDigit_2_7(lexer->curr_char))
     {
         append(lexeme, lexer->curr_char);
-        return handle_state_7(lexer, lexeme, flag, keyword); // ret fn 7
+        return get_tk_id2(lexer, lexeme); // ret fn 7
     }
     if (isLetter_a2z(lexer->curr_char))
     {
         append(lexeme, lexer->curr_char);
-        return get_tk_fieldid(lexer, lexeme, flag, keyword);
+        return get_tk_fieldid(lexer, lexeme);
     }
     // error
     retract(lexer);
-    return init_Token(TK_ILLEGAL, lexeme, lexer->lineNumber, lexer->charNumber);
+    return init_Token(TK_ILLEGAL, lexeme, lexeme->text, lexer->lineNumber, lexer->charNumber);
 }
 
 /*
@@ -345,10 +375,9 @@ Token handle_state_4(Lexer lexer, String lexeme, bool flag, int keyword)
     If the current character is a letter in the range [a-z], it transitions to state 5.
     Otherwise, it is considered an illegal character.
 */
-Token get_tk_fieldid(Lexer lexer, String lexeme, bool flag, int keyword)
+Token get_tk_fieldid(Lexer lexer, String lexeme)
 {
-    info("in state 5 or fieldid");
-    flag = false;
+    bool flag = false;
     while (lexer->fp && isLetter_a2z(lexer->curr_char))
     {
         if (flag)
@@ -362,16 +391,15 @@ Token get_tk_fieldid(Lexer lexer, String lexeme, bool flag, int keyword)
 
     if ((lexer->curr_char == ' ') || (lexer->curr_char == '\t') || (lexer->curr_char == '\n') || isSymbol(lexer->curr_char) || (lexer->curr_char == '\0'))
     {
-        keyword = getKeyword(lexeme);
+        int keyword = getKeyword(lexeme);
         if (keyword != -1)
         {
-            // TODO: check init_token type
             retract(lexer);
-            return init_Token(keyword_token_value[keyword], lexeme, lexer->lineNumber, lexer->charNumber);
+            return init_Token(keyword_token_value[keyword], lexeme, lexeme->text, lexer->lineNumber, lexer->charNumber);
         }
     }
 
-    return error_function(lexer, lexeme, TK_FIELDID);
+    return error_function(lexer, lexeme, TK_FIELDID, false);
 }
 
 /*
@@ -379,9 +407,8 @@ Token get_tk_fieldid(Lexer lexer, String lexeme, bool flag, int keyword)
     If the current character is in the range [2-7], it transitions to state 8.
     Otherwise, it is considered an illegal character.
 */
-Token handle_state_7(Lexer lexer, String lexeme, bool flag, int keyword)
+Token get_tk_id2(Lexer lexer, String lexeme)
 {
-    info("in state 7");
     getNextCharacter(lexer);
     while (lexer->fp && isLetter_b2d(lexer->curr_char))
     {
@@ -392,11 +419,11 @@ Token handle_state_7(Lexer lexer, String lexeme, bool flag, int keyword)
         if (isDigit_2_7(lexer->curr_char))
         {
             append(lexeme, lexer->curr_char);
-            return handle_state_8(lexer, lexeme, flag, keyword);
+            return get_tk_id3(lexer, lexeme);
         }
     }
 
-    return error_function(lexer, lexeme, TK_ID);
+    return error_function(lexer, lexeme, TK_ID, false);
 }
 
 /*
@@ -404,11 +431,10 @@ Token handle_state_7(Lexer lexer, String lexeme, bool flag, int keyword)
     If the current character is a letter in the range [a-z], it transitions to state 11.
     Otherwise, it is considered an illegal character.
 */
-Token handle_state_8(Lexer lexer, String lexeme, bool flag, int keyword)
+Token get_tk_id3(Lexer lexer, String lexeme)
 {
-    info("in state 8");
 
-    flag = false;
+    bool flag = false;
     while (lexer->fp && isDigit_2_7(lexer->curr_char))
     {
         if (flag)
@@ -418,29 +444,27 @@ Token handle_state_8(Lexer lexer, String lexeme, bool flag, int keyword)
         getNextCharacter(lexer);
         flag = true;
     }
-    return error_function(lexer, lexeme, TK_ID);
+    return error_function(lexer, lexeme, TK_ID, false);
 }
 
-Token get_tk_funid(Lexer lexer, String lexeme, bool flag, int keyword)
+Token get_tk_funid0(Lexer lexer, String lexeme)
 {
-    info("in funid");
 
     getNextCharacter(lexer);
     if (isLetter_a2z_A2Z(lexer->curr_char))
     {
         append(lexeme, lexer->curr_char);
-        return handle_state_11(lexer, lexeme, flag, keyword); // ret fn 11
+        return get_tk_funid1(lexer, lexeme); // ret fn 11
     }
     // error
     retract(lexer);
-    return init_Token(TK_ILLEGAL, lexeme, lexer->lineNumber, lexer->charNumber);
+    return init_Token(TK_ILLEGAL, lexeme, lexeme->text, lexer->lineNumber, lexer->charNumber);
 }
 
-Token handle_state_11(Lexer lexer, String lexeme, bool flag, int keyword)
+Token get_tk_funid1(Lexer lexer, String lexeme)
 {
-    info("in state 11");
 
-    flag = false;
+    bool flag = false;
     while (lexer->fp && isLetter_a2z_A2Z(lexer->curr_char))
     {
         if (flag)
@@ -453,29 +477,28 @@ Token handle_state_11(Lexer lexer, String lexeme, bool flag, int keyword)
         if (isDigit_0_9(lexer->curr_char))
         {
             append(lexeme, lexer->curr_char);
-            return handle_state_12(lexer, lexeme, flag, keyword);
+            return get_tk_funid3(lexer, lexeme);
             ; // ret fn 12
         }
         flag = true;
     }
     if ((lexer->curr_char == ' ') || (lexer->curr_char == '\t') || (lexer->curr_char == '\n') || isSymbol(lexer->curr_char) || (lexer->curr_char == '\0'))
     {
-        keyword = getKeyword(lexeme);
-        if (keyword == 17)
+        int keyword = getKeyword(lexeme);
+        if (keyword_token_value[keyword] == 17)
         {
             retract(lexer);
-            return init_Token(TK_MAIN, lexeme, lexer->lineNumber, lexer->charNumber);
+            return init_Token(TK_MAIN, lexeme, lexeme->text, lexer->lineNumber, lexer->charNumber);
         }
     }
 
-    return error_function(lexer, lexeme, TK_FUNID);
+    return error_function(lexer, lexeme, TK_FUNID, false);
 }
 
-Token handle_state_12(Lexer lexer, String lexeme, bool flag, int keyword)
+Token get_tk_funid3(Lexer lexer, String lexeme)
 {
-    info("in state 12");
 
-    flag = false;
+    bool flag = false;
     while (lexer->fp && isDigit_0_9(lexer->curr_char))
     {
         if (flag)
@@ -486,28 +509,26 @@ Token handle_state_12(Lexer lexer, String lexeme, bool flag, int keyword)
         flag = true;
     }
 
-    return error_function(lexer, lexeme, TK_FUNID);
+    return error_function(lexer, lexeme, TK_FUNID, false);
 }
 
-Token get_tk_ruid(Lexer lexer, String lexeme, bool flag, int keyword)
+Token get_tk_ruid0(Lexer lexer, String lexeme)
 {
-    info("in state ruid");
 
     getNextCharacter(lexer);
     if (isLetter_a2z(lexer->curr_char))
     {
         append(lexeme, lexer->curr_char);
-        return handle_state_15(lexer, lexeme, flag, keyword); // ret fn 15
+        return get_tk_ruid1(lexer, lexeme); // ret fn 15
     }
     // error
-    return init_Token(TK_ILLEGAL, lexeme, lexer->lineNumber, lexer->charNumber);
+    return init_Token(TK_ILLEGAL, lexeme, lexeme->text, lexer->lineNumber, lexer->charNumber);
 }
 
-Token handle_state_15(Lexer lexer, String lexeme, bool flag, int keyword)
+Token get_tk_ruid1(Lexer lexer, String lexeme)
 {
-    info("in state 15");
 
-    flag = false;
+    bool flag = false;
     while (lexer->fp && isLetter_a2z(lexer->curr_char))
     {
         if (flag)
@@ -518,7 +539,7 @@ Token handle_state_15(Lexer lexer, String lexeme, bool flag, int keyword)
         flag = true;
     }
 
-    return error_function(lexer, lexeme, TK_RUID);
+    return error_function(lexer, lexeme, TK_RUID, false);
 }
 
 Token get_symbol_tk(Lexer lexer)
@@ -543,28 +564,28 @@ Token get_symbol_tk(Lexer lexer)
                 if (lexer->curr_char == '-')
                 {
                     append(lexeme, lexer->curr_char);
-                    return init_Token(TK_ASSIGNOP, lexeme, lexer->lineNumber, lexer->charNumber);
+                    return init_Token(TK_ASSIGNOP, lexeme, lexeme->text, lexer->lineNumber, lexer->charNumber);
                 }
 
                 // error
                 retract(lexer);
-                return init_Token(TK_ILLEGAL, lexeme, lexer->lineNumber, lexer->charNumber);
+                return init_Token(TK_ILLEGAL, lexeme, lexeme->text, lexer->lineNumber, lexer->charNumber);
             }
 
             // error
             retract(lexer);
 
-            return init_Token(TK_ILLEGAL, lexeme, lexer->lineNumber, lexer->charNumber);
+            return init_Token(TK_ILLEGAL, lexeme, lexeme->text, lexer->lineNumber, lexer->charNumber);
         }
         if (lexer->curr_char == '=')
         {
             append(lexeme, lexer->curr_char);
-            return init_Token(TK_LE, lexeme, lexer->lineNumber, lexer->charNumber);
+            return init_Token(TK_LE, lexeme, lexeme->text, lexer->lineNumber, lexer->charNumber);
         }
 
         retract(lexer);
 
-        return init_Token(TK_LT, lexeme, lexer->lineNumber, lexer->charNumber);
+        return init_Token(TK_LT, lexeme, lexeme->text, lexer->lineNumber, lexer->charNumber);
     }
     if (lexer->curr_char == '>')
     {
@@ -573,11 +594,11 @@ Token get_symbol_tk(Lexer lexer)
         if (lexer->curr_char == '=')
         {
             append(lexeme, lexer->curr_char);
-            return init_Token(TK_GE, lexeme, lexer->lineNumber, lexer->charNumber);
+            return init_Token(TK_GE, lexeme, lexeme->text, lexer->lineNumber, lexer->charNumber);
         }
         retract(lexer);
 
-        return init_Token(TK_GT, lexeme, lexer->lineNumber, lexer->charNumber);
+        return init_Token(TK_GT, lexeme, lexeme->text, lexer->lineNumber, lexer->charNumber);
     }
 
     if (lexer->curr_char == '&')
@@ -592,19 +613,19 @@ Token get_symbol_tk(Lexer lexer)
             if (lexer->curr_char == '&')
             {
                 append(lexeme, lexer->curr_char);
-                return init_Token(TK_AND, lexeme, lexer->lineNumber, lexer->charNumber);
+                return init_Token(TK_AND, lexeme, lexeme->text, lexer->lineNumber, lexer->charNumber);
             }
 
             // error
             retract(lexer);
 
-            return init_Token(TK_ILLEGAL, lexeme, lexer->lineNumber, lexer->charNumber);
+            return init_Token(TK_ILLEGAL, lexeme, lexeme->text, lexer->lineNumber, lexer->charNumber);
         }
 
         // error
         retract(lexer);
 
-        return init_Token(TK_ILLEGAL, lexeme, lexer->lineNumber, lexer->charNumber);
+        return init_Token(TK_ILLEGAL, lexeme, lexeme->text, lexer->lineNumber, lexer->charNumber);
     }
 
     if (lexer->curr_char == '@')
@@ -619,19 +640,19 @@ Token get_symbol_tk(Lexer lexer)
             if (lexer->curr_char == '@')
             {
                 append(lexeme, lexer->curr_char);
-                return init_Token(TK_OR, lexeme, lexer->lineNumber, lexer->charNumber);
+                return init_Token(TK_OR, lexeme, lexeme->text, lexer->lineNumber, lexer->charNumber);
             }
 
             // error
             retract(lexer);
 
-            return init_Token(TK_ILLEGAL, lexeme, lexer->lineNumber, lexer->charNumber);
+            return init_Token(TK_ILLEGAL, lexeme, lexeme->text, lexer->lineNumber, lexer->charNumber);
         }
 
         // error
         retract(lexer);
 
-        return init_Token(TK_ILLEGAL, lexeme, lexer->lineNumber, lexer->charNumber);
+        return init_Token(TK_ILLEGAL, lexeme, lexeme->text, lexer->lineNumber, lexer->charNumber);
     }
 
     if (lexer->curr_char == '=')
@@ -641,13 +662,13 @@ Token get_symbol_tk(Lexer lexer)
         if (lexer->curr_char == '=')
         {
             append(lexeme, lexer->curr_char);
-            return init_Token(TK_EQ, lexeme, lexer->lineNumber, lexer->charNumber);
+            return init_Token(TK_EQ, lexeme, lexeme->text, lexer->lineNumber, lexer->charNumber);
         }
 
         // error
         retract(lexer);
 
-        return init_Token(TK_ILLEGAL, lexeme, lexer->lineNumber, lexer->charNumber);
+        return init_Token(TK_ILLEGAL, lexeme, lexeme->text, lexer->lineNumber, lexer->charNumber);
     }
 
     if (lexer->curr_char == '!')
@@ -657,62 +678,62 @@ Token get_symbol_tk(Lexer lexer)
         if (lexer->curr_char == '=')
         {
             append(lexeme, lexer->curr_char);
-            return init_Token(TK_NE, lexeme, lexer->lineNumber, lexer->charNumber);
+            return init_Token(TK_NE, lexeme, lexeme->text, lexer->lineNumber, lexer->charNumber);
         }
 
         // error
         retract(lexer);
 
-        return init_Token(TK_ILLEGAL, lexeme, lexer->lineNumber, lexer->charNumber);
+        return init_Token(TK_ILLEGAL, lexeme, lexeme->text, lexer->lineNumber, lexer->charNumber);
     }
 
     // NOTE: to be removed, comments needn't be tokenized, simply skipped
     if (lexer->curr_char == '%')
-        return init_Token(TK_COMMENT, lexeme, lexer->lineNumber, lexer->charNumber);
+        return init_Token(TK_COMMENT, lexeme, lexeme->text, lexer->lineNumber, lexer->charNumber);
 
     if (lexer->curr_char == '[')
-        return init_Token(TK_SQL, lexeme, lexer->lineNumber, lexer->charNumber);
+        return init_Token(TK_SQL, lexeme, lexeme->text, lexer->lineNumber, lexer->charNumber);
 
     if (lexer->curr_char == ']')
-        return init_Token(TK_SQR, lexeme, lexer->lineNumber, lexer->charNumber);
+        return init_Token(TK_SQR, lexeme, lexeme->text, lexer->lineNumber, lexer->charNumber);
 
     if (lexer->curr_char == ',')
-        return init_Token(TK_COMMA, lexeme, lexer->lineNumber, lexer->charNumber);
+        return init_Token(TK_COMMA, lexeme, lexeme->text, lexer->lineNumber, lexer->charNumber);
 
     if (lexer->curr_char == ';')
-        return init_Token(TK_SEM, lexeme, lexer->lineNumber, lexer->charNumber);
+        return init_Token(TK_SEM, lexeme, lexeme->text, lexer->lineNumber, lexer->charNumber);
 
     if (lexer->curr_char == ':')
-        return init_Token(TK_COLON, lexeme, lexer->lineNumber, lexer->charNumber);
+        return init_Token(TK_COLON, lexeme, lexeme->text, lexer->lineNumber, lexer->charNumber);
 
     if (lexer->curr_char == '.')
-        return init_Token(TK_DOT, lexeme, lexer->lineNumber, lexer->charNumber);
+        return init_Token(TK_DOT, lexeme, lexeme->text, lexer->lineNumber, lexer->charNumber);
 
     if (lexer->curr_char == '(')
-        return init_Token(TK_OP, lexeme, lexer->lineNumber, lexer->charNumber);
+        return init_Token(TK_OP, lexeme, lexeme->text, lexer->lineNumber, lexer->charNumber);
 
     if (lexer->curr_char == ')')
-        return init_Token(TK_CL, lexeme, lexer->lineNumber, lexer->charNumber);
+        return init_Token(TK_CL, lexeme, lexeme->text, lexer->lineNumber, lexer->charNumber);
 
     if (lexer->curr_char == '+')
-        return init_Token(TK_PLUS, lexeme, lexer->lineNumber, lexer->charNumber);
+        return init_Token(TK_PLUS, lexeme, lexeme->text, lexer->lineNumber, lexer->charNumber);
 
     if (lexer->curr_char == '-')
-        return init_Token(TK_MINUS, lexeme, lexer->lineNumber, lexer->charNumber);
+        return init_Token(TK_MINUS, lexeme, lexeme->text, lexer->lineNumber, lexer->charNumber);
 
     if (lexer->curr_char == '*')
-        return init_Token(TK_MUL, lexeme, lexer->lineNumber, lexer->charNumber);
+        return init_Token(TK_MUL, lexeme, lexeme->text, lexer->lineNumber, lexer->charNumber);
 
     if (lexer->curr_char == '/')
-        return init_Token(TK_DIV, lexeme, lexer->lineNumber, lexer->charNumber);
+        return init_Token(TK_DIV, lexeme, lexeme->text, lexer->lineNumber, lexer->charNumber);
 
     if (lexer->curr_char == '~')
-        return init_Token(TK_NOT, lexeme, lexer->lineNumber, lexer->charNumber);
+        return init_Token(TK_NOT, lexeme, lexeme->text, lexer->lineNumber, lexer->charNumber);
 
     // error --> should never occur here
     retract(lexer);
 
-    return init_Token(TK_ILLEGAL, lexeme, lexer->lineNumber, lexer->charNumber);
+    return init_Token(TK_ILLEGAL, lexeme, lexeme->text, lexer->lineNumber, lexer->charNumber);
 }
 
 Token tokenize(Lexer lexer)
@@ -743,7 +764,7 @@ Token tokenize(Lexer lexer)
 
     String illegal = init_str();
     append(illegal, lexer->curr_char);
-    return init_Token(TK_ILLEGAL, illegal, lexer->lineNumber, lexer->charNumber);
+    return init_Token(TK_ILLEGAL, illegal, illegal->text, lexer->lineNumber, lexer->charNumber);
 }
 
 // private functions (internal)
@@ -819,3 +840,5 @@ void _closeFile(Lexer lexer)
 
     lexer->fp = NULL;
 }
+
+// this is just a trial

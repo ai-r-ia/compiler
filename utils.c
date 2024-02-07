@@ -35,9 +35,10 @@ String rand_string()
 
 Token rand_token()
 {
+    // NOTE: always keep type as tk_fieldid, tk_funid, tk_id, tk_ruid.....update for more
     int type = rand() % 58; //(tk_illegal +1)
     String value = char_to_string(token_type_list[type]);
-    Token tk = init_Token(type, value, rand() % 1000, rand() % 1000);
+    Token tk = init_Token(type, value, value->text, rand() % 1000, rand() % 1000);
     return tk;
 }
 
@@ -54,7 +55,7 @@ Vector rand_vector(enum DATATYPE type)
     int len = rand() % 10;
     for (int i = 0; i < len; i++)
     {
-        void* (*fun)(void) = get_randomizer(type);
+        void *(*fun)(void) = get_randomizer(type);
         push_back(vec, fun());
     }
 

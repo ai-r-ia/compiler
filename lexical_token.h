@@ -203,15 +203,15 @@ typedef struct token *Token;
 struct token
 {
     int type;
-    String value;
+    String lexeme_str;
     size_t line_num;
     size_t char_num;
-    // void* value; //TODO: optional (post conversion) or use stoi/stof
+    void *lexeme_value; // to store value (post conversion) or use stoi/stof
 } token;
 
 bool checkIfArithmeticOperator(int lexicalToken);
 
-Token init_Token(int type, String value, int lineNumber, int charNumber);
+Token init_Token(int type, String lexeme_str, void* value, int lineNumber, int charNumber);
 
 Token copy_token(Token destination, Token source);
 

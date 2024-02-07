@@ -5,6 +5,7 @@ void test_lexer()
     info("testing LEXER");
     // Lexer lexer = init_lexer("test.txt");
     Lexer lexer = init_lexer("test_char.txt");
+    // Lexer lexer = init_lexer("test_num.txt");
 
     Token tk = tokenize(lexer);
     // printf("fwd0 %d \n", lexer->fwd_ptr);
@@ -17,6 +18,7 @@ void test_lexer()
     while ((lexer->fp))
     {
         // if(tk1_read)
+        // printf("%s\n", token_type_list[tk->type]);
         push_back(vec, tk);
         tk = tokenize(lexer);
 
@@ -35,7 +37,6 @@ void test_lexer()
         //         flag = true;
         // }
 
-        // printf("%s\n", token_type_list[tk->type]);
         // printf("%s\n", (tk->value)->text);
     }
 
@@ -43,7 +44,8 @@ void test_lexer()
     {
         printf("%s", token_type_list[((Token)get(vec, i))->type]);
         if (((Token)get(vec, i))->type == 57)
-            printf(" error: %s", (((Token)get(vec, i))->value)->text);
+            printf(" error: %s", (char*)((Token)get(vec, i))->lexeme_value);
+
         printf("\n");
     }
 

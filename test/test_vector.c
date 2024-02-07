@@ -562,7 +562,7 @@ void test_vector_token_all_operations()
     }
 
     Token next = ((Token)get(vec, index + 1)); // TODO:
-    Token next_val = init_Token(next->type, next->value, next->line_num, next->char_num);
+    Token next_val = init_Token(next->type, next->lexeme_str, next->lexeme_value, next->line_num, next->char_num);
 
     // for (int i = 0; i < vec->size; i++)
     // {

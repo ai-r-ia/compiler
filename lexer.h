@@ -66,7 +66,7 @@ bool isSymbol(char value);
 int getKeyword(String word);
 
 // reads until delimiter reached
-Token error_function(Lexer lexer, String lexeme, enum TOKEN_TYPE type);
+Token error_function(Lexer lexer, String lexeme, enum TOKEN_TYPE type, bool others);
 
 // Retrieves ID token
 Token get_char_tk(Lexer lexer);
@@ -77,15 +77,22 @@ Token get_numeric_tk(Lexer lexer);
 // Retrieves Symbol Token
 Token get_symbol_tk(Lexer lexer);
 
-Token handle_state_4(Lexer lexer, String lexeme, bool flag, int keyword);
-Token get_tk_fieldid(Lexer lexer, String lexeme, bool flag, int keyword);
-Token handle_state_7(Lexer lexer, String lexeme, bool flag, int keyword);
-Token handle_state_8(Lexer lexer, String lexeme, bool flag, int keyword);
-Token get_tk_funid(Lexer lexer, String lexeme, bool flag, int keyword);
-Token handle_state_11(Lexer lexer, String lexeme, bool flag, int keyword);
-Token handle_state_12(Lexer lexer, String lexeme, bool flag, int keyword);
-Token get_tk_ruid(Lexer lexer, String lexeme, bool flag, int keyword);
-Token handle_state_15(Lexer lexer, String lexeme, bool flag, int keyword);
+Token after_b2d(Lexer lexer, String lexeme);
+Token get_tk_fieldid(Lexer lexer, String lexeme);
+Token get_tk_id2(Lexer lexer, String lexeme);
+Token get_tk_id3(Lexer lexer, String lexeme);
+Token get_tk_funid0(Lexer lexer, String lexeme);
+Token get_tk_funid1(Lexer lexer, String lexeme);
+Token get_tk_funid3(Lexer lexer, String lexeme);
+Token get_tk_ruid0(Lexer lexer, String lexeme);
+Token get_tk_ruid1(Lexer lexer, String lexeme);
+
+Token get_tk_rnum1(Lexer lexer, String lexeme);
+Token get_tk_rnum2(Lexer lexer, String lexeme);
+Token get_tk_rnum3(Lexer lexer, String lexeme);
+Token get_tk_rnum4(Lexer lexer, String lexeme);
+Token get_tk_rnum5(Lexer lexer, String lexeme);
+Token get_tk_rnum6(Lexer lexer, String lexeme);
 
 // private functions (internal)
 
