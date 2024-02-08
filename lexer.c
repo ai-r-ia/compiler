@@ -115,7 +115,7 @@ Token error_function(Lexer lexer, String lexeme, enum TOKEN_TYPE type, bool othe
 
     if ((lexer->curr_char == ' ') || (lexer->curr_char == '\t') || (lexer->curr_char == '\n') || isSymbol(lexer->curr_char) || (lexer->curr_char == '\0') || others)
     {
-        retract(lexer);
+        retract(lexer, lexeme);
         return init_Token(type, lexeme, value, lexer->lineNumber, lexer->charNumber);
     }
 
@@ -125,7 +125,7 @@ Token error_function(Lexer lexer, String lexeme, enum TOKEN_TYPE type, bool othe
         getNextCharacter(lexer);
     }
 
-    retract(lexer);
+    retract(lexer, lexeme);
     return init_Token(TK_ILLEGAL, lexeme, lexeme->text, lexer->lineNumber, lexer->charNumber);
 }
 
@@ -165,8 +165,9 @@ char getNextCharacter(Lexer lexer)
 }
 
 // retraction
-void retract(Lexer lexer)
+void retract(Lexer lexer, String lexeme)
 {
+    pop_str(lexeme);
     char *buffer;
     if (lexer->BUFF_NUM == 1)
         buffer = lexer->buff1;
@@ -198,12 +199,10 @@ Token get_numeric_tk(Lexer lexer)
     if (lexer->curr_char == '.')
     {
         append(lexeme, lexer->curr_char);
-        Token tk = get_tk_rnum1(lexer, lexeme);
-        if (tk)
-            return tk;
+        return get_tk_rnum1(lexer, lexeme);
     }
 
-    retract(lexer);
+    retract(lexer, lexeme);
     return error_function(lexer, lexeme, TK_NUM, true);
 }
 
@@ -217,7 +216,8 @@ Token get_tk_rnum1(Lexer lexer, String lexeme)
         return get_tk_rnum2(lexer, lexeme);
     }
     // error
-    return NULL;
+    retract(lexer, lexeme);
+    return error_function(lexer, lexeme, TK_NUM, true);
 }
 
 Token get_tk_rnum2(Lexer lexer, String lexeme)
@@ -230,9 +230,7 @@ Token get_tk_rnum2(Lexer lexer, String lexeme)
         return get_tk_rnum3(lexer, lexeme);
     }
     // error
-    retract(lexer);
-    retract(lexer);
-    return NULL;
+    return error_function(lexer, lexeme, TK_ILLEGAL, true);
 }
 
 Token get_tk_rnum3(Lexer lexer, String lexeme)
@@ -242,9 +240,7 @@ Token get_tk_rnum3(Lexer lexer, String lexeme)
     if (lexer->curr_char == 'E')
     {
         append(lexeme, lexer->curr_char);
-        Token tk = get_tk_rnum4(lexer, lexeme);
-        if (tk)
-            return tk;
+        return get_tk_rnum4(lexer, lexeme);
     }
     // error
     return error_function(lexer, lexeme, TK_RNUM, true);
@@ -265,8 +261,7 @@ Token get_tk_rnum4(Lexer lexer, String lexeme)
         return get_tk_rnum6(lexer, lexeme);
     }
     // error
-    retract(lexer);
-    return NULL;
+    return error_function(lexer, lexeme, TK_ILLEGAL, true);
 }
 
 Token get_tk_rnum5(Lexer lexer, String lexeme)
@@ -280,9 +275,8 @@ Token get_tk_rnum5(Lexer lexer, String lexeme)
     }
 
     // error
-    retract(lexer);
-    retract(lexer);
-    return NULL;
+    retract(lexer, lexeme);
+    return error_function(lexer, lexeme, TK_ILLEGAL, true);
 }
 
 Token get_tk_rnum6(Lexer lexer, String lexeme)
@@ -296,11 +290,7 @@ Token get_tk_rnum6(Lexer lexer, String lexeme)
         return error_function(lexer, lexeme, TK_RNUM, true);
     }
     // error
-    retract(lexer);
-    retract(lexer);
-    retract(lexer);
-    return NULL;
-    // return error_function(lexer, lexeme, TK_ILLEGAL, true);
+    return error_function(lexer, lexeme, TK_ILLEGAL, true);
 }
 
 /*
@@ -340,7 +330,7 @@ Token get_char_tk(Lexer lexer)
     }
 
     // error --> should never occur here
-    retract(lexer);
+    retract(lexer, lexeme);
     return init_Token(TK_ILLEGAL, lexeme, lexeme->text, lexer->lineNumber, lexer->charNumber);
 }
 
@@ -366,7 +356,7 @@ Token after_b2d(Lexer lexer, String lexeme)
         return get_tk_fieldid(lexer, lexeme);
     }
     // error
-    retract(lexer);
+    retract(lexer, lexeme);
     return init_Token(TK_ILLEGAL, lexeme, lexeme->text, lexer->lineNumber, lexer->charNumber);
 }
 
@@ -394,12 +384,12 @@ Token get_tk_fieldid(Lexer lexer, String lexeme)
         int keyword = getKeyword(lexeme);
         if (keyword != -1)
         {
-            retract(lexer);
+            retract(lexer, lexeme);
             return init_Token(keyword_token_value[keyword], lexeme, lexeme->text, lexer->lineNumber, lexer->charNumber);
         }
     }
 
-    return error_function(lexer, lexeme, TK_FIELDID, false);
+    return error_function(lexer, lexeme, TK_FIELDID, true);
 }
 
 /*
@@ -423,7 +413,7 @@ Token get_tk_id2(Lexer lexer, String lexeme)
         }
     }
 
-    return error_function(lexer, lexeme, TK_ID, false);
+    return error_function(lexer, lexeme, TK_FIELDID, true);
 }
 
 /*
@@ -444,7 +434,7 @@ Token get_tk_id3(Lexer lexer, String lexeme)
         getNextCharacter(lexer);
         flag = true;
     }
-    return error_function(lexer, lexeme, TK_ID, false);
+    return error_function(lexer, lexeme, TK_ID, true);
 }
 
 Token get_tk_funid0(Lexer lexer, String lexeme)
@@ -457,7 +447,7 @@ Token get_tk_funid0(Lexer lexer, String lexeme)
         return get_tk_funid1(lexer, lexeme); // ret fn 11
     }
     // error
-    retract(lexer);
+    retract(lexer, lexeme);
     return init_Token(TK_ILLEGAL, lexeme, lexeme->text, lexer->lineNumber, lexer->charNumber);
 }
 
@@ -487,12 +477,12 @@ Token get_tk_funid1(Lexer lexer, String lexeme)
         int keyword = getKeyword(lexeme);
         if (keyword_token_value[keyword] == 17)
         {
-            retract(lexer);
+            retract(lexer, lexeme);
             return init_Token(TK_MAIN, lexeme, lexeme->text, lexer->lineNumber, lexer->charNumber);
         }
     }
 
-    return error_function(lexer, lexeme, TK_FUNID, false);
+    return error_function(lexer, lexeme, TK_FUNID, true);
 }
 
 Token get_tk_funid3(Lexer lexer, String lexeme)
@@ -509,7 +499,7 @@ Token get_tk_funid3(Lexer lexer, String lexeme)
         flag = true;
     }
 
-    return error_function(lexer, lexeme, TK_FUNID, false);
+    return error_function(lexer, lexeme, TK_FUNID, true);
 }
 
 Token get_tk_ruid0(Lexer lexer, String lexeme)
@@ -568,12 +558,12 @@ Token get_symbol_tk(Lexer lexer)
                 }
 
                 // error
-                retract(lexer);
+                retract(lexer, lexeme);
                 return init_Token(TK_ILLEGAL, lexeme, lexeme->text, lexer->lineNumber, lexer->charNumber);
             }
 
             // error
-            retract(lexer);
+            retract(lexer, lexeme);
 
             return init_Token(TK_ILLEGAL, lexeme, lexeme->text, lexer->lineNumber, lexer->charNumber);
         }
@@ -583,7 +573,7 @@ Token get_symbol_tk(Lexer lexer)
             return init_Token(TK_LE, lexeme, lexeme->text, lexer->lineNumber, lexer->charNumber);
         }
 
-        retract(lexer);
+        retract(lexer, lexeme);
 
         return init_Token(TK_LT, lexeme, lexeme->text, lexer->lineNumber, lexer->charNumber);
     }
@@ -596,7 +586,7 @@ Token get_symbol_tk(Lexer lexer)
             append(lexeme, lexer->curr_char);
             return init_Token(TK_GE, lexeme, lexeme->text, lexer->lineNumber, lexer->charNumber);
         }
-        retract(lexer);
+        retract(lexer, lexeme);
 
         return init_Token(TK_GT, lexeme, lexeme->text, lexer->lineNumber, lexer->charNumber);
     }
@@ -617,13 +607,13 @@ Token get_symbol_tk(Lexer lexer)
             }
 
             // error
-            retract(lexer);
+            retract(lexer, lexeme);
 
             return init_Token(TK_ILLEGAL, lexeme, lexeme->text, lexer->lineNumber, lexer->charNumber);
         }
 
         // error
-        retract(lexer);
+        retract(lexer, lexeme);
 
         return init_Token(TK_ILLEGAL, lexeme, lexeme->text, lexer->lineNumber, lexer->charNumber);
     }
@@ -644,13 +634,13 @@ Token get_symbol_tk(Lexer lexer)
             }
 
             // error
-            retract(lexer);
+            retract(lexer, lexeme);
 
             return init_Token(TK_ILLEGAL, lexeme, lexeme->text, lexer->lineNumber, lexer->charNumber);
         }
 
         // error
-        retract(lexer);
+        retract(lexer, lexeme);
 
         return init_Token(TK_ILLEGAL, lexeme, lexeme->text, lexer->lineNumber, lexer->charNumber);
     }
@@ -666,7 +656,7 @@ Token get_symbol_tk(Lexer lexer)
         }
 
         // error
-        retract(lexer);
+        retract(lexer, lexeme);
 
         return init_Token(TK_ILLEGAL, lexeme, lexeme->text, lexer->lineNumber, lexer->charNumber);
     }
@@ -682,7 +672,7 @@ Token get_symbol_tk(Lexer lexer)
         }
 
         // error
-        retract(lexer);
+        retract(lexer, lexeme);
 
         return init_Token(TK_ILLEGAL, lexeme, lexeme->text, lexer->lineNumber, lexer->charNumber);
     }
@@ -731,7 +721,7 @@ Token get_symbol_tk(Lexer lexer)
         return init_Token(TK_NOT, lexeme, lexeme->text, lexer->lineNumber, lexer->charNumber);
 
     // error --> should never occur here
-    retract(lexer);
+    retract(lexer, lexeme);
 
     return init_Token(TK_ILLEGAL, lexeme, lexeme->text, lexer->lineNumber, lexer->charNumber);
 }

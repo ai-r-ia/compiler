@@ -36,7 +36,7 @@ Lexer init_lexer(char *filename);
 char getNextCharacter(Lexer lexer);
 
 // retracts the forward pointer in the buffer
-void retract(Lexer lexer);
+void retract(Lexer lexer, String lexeme);
 
 // Gets the lex token from file
 Token tokenize(Lexer lexer);

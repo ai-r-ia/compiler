@@ -20,6 +20,8 @@ String char_to_string(char *a);
 
 void append(String str, char val);
 
+void pop_str(String str);
+
 size_t len(String str);
 
 String add(String a, String b);

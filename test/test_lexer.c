@@ -21,30 +21,12 @@ void test_lexer()
         // printf("%s\n", token_type_list[tk->type]);
         push_back(vec, tk);
         tk = tokenize(lexer);
-
-        // if ((tk != NULL && tk->type == 57 && flag) || (tk1->type == 57 && !tk1_read)) // TK_ILLEGAL
-        // {
-        //     tk = tokenize(lexer, false);
-        //     printf("fwd1 %d \n", lexer->fwd_ptr);
-        //     flag = false;
-        //     tk1_read = true;
-        // }
-        // else if (!flag)
-        // {
-        //     tk = tokenize(lexer, true);
-        //     printf("fwd2 %d \n", lexer->fwd_ptr);
-        //     if (tk != NULL && tk->type == 57)
-        //         flag = true;
-        // }
-
-        // printf("%s\n", (tk->value)->text);
     }
 
     for (int i = 0; i < vec->size; i++)
     {
         printf("%s", token_type_list[((Token)get(vec, i))->type]);
-        if (((Token)get(vec, i))->type == 57)
-            printf(" error: %s", (char*)((Token)get(vec, i))->lexeme_value);
+        printf(" : %s", (char *)(((Token)get(vec, i))->lexeme_str)->text);
 
         printf("\n");
     }
