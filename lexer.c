@@ -405,11 +405,11 @@ Token get_tk_fieldid(Lexer lexer, String lexeme)
     }
     append(lexeme, lexer->curr_char);
 
-    bool others = false;
+    bool others = true;
 
     if (isDelimiter(lexer->curr_char) || isSymbol(lexer->curr_char) || isDigit_0_9(lexer->curr_char) || lexer->curr_char == '_' || lexer->curr_char == '#')
     {
-        others = true;
+        others = false;
         retract(lexer, lexeme);
         int keyword = getKeyword(lexeme);
         if (keyword != -1)
@@ -418,7 +418,8 @@ Token get_tk_fieldid(Lexer lexer, String lexeme)
         }
     }
 
-    // retract(lexer, lexeme);
+    if (others)
+        retract(lexer, lexeme);
     return error_function(lexer, lexeme, TK_FIELDID, others);
 }
 
@@ -862,7 +863,7 @@ void _readFile(Lexer lexer)
     // error handling
     // if (feof(lexer->fp))
     //     buff[fr+1] = '-1';
-        // _closeFile(lexer);  //DEBUG:
+    // _closeFile(lexer);  //DEBUG:
     if (fr != BUFFER_SIZE)
     {
         // file reading error
