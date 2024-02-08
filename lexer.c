@@ -792,7 +792,7 @@ Token tokenize(Lexer lexer)
 
     if (lexer->curr_char == '%')
     {
-        while (lexer->curr_char != '\n' || lexer->curr_char == '\0')
+        while (lexer->curr_char != '\n' && lexer->curr_char != '\0')
         {
             getNextCharacter(lexer);
             // append(lexeme, lexer->curr_char);
@@ -858,7 +858,7 @@ void _readFile(Lexer lexer)
         buff = lexer->buff2;
 
     memset(buff, '\0', BUFFER_SIZE + 1);
-    buff[BUFFER_SIZE] = '-1';
+    // buff[BUFFER_SIZE] = '-1';
     fr = fread(buff, 1, BUFFER_SIZE, lexer->fp);
 
     // error handling
