@@ -14,11 +14,13 @@ void test_vector()
 
     // test_vector_string_all_operations();
     // info("_________________________________\n");
-    test_vector_token_all_operations();
+    // test_vector_token_all_operations();
     // info("_________________________________\n");
     // test_vector_hash_node_all_operations();
     // info("_________________________________\n");
     // test_vector_of_vector_all_operations();
+    // info("_________________________________\n");
+    test_vector_symbol_node_all_operations();
 }
 
 void test_vector_int_all_operations()
@@ -699,6 +701,110 @@ void test_vector_hash_node_all_operations()
     push_back(vec, c);
 
     success("HASH NODE vector tested succesfullly."); // TODO:
+}
+
+void test_vector_symbol_node_all_operations()
+{
+    info("Testing for SYMBOLNODE\n");
+    Vector vec = init_vector(SYMBOLNODE);
+
+    SymbolNode not_in_vec = rand_symbol_node(); // TODO:
+    size_t index = rand() % MIN_SIZE;
+    if (index == (MIN_SIZE - 1))
+        index--;
+    SymbolNode in_vec; // TODO:
+
+    for (int i = 0; i < MIN_SIZE; i++)
+    {
+        SymbolNode rand_val = rand_symbol_node(); // TODO:
+        while (compare(rand_val->lexeme, not_in_vec->lexeme))
+        {
+            rand_val = rand_symbol_node(); // TODO:
+        }
+        if (i == index)
+        {
+            in_vec = rand_val;
+        }
+        // printf("%s\n", rand_val->text);
+        push_back(vec, rand_val);
+    }
+
+    if (vec->size != MIN_SIZE)
+    {
+        error("Size of array inconsistent.");
+        exit(1);
+    }
+    SymbolNode get_value = ((SymbolNode)get(vec, index)); // TODO:
+
+    if (!compare(get_value->lexeme, in_vec->lexeme))
+    {
+        error("Error in get().");
+        exit(1);
+    }
+
+    if (contains(vec, not_in_vec))
+    {
+        error("Error in contains(). --negative case");
+        exit(1);
+    }
+
+    if (!contains(vec, get_value))
+    {
+        error("Error in contains(). --positive case");
+        exit(1);
+    }
+
+    Vector vec2 = copy_vector(NULL, vec);
+
+    if (!checkEqual(vec, vec2))
+    {
+        error("Error in checkEqual().");
+        exit(1);
+    }
+
+    SymbolNode c = rand_hash_node(); // TODO:
+    push_back(vec, c);
+
+    if (!compare(c->lexeme, ((SymbolNode)pop_back(vec))->lexeme)) // TODO:
+    {
+        error("Error in pop_back().");
+        exit(1);
+    }
+
+    SymbolNode next = ((SymbolNode)get(vec, index + 1)); // TODO:
+    SymbolNode next_val = init_symbol(next->lexeme, next->token);
+
+    // for (int i = 0; i < vec->size; i++)
+    // {
+    //     puts(((String)get(vec, i))->text);
+    // }
+    removeAt(vec, index);
+    // info("breakkk");
+    // for (int i = 0; i < vec->size; i++)
+    // {
+    //     puts(((String)get(vec, i))->text);
+    // }
+
+    SymbolNode curr = ((SymbolNode)get(vec, index)); // TODO:
+
+    if (!compare(curr->lexeme, next_val->lexeme))
+    {
+        error("Error in removeAt().");
+        exit(1);
+    }
+
+    clear(vec2);
+
+    if (vec2->size != 0)
+    {
+        error("Error in clear().");
+        exit(1);
+    }
+
+    c = rand_symbol_node(); // TODO:
+    push_back(vec, c);
+
+    success("SYMBOL NODE vector tested succesfullly."); // TODO:
 }
 
 void test_vector_of_vector_all_operations()

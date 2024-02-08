@@ -141,7 +141,8 @@ bool checkEqual(Vector a, Vector b)
 void *find(Vector vec, void *data)
 {
     size_t index = get_index(vec, data);
-    if(index == vec->size) return NULL;
+    if (index == vec->size)
+        return NULL;
     return get(vec, index);
 }
 
@@ -172,6 +173,9 @@ void _malloc_vector(Vector vec, enum DATATYPE datatype)
         break;
     case HASHNODE:
         vec->data = (HashNode)malloc(sizeof(struct hash_node) * VECTOR_INC);
+        break;
+    case SYMBOLNODE:
+        vec->data = (SymbolNode)malloc(sizeof(struct symbol_node) * VECTOR_INC);
         break;
     case VECTOR:
         vec->data = (Vector)malloc(sizeof(struct vector) * VECTOR_INC);
@@ -210,6 +214,9 @@ void _realloc_vector(Vector vec)
     case HASHNODE:
         new_size = sizeof(struct hash_node) * (vec->memory_size + VECTOR_INC);
         break;
+    case SYMBOLNODE:
+        new_size = sizeof(struct symbol_node) * (vec->memory_size + VECTOR_INC);
+        break;
     case VECTOR:
         new_size = sizeof(struct vector) * (vec->memory_size + VECTOR_INC);
         break;
@@ -235,11 +242,13 @@ bool _checkEqual(void *a, void *b, enum DATATYPE DATATYPE)
     case CHAR_PTR:
         return *(char **)a == *(char **)b;
     case STRING:
-        return (compare((String )a, (String)b));
+        return (compare((String)a, (String)b));
     case TOKEN:
         return ((Token)a)->type == ((Token)b)->type;
     case HASHNODE:
         return ((HashNode)a)->value == ((HashNode)b)->value;
+    case SYMBOLNODE:
+        return (compare(((SymbolNode)a)->lexeme, ((SymbolNode)b)->lexeme));
     case VECTOR:
         return checkEqual((Vector)a, (Vector)b);
     }
@@ -263,7 +272,7 @@ void _put(Vector vec, size_t index, void *value)
         break;
     case STRING:
         // puts(((String)value)->text);
-        ((String )vec->data)[index] = *((String)value);
+        ((String)vec->data)[index] = *((String)value);
         // puts(((String)vec->data)[index].text);
         break;
     case TOKEN:
@@ -271,6 +280,9 @@ void _put(Vector vec, size_t index, void *value)
         break;
     case HASHNODE:
         ((HashNode)vec->data)[index] = *((HashNode)value);
+        break;
+    case SYMBOLNODE:
+        ((SymbolNode)vec->data)[index] = *((SymbolNode)value);
         break;
     case VECTOR:
         ((Vector)vec->data)[index] = *((Vector)value);
@@ -308,6 +320,9 @@ void *_get(Vector vec, size_t ind)
         break;
     case HASHNODE:
         value = &(((HashNode)(vec->data))[ind]);
+        break;
+    case SYMBOLNODE:
+        value = &(((SymbolNode)(vec->data))[ind]);
         break;
     case VECTOR:
         value = &(((Vector)(vec->data))[ind]);

@@ -21,6 +21,7 @@ enum DATATYPE
     CHAR_PTR,
     TOKEN,
     HASHNODE,
+    SYMBOLNODE,
     VECTOR
 };
 
@@ -32,6 +33,7 @@ static char *data_type_map[] = {
     "CHAR_PTR",
     "TOKEN",
     "HASHNODE",
+    "SYMBOLNODE",
     "VECTOR",
 };
 

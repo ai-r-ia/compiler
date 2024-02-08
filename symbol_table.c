@@ -1,13 +1,20 @@
 #include "whole_include.h"
 
 // initialize symbol_node
-void init_symbol(String lexeme, Token token);
+SymbolNode init_symbol(String lexeme, Token token)
+{
+    SymbolNode symnode = (SymbolNode)malloc(sizeof(symbol_node));
+    symnode->lexeme = lexeme;
+    symnode->token = token;
 
-// initialize symbol_node
-void init_symbol_table();
+    return symnode;
+}
 
 // insert entry into symbol table
-void insert(String lexeme, Token token);
+void insert(Vector vec, String lexeme, Token token){
+    SymbolNode symnode = init_symbol(lexeme, token);
+    push_back(vec, symnode);
+}
 
 // lookup
 SymbolNode search(String lexeme);

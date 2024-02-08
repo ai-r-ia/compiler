@@ -11,6 +11,7 @@ void test_vector_int_ptr_all_operations();
 void test_vector_string_all_operations();
 void test_vector_token_all_operations();
 void test_vector_hash_node_all_operations();
+void test_vector_symbol_node_all_operations();
 void test_vector_of_vector_all_operations();
 
 void test_vector();

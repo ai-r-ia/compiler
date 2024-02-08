@@ -15,10 +15,10 @@ struct symbol_node
 } symbol_node;
 
 // initialize symbol_node
-void init_symbol(String lexeme, Token token);
+SymbolNode init_symbol(String lexeme, Token token);
 
 // insert entry into symbol table
-void insert(String lexeme, Token token);
+void insert(Vector vec, String lexeme, Token token);
 
 // lookup
 SymbolNode search(String lexeme);
