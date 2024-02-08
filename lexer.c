@@ -385,6 +385,7 @@ Token get_tk_fieldid(Lexer lexer, String lexeme)
         flag = true;
     }
     append(lexeme, lexer->curr_char);
+    retract(lexer, lexeme);
 
     int keyword = getKeyword(lexeme);
     if (keyword != -1)
@@ -392,7 +393,6 @@ Token get_tk_fieldid(Lexer lexer, String lexeme)
         return init_Token(keyword_token_value[keyword], lexeme, lexeme->text, lexer->lineNumber, lexer->charNumber);
     }
 
-    retract(lexer, lexeme);
     return error_function(lexer, lexeme, TK_FIELDID, true);
 }
 
