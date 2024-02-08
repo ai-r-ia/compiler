@@ -679,7 +679,14 @@ Token get_symbol_tk(Lexer lexer)
 
     // NOTE: to be removed, comments needn't be tokenized, simply skipped
     if (lexer->curr_char == '%')
-        return init_Token(TK_COMMENT, lexeme, lexeme->text, lexer->lineNumber, lexer->charNumber);
+    {
+        while (lexer->curr_char != '\n')
+        {
+            getNextCharacter(lexer);
+            append(lexeme, lexer->curr_char);
+        }
+    }
+    return init_Token(TK_COMMENT, lexeme, lexeme->text, lexer->lineNumber, lexer->charNumber);
 
     if (lexer->curr_char == '[')
         return init_Token(TK_SQL, lexeme, lexeme->text, lexer->lineNumber, lexer->charNumber);
