@@ -20,7 +20,7 @@ Token copy_token(Token destination, Token source)
 {
     if (source == NULL)
     {
-        destination == NULL;
+        destination = NULL;
         return NULL;
     }
 
