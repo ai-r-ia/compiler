@@ -55,11 +55,11 @@ void insert_item(HashTable tb, String key, int value)
     HashNode nd = _find(row, key);
     if (nd)
         nd->value = node->value;
-    else{
+    else
+    {
         push_back(row, node);
         tb->count++;
     }
-
 }
 
 int get_value(HashTable tb, String key)

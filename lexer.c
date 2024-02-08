@@ -330,7 +330,7 @@ Token get_char_tk(Lexer lexer)
     }
 
     // error --> should never occur here
-    retract(lexer, lexeme);
+    // retract(lexer, lexeme);
     return init_Token(TK_ILLEGAL, lexeme, lexeme->text, lexer->lineNumber, lexer->charNumber);
 }
 
