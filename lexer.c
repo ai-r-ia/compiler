@@ -470,26 +470,23 @@ Token get_tk_funid1(Lexer lexer, String lexeme)
         flag = true;
     }
 
-    if (isDelimiter(lexer->curr_char) || isSymbol(lexer->curr_char) || !isDigit_0_9(lexer->curr_char) || (lexer->curr_char == '_') || lexer->curr_char == '#' || isLetter_A2Z(lexer->curr_char))
+    append(lexeme, lexer->curr_char);
+
+    if (isDigit_0_9(lexer->curr_char))
+    {
+        return get_tk_funid3(lexer, lexeme);
+    }
+
+    retract(lexer, lexeme);
+
+    if (!isDigit_0_9(lexer->curr_char))
     {
         int keyword = getKeyword(lexeme);
         if (keyword_token_value[keyword] == 17)
         {
-            append(lexeme, lexer->curr_char);
-            retract(lexer, lexeme);
             return init_Token(TK_MAIN, lexeme, lexeme->text, lexer->lineNumber, lexer->charNumber);
         }
     }
-
-    if (isDigit_0_9(lexer->curr_char))
-    {
-        append(lexeme, lexer->curr_char);
-        return get_tk_funid3(lexer, lexeme);
-        ; // ret fn 12
-    }
-
-    append(lexeme, lexer->curr_char);
-    retract(lexer, lexeme);
     return error_function(lexer, lexeme, TK_FUNID, true);
 }
 
