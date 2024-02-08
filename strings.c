@@ -166,7 +166,7 @@ void pop_str(String str)
     if (str->text == NULL || str->memory_size == 0)
         return;
 
-    str->text[str->size] = '\0';
+    str->text[str->size-1] = '\0';
     str->size--;
     return;
 }

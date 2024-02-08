@@ -26,6 +26,16 @@ Lexer init_lexer(char *filename)
     return lexer;
 }
 
+// delimiter or comment check
+bool isDelimiter(char value)
+{
+    return (value == ' ') ||
+           (value == '\t') ||
+           (value == '\n') ||
+           (value == '\0') ||
+           (value == '%');
+}
+
 // Checks whether a character is [a-z] | [A-Z]
 bool isLetter_a2z_A2Z(char value)
 {
@@ -109,17 +119,18 @@ Token error_function(Lexer lexer, String lexeme, enum TOKEN_TYPE type, bool othe
         value = lexeme->text;
         break;
     default:
-        error("No coherent type provided to 'error_function'.");
+
+        printf("No coherent type provided to 'error_function'.");
         break;
     }
 
-    if ((lexer->curr_char == ' ') || (lexer->curr_char == '\t') || (lexer->curr_char == '\n') || isSymbol(lexer->curr_char) || (lexer->curr_char == '\0') || others)
+    if (isDelimiter(lexer->curr_char) || isSymbol(lexer->curr_char) || others)
     {
         retract(lexer, lexeme);
         return init_Token(type, lexeme, value, lexer->lineNumber, lexer->charNumber);
     }
 
-    while (((lexer->curr_char != ' ') && (lexer->curr_char != '\t') && (lexer->curr_char != '\n') && (lexer->curr_char != '\0') && (!isSymbol(lexer->curr_char))))
+    while (((lexer->curr_char != ' ') && (lexer->curr_char != '\t') && (lexer->curr_char != '\n') && (lexer->curr_char != '\0') && (lexer->curr_char != '%') && (!isSymbol(lexer->curr_char))))
     {
         append(lexeme, lexer->curr_char);
         getNextCharacter(lexer);
@@ -195,14 +206,14 @@ Token get_numeric_tk(Lexer lexer)
         append(lexeme, lexer->curr_char);
         getNextCharacter(lexer);
     }
+    append(lexeme, lexer->curr_char);
 
     if (lexer->curr_char == '.')
     {
-        append(lexeme, lexer->curr_char);
         return get_tk_rnum1(lexer, lexeme);
     }
 
-    retract(lexer, lexeme);
+    // retract(lexer, lexeme);
     return error_function(lexer, lexeme, TK_NUM, true);
 }
 
@@ -210,9 +221,9 @@ Token get_tk_rnum1(Lexer lexer, String lexeme)
 {
 
     getNextCharacter(lexer);
+    append(lexeme, lexer->curr_char);
     if (isDigit_0_9(lexer->curr_char))
     {
-        append(lexeme, lexer->curr_char);
         return get_tk_rnum2(lexer, lexeme);
     }
     // error
@@ -224,9 +235,9 @@ Token get_tk_rnum2(Lexer lexer, String lexeme)
 {
 
     getNextCharacter(lexer);
+    append(lexeme, lexer->curr_char);
     if (isDigit_0_9(lexer->curr_char))
     {
-        append(lexeme, lexer->curr_char);
         return get_tk_rnum3(lexer, lexeme);
     }
     // error
@@ -237,9 +248,10 @@ Token get_tk_rnum3(Lexer lexer, String lexeme)
 {
 
     getNextCharacter(lexer);
+    append(lexeme, lexer->curr_char);
+
     if (lexer->curr_char == 'E')
     {
-        append(lexeme, lexer->curr_char);
         return get_tk_rnum4(lexer, lexeme);
     }
     // error
@@ -250,14 +262,13 @@ Token get_tk_rnum4(Lexer lexer, String lexeme)
 {
 
     getNextCharacter(lexer);
+    append(lexeme, lexer->curr_char);
     if ((lexer->curr_char == '+') || (lexer->curr_char == '-'))
     {
-        append(lexeme, lexer->curr_char);
         return get_tk_rnum5(lexer, lexeme);
     }
     else if (isDigit_0_9(lexer->curr_char))
     {
-        append(lexeme, lexer->curr_char);
         return get_tk_rnum6(lexer, lexeme);
     }
     // error
@@ -268,14 +279,13 @@ Token get_tk_rnum5(Lexer lexer, String lexeme)
 {
 
     getNextCharacter(lexer);
+    append(lexeme, lexer->curr_char);
     if (isDigit_0_9(lexer->curr_char))
     {
-        append(lexeme, lexer->curr_char);
         return get_tk_rnum6(lexer, lexeme);
     }
 
     // error
-    retract(lexer, lexeme);
     return error_function(lexer, lexeme, TK_ILLEGAL, true);
 }
 
@@ -283,10 +293,10 @@ Token get_tk_rnum6(Lexer lexer, String lexeme)
 {
 
     getNextCharacter(lexer);
+    getNextCharacter(lexer);
     if (isDigit_0_9(lexer->curr_char))
     {
         append(lexeme, lexer->curr_char);
-        getNextCharacter(lexer);
         return error_function(lexer, lexeme, TK_RNUM, true);
     }
     // error
@@ -378,9 +388,13 @@ Token get_tk_fieldid(Lexer lexer, String lexeme)
         getNextCharacter(lexer);
         flag = true;
     }
+    append(lexeme, lexer->curr_char);
 
-    if ((lexer->curr_char == ' ') || (lexer->curr_char == '\t') || (lexer->curr_char == '\n') || isSymbol(lexer->curr_char) || (lexer->curr_char == '\0'))
+    bool others = false;
+
+    if (isDelimiter(lexer->curr_char) || isSymbol(lexer->curr_char) || isDigit_0_9(lexer->curr_char))
     {
+        others = true;
         int keyword = getKeyword(lexeme);
         if (keyword != -1)
         {
@@ -389,7 +403,7 @@ Token get_tk_fieldid(Lexer lexer, String lexeme)
         }
     }
 
-    return error_function(lexer, lexeme, TK_FIELDID, true);
+    return error_function(lexer, lexeme, TK_FIELDID, others);
 }
 
 /*
@@ -739,7 +753,7 @@ Token tokenize(Lexer lexer)
 
     if (lexer->curr_char == '%')
     {
-        while (lexer->curr_char != '\n')
+        while (lexer->curr_char != '\n' || lexer->curr_char == '\0')
         {
             getNextCharacter(lexer);
             // append(lexeme, lexer->curr_char);

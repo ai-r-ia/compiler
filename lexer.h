@@ -41,6 +41,9 @@ void retract(Lexer lexer, String lexeme);
 // Gets the lex token from file
 Token tokenize(Lexer lexer);
 
+// check delimiter or comment
+bool isDelimiter(char value);
+
 // Checks whether a character is [a-z] | [A-Z]
 bool isLetter_a2z_A2Z(char value);
 
