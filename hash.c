@@ -21,6 +21,7 @@ HashNode init_node(String key, int value)
     HashNode node = (HashNode)malloc(sizeof(hash_node));
     node->key = key;
     node->value = value;
+    return node;
 }
 
 int get_hash(String str)
@@ -31,7 +32,7 @@ int get_hash(String str)
     {
         pref_hash = (pref_hash * 53 + (str->text[i] - 'a' + 1)) % mod;
     }
-    return abs(pref_hash);
+    return llabs(pref_hash);
 }
 
 HashNode _find(Vector vec, String key)

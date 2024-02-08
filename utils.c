@@ -9,13 +9,15 @@ char rand_char()
 
 int *rand_int_ptr()
 {
-    int rand_i = rand();
+    int static rand_i;
+    rand_i = rand();
     return &rand_i;
 }
 
 char *rand_char_ptr()
 {
-    char rand_c = rand_char();
+    char static rand_c;
+    rand_c = rand_char();
     return &rand_c;
 }
 
@@ -83,4 +85,5 @@ void *get_randomizer(enum DATATYPE type)
     default:
         break;
     }
+    return 0;
 }
