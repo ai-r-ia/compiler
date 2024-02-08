@@ -14,18 +14,8 @@ struct symbol_node
     Token token; // token
 } symbol_node;
 
-typedef struct symbol_table *SymbolTable;
-struct symbol_table
-{
-    Vector items; // vector of symbol_nodes
-    int count;
-} symbol_table;
-
 // initialize symbol_node
 void init_symbol(String lexeme, Token token);
-
-// initialize symbol_node
-void init_symbol_table();
 
 // insert entry into symbol table
 void insert(String lexeme, Token token);
