@@ -48,6 +48,12 @@ bool isLetter_a2z(char value)
     return (value >= 'a' && value <= 'z');
 }
 
+//[A-Z]
+bool isLetter_A2Z(char value)
+{
+    return (value >= 'A' && value <= 'Z');
+}
+
 // [b-d]
 bool isLetter_b2d(char value)
 {
@@ -407,7 +413,7 @@ Token get_tk_fieldid(Lexer lexer, String lexeme)
 
     bool others = true;
 
-    if (isDelimiter(lexer->curr_char) || isSymbol(lexer->curr_char) || isDigit_0_9(lexer->curr_char) || lexer->curr_char == '_' || lexer->curr_char == '#')
+    if (isDelimiter(lexer->curr_char) || isSymbol(lexer->curr_char) || isDigit_0_9(lexer->curr_char) || lexer->curr_char == '_' || lexer->curr_char == '#' || isLetter_A2Z(lexer->curr_char))
     {
         others = false;
         retract(lexer, lexeme);
@@ -420,7 +426,7 @@ Token get_tk_fieldid(Lexer lexer, String lexeme)
 
     if (others)
         retract(lexer, lexeme);
-    return error_function(lexer, lexeme, TK_FIELDID, others);
+    return error_function(lexer, lexeme, TK_FIELDID, true);
 }
 
 /*
@@ -445,7 +451,6 @@ Token get_tk_id2(Lexer lexer, String lexeme)
     }
 
     append(lexeme, lexer->curr_char);
-
     retract(lexer, lexeme);
     return error_function(lexer, lexeme, TK_ID, true);
 }
@@ -500,7 +505,7 @@ Token get_tk_funid1(Lexer lexer, String lexeme)
         flag = true;
     }
 
-    if (isDelimiter(lexer->curr_char) || isSymbol(lexer->curr_char) || !isDigit_0_9(lexer->curr_char) || (lexer->curr_char == '_') || lexer->curr_char == '#')
+    if (isDelimiter(lexer->curr_char) || isSymbol(lexer->curr_char) || !isDigit_0_9(lexer->curr_char) || (lexer->curr_char == '_') || lexer->curr_char == '#' || isLetter_A2Z(lexer->curr_char))
     {
         int keyword = getKeyword(lexeme);
         if (keyword_token_value[keyword] == 17)

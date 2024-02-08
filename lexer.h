@@ -50,6 +50,9 @@ bool isLetter_a2z_A2Z(char value);
 //[a-z]
 bool isLetter_a2z(char value);
 
+//[A-Z]
+bool isLetter_A2Z(char value);
+
 // [b-d]
 bool isLetter_b2d(char value);
 
