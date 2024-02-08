@@ -126,7 +126,7 @@ Token error_function(Lexer lexer, String lexeme, enum TOKEN_TYPE type, bool othe
 
     if (isDelimiter(lexer->curr_char) || isSymbol(lexer->curr_char) || others)
     {
-        retract(lexer, lexeme);
+        // retract(lexer, lexeme);
         return init_Token(type, lexeme, value, lexer->lineNumber, lexer->charNumber);
     }
 
@@ -172,6 +172,15 @@ char getNextCharacter(Lexer lexer)
         lexer->prevLineChar = lexer->curr_char;
         lexer->charNumber = 1;
     }
+
+    // if (res == '\0')
+    // {
+    //     printf("eof");
+    // }
+    // if (res != '\0')
+    // {
+    //     lexer->curr_char = res;
+    // }
     return lexer->curr_char = res;
 }
 
@@ -213,7 +222,7 @@ Token get_numeric_tk(Lexer lexer)
         return get_tk_rnum1(lexer, lexeme);
     }
 
-    // retract(lexer, lexeme);
+    retract(lexer, lexeme);
     return error_function(lexer, lexeme, TK_NUM, true);
 }
 
@@ -228,6 +237,7 @@ Token get_tk_rnum1(Lexer lexer, String lexeme)
     }
     // error
     retract(lexer, lexeme);
+    retract(lexer, lexeme);
     return error_function(lexer, lexeme, TK_NUM, true);
 }
 
@@ -241,6 +251,7 @@ Token get_tk_rnum2(Lexer lexer, String lexeme)
         return get_tk_rnum3(lexer, lexeme);
     }
     // error
+    retract(lexer, lexeme);
     return error_function(lexer, lexeme, TK_ILLEGAL, true);
 }
 
@@ -255,6 +266,7 @@ Token get_tk_rnum3(Lexer lexer, String lexeme)
         return get_tk_rnum4(lexer, lexeme);
     }
     // error
+    retract(lexer, lexeme);
     return error_function(lexer, lexeme, TK_RNUM, true);
 }
 
@@ -272,6 +284,7 @@ Token get_tk_rnum4(Lexer lexer, String lexeme)
         return get_tk_rnum6(lexer, lexeme);
     }
     // error
+    retract(lexer, lexeme);
     return error_function(lexer, lexeme, TK_ILLEGAL, true);
 }
 
@@ -286,13 +299,14 @@ Token get_tk_rnum5(Lexer lexer, String lexeme)
     }
 
     // error
+    retract(lexer, lexeme);
     return error_function(lexer, lexeme, TK_ILLEGAL, true);
 }
 
 Token get_tk_rnum6(Lexer lexer, String lexeme)
 {
 
-    getNextCharacter(lexer);
+    // getNextCharacter(lexer);
     getNextCharacter(lexer);
     if (isDigit_0_9(lexer->curr_char))
     {
@@ -300,6 +314,7 @@ Token get_tk_rnum6(Lexer lexer, String lexeme)
         return error_function(lexer, lexeme, TK_RNUM, true);
     }
     // error
+    retract(lexer, lexeme);
     return error_function(lexer, lexeme, TK_ILLEGAL, true);
 }
 
@@ -392,17 +407,18 @@ Token get_tk_fieldid(Lexer lexer, String lexeme)
 
     bool others = false;
 
-    if (isDelimiter(lexer->curr_char) || isSymbol(lexer->curr_char) || isDigit_0_9(lexer->curr_char))
+    if (isDelimiter(lexer->curr_char) || isSymbol(lexer->curr_char) || isDigit_0_9(lexer->curr_char) || lexer->curr_char == '_' || lexer->curr_char == '#')
     {
         others = true;
+        retract(lexer, lexeme);
         int keyword = getKeyword(lexeme);
         if (keyword != -1)
         {
-            retract(lexer, lexeme);
             return init_Token(keyword_token_value[keyword], lexeme, lexeme->text, lexer->lineNumber, lexer->charNumber);
         }
     }
 
+    // retract(lexer, lexeme);
     return error_function(lexer, lexeme, TK_FIELDID, others);
 }
 
@@ -427,7 +443,10 @@ Token get_tk_id2(Lexer lexer, String lexeme)
         }
     }
 
-    return error_function(lexer, lexeme, TK_FIELDID, true);
+    append(lexeme, lexer->curr_char);
+
+    retract(lexer, lexeme);
+    return error_function(lexer, lexeme, TK_ID, true);
 }
 
 /*
@@ -455,9 +474,9 @@ Token get_tk_funid0(Lexer lexer, String lexeme)
 {
 
     getNextCharacter(lexer);
+    append(lexeme, lexer->curr_char);
     if (isLetter_a2z_A2Z(lexer->curr_char))
     {
-        append(lexeme, lexer->curr_char);
         return get_tk_funid1(lexer, lexeme); // ret fn 11
     }
     // error
@@ -475,27 +494,31 @@ Token get_tk_funid1(Lexer lexer, String lexeme)
         {
             append(lexeme, lexer->curr_char);
         }
-
         getNextCharacter(lexer);
 
-        if (isDigit_0_9(lexer->curr_char))
-        {
-            append(lexeme, lexer->curr_char);
-            return get_tk_funid3(lexer, lexeme);
-            ; // ret fn 12
-        }
         flag = true;
     }
-    if ((lexer->curr_char == ' ') || (lexer->curr_char == '\t') || (lexer->curr_char == '\n') || isSymbol(lexer->curr_char) || (lexer->curr_char == '\0'))
+
+    if (isDelimiter(lexer->curr_char) || isSymbol(lexer->curr_char) || !isDigit_0_9(lexer->curr_char) || (lexer->curr_char == '_') || lexer->curr_char == '#')
     {
         int keyword = getKeyword(lexeme);
         if (keyword_token_value[keyword] == 17)
         {
+            append(lexeme, lexer->curr_char);
             retract(lexer, lexeme);
             return init_Token(TK_MAIN, lexeme, lexeme->text, lexer->lineNumber, lexer->charNumber);
         }
     }
 
+    if (isDigit_0_9(lexer->curr_char))
+    {
+        append(lexeme, lexer->curr_char);
+        return get_tk_funid3(lexer, lexeme);
+        ; // ret fn 12
+    }
+
+    append(lexeme, lexer->curr_char);
+    retract(lexer, lexeme);
     return error_function(lexer, lexeme, TK_FUNID, true);
 }
 
@@ -513,6 +536,8 @@ Token get_tk_funid3(Lexer lexer, String lexeme)
         flag = true;
     }
 
+    append(lexeme, lexer->curr_char);
+    retract(lexer, lexeme);
     return error_function(lexer, lexeme, TK_FUNID, true);
 }
 
@@ -520,12 +545,13 @@ Token get_tk_ruid0(Lexer lexer, String lexeme)
 {
 
     getNextCharacter(lexer);
+    append(lexeme, lexer->curr_char);
     if (isLetter_a2z(lexer->curr_char))
     {
-        append(lexeme, lexer->curr_char);
         return get_tk_ruid1(lexer, lexeme); // ret fn 15
     }
     // error
+    retract(lexer, lexeme);
     return init_Token(TK_ILLEGAL, lexeme, lexeme->text, lexer->lineNumber, lexer->charNumber);
 }
 
@@ -542,8 +568,9 @@ Token get_tk_ruid1(Lexer lexer, String lexeme)
         getNextCharacter(lexer);
         flag = true;
     }
-
-    return error_function(lexer, lexeme, TK_RUID, false);
+    append(lexeme, lexer->curr_char);
+    retract(lexer, lexeme);
+    return error_function(lexer, lexeme, TK_RUID, true);
 }
 
 Token get_symbol_tk(Lexer lexer)
@@ -577,6 +604,7 @@ Token get_symbol_tk(Lexer lexer)
             }
 
             // error
+            append(lexeme, lexer->curr_char);
             retract(lexer, lexeme);
 
             return init_Token(TK_ILLEGAL, lexeme, lexeme->text, lexer->lineNumber, lexer->charNumber);
@@ -587,6 +615,7 @@ Token get_symbol_tk(Lexer lexer)
             return init_Token(TK_LE, lexeme, lexeme->text, lexer->lineNumber, lexer->charNumber);
         }
 
+        append(lexeme, lexer->curr_char);
         retract(lexer, lexeme);
 
         return init_Token(TK_LT, lexeme, lexeme->text, lexer->lineNumber, lexer->charNumber);
@@ -600,6 +629,8 @@ Token get_symbol_tk(Lexer lexer)
             append(lexeme, lexer->curr_char);
             return init_Token(TK_GE, lexeme, lexeme->text, lexer->lineNumber, lexer->charNumber);
         }
+
+        append(lexeme, lexer->curr_char);
         retract(lexer, lexeme);
 
         return init_Token(TK_GT, lexeme, lexeme->text, lexer->lineNumber, lexer->charNumber);
@@ -621,12 +652,14 @@ Token get_symbol_tk(Lexer lexer)
             }
 
             // error
+            append(lexeme, lexer->curr_char);
             retract(lexer, lexeme);
 
             return init_Token(TK_ILLEGAL, lexeme, lexeme->text, lexer->lineNumber, lexer->charNumber);
         }
 
         // error
+        append(lexeme, lexer->curr_char);
         retract(lexer, lexeme);
 
         return init_Token(TK_ILLEGAL, lexeme, lexeme->text, lexer->lineNumber, lexer->charNumber);
@@ -648,12 +681,14 @@ Token get_symbol_tk(Lexer lexer)
             }
 
             // error
+            append(lexeme, lexer->curr_char);
             retract(lexer, lexeme);
 
             return init_Token(TK_ILLEGAL, lexeme, lexeme->text, lexer->lineNumber, lexer->charNumber);
         }
 
         // error
+        append(lexeme, lexer->curr_char);
         retract(lexer, lexeme);
 
         return init_Token(TK_ILLEGAL, lexeme, lexeme->text, lexer->lineNumber, lexer->charNumber);
@@ -670,6 +705,7 @@ Token get_symbol_tk(Lexer lexer)
         }
 
         // error
+        append(lexeme, lexer->curr_char);
         retract(lexer, lexeme);
 
         return init_Token(TK_ILLEGAL, lexeme, lexeme->text, lexer->lineNumber, lexer->charNumber);
@@ -686,6 +722,7 @@ Token get_symbol_tk(Lexer lexer)
         }
 
         // error
+        append(lexeme, lexer->curr_char);
         retract(lexer, lexeme);
 
         return init_Token(TK_ILLEGAL, lexeme, lexeme->text, lexer->lineNumber, lexer->charNumber);
@@ -731,6 +768,7 @@ Token get_symbol_tk(Lexer lexer)
         return init_Token(TK_NOT, lexeme, lexeme->text, lexer->lineNumber, lexer->charNumber);
 
     // error --> should never occur here
+    append(lexeme, lexer->curr_char);
     retract(lexer, lexeme);
 
     return init_Token(TK_ILLEGAL, lexeme, lexeme->text, lexer->lineNumber, lexer->charNumber);
@@ -823,7 +861,8 @@ void _readFile(Lexer lexer)
 
     // error handling
     // if (feof(lexer->fp))
-    //     _closeFile(lexer);  //DEBUG:
+    //     buff[fr+1] = '-1';
+        // _closeFile(lexer);  //DEBUG:
     if (fr != BUFFER_SIZE)
     {
         // file reading error
