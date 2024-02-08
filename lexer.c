@@ -858,6 +858,7 @@ void _readFile(Lexer lexer)
         buff = lexer->buff2;
 
     memset(buff, '\0', BUFFER_SIZE + 1);
+    buff[BUFFER_SIZE] = '-1';
     fr = fread(buff, 1, BUFFER_SIZE, lexer->fp);
 
     // error handling

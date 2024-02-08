@@ -14,5 +14,6 @@
 #include "lexical_token.h"
 #include "hash.h"
 #include "lexer.h"
+#include "symbol_table.h"
 
 #endif
