@@ -417,11 +417,6 @@ Token get_tk_id2(Lexer lexer, String lexeme)
     return error_function(lexer, lexeme, TK_ID, true);
 }
 
-/*
-    This function handles state 8 of character-based tokens.
-    If the current character is a letter in the range [a-z], it transitions to state 11.
-    Otherwise, it is considered an illegal character.
-*/
 Token get_tk_id3(Lexer lexer, String lexeme)
 {
 
@@ -567,6 +562,7 @@ Token get_symbol_tk(Lexer lexer)
                 }
 
                 // error
+                append(lexeme, lexer->curr_char);
                 retract(lexer, lexeme);
                 return init_Token(TK_ILLEGAL, lexeme, lexeme->text, lexer->lineNumber, lexer->charNumber);
             }
@@ -766,9 +762,6 @@ Token tokenize(Lexer lexer)
         }
 
         return tokenize(lexer);
-        // retract(lexer, lexeme);
-        // pop_str(lexeme);
-        // return init_Token(TK_COMMENT, lexeme, lexeme->text, lexer->lineNumber, lexer->charNumber);
     }
 
     // initial state for letter based tokens
