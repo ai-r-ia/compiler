@@ -324,20 +324,6 @@ Token get_tk_rnum6(Lexer lexer, String lexeme)
     return error_function(lexer, lexeme, TK_ILLEGAL, true);
 }
 
-/*
-    This function handles character-based tokens.
-    It checks the current character and determines the appropriate state to transition to.
-
-    There are 4 states in this function:
-    State 4: If the current character is in the range [b-d]
-    State 5: If the current character is 'a' or in the range [e-z], or any letter in the range [a-z] and checks for a keyword
-    State 10: If the current character is '_'
-    State 14: If the current character is '#'
-
-    If the current character is not in the specified ranges, it is considered an illegal character.
-    If the current character is '_', it transitions to state 10.
-    If the current character is '#', it transitions to state 14.
-*/
 Token get_char_tk(Lexer lexer)
 {
     String lexeme = init_str();
@@ -365,12 +351,6 @@ Token get_char_tk(Lexer lexer)
     return init_Token(TK_ILLEGAL, lexeme, lexeme->text, lexer->lineNumber, lexer->charNumber);
 }
 
-/*
-    This function handles state 4 of character-based tokens.
-    If the current character is in the range [b-d], it transitions to state 7 or state 5.
-    If the current character is a letter in the range [a-z], it transitions to state 5.
-    Otherwise, it is considered an illegal character.
-*/
 Token after_b2d(Lexer lexer, String lexeme)
 {
 
@@ -391,11 +371,6 @@ Token after_b2d(Lexer lexer, String lexeme)
     return init_Token(TK_ILLEGAL, lexeme, lexeme->text, lexer->lineNumber, lexer->charNumber);
 }
 
-/*
-    This function handles state 5 of character-based tokens.
-    If the current character is a letter in the range [a-z], it transitions to state 5.
-    Otherwise, it is considered an illegal character.
-*/
 Token get_tk_fieldid(Lexer lexer, String lexeme)
 {
     bool flag = false;
@@ -416,16 +391,11 @@ Token get_tk_fieldid(Lexer lexer, String lexeme)
     {
         return init_Token(keyword_token_value[keyword], lexeme, lexeme->text, lexer->lineNumber, lexer->charNumber);
     }
-    
+
     retract(lexer, lexeme);
     return error_function(lexer, lexeme, TK_FIELDID, true);
 }
 
-/*
-    This function handles state 7 of character-based tokens.
-    If the current character is in the range [2-7], it transitions to state 8.
-    Otherwise, it is considered an illegal character.
-*/
 Token get_tk_id2(Lexer lexer, String lexeme)
 {
     getNextCharacter(lexer);
@@ -465,6 +435,9 @@ Token get_tk_id3(Lexer lexer, String lexeme)
         getNextCharacter(lexer);
         flag = true;
     }
+
+    append(lexeme, lexer->curr_char);
+    retract(lexer, lexeme);
     return error_function(lexer, lexeme, TK_ID, true);
 }
 
