@@ -677,17 +677,6 @@ Token get_symbol_tk(Lexer lexer)
         return init_Token(TK_ILLEGAL, lexeme, lexeme->text, lexer->lineNumber, lexer->charNumber);
     }
 
-    // NOTE: to be removed, comments needn't be tokenized, simply skipped
-    if (lexer->curr_char == '%')
-    {
-        while (lexer->curr_char != '\n')
-        {
-            getNextCharacter(lexer);
-            append(lexeme, lexer->curr_char);
-        }
-    }
-    return init_Token(TK_COMMENT, lexeme, lexeme->text, lexer->lineNumber, lexer->charNumber);
-
     if (lexer->curr_char == '[')
         return init_Token(TK_SQL, lexeme, lexeme->text, lexer->lineNumber, lexer->charNumber);
 
@@ -747,6 +736,21 @@ Token tokenize(Lexer lexer)
         _closeFile(lexer);
         return NULL; // TODO: check if tk_eof needed
     }
+
+    if (lexer->curr_char == '%')
+    {
+        while (lexer->curr_char != '\n')
+        {
+            getNextCharacter(lexer);
+            // append(lexeme, lexer->curr_char);
+        }
+
+        return tokenize(lexer);
+        // retract(lexer, lexeme);
+        // pop_str(lexeme);
+        // return init_Token(TK_COMMENT, lexeme, lexeme->text, lexer->lineNumber, lexer->charNumber);
+    }
+
     // initial state for letter based tokens
     if (isLetter_a2z(lexer->curr_char) || lexer->curr_char == '_' || lexer->curr_char == '#')
         return get_char_tk(lexer);
