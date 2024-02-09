@@ -3,8 +3,8 @@
 void test_lexer()
 {
     info("testing LEXER");
-    // Lexer lexer = init_lexer("test.txt");
-    Lexer lexer = init_lexer("test/test_char.txt");
+    Lexer lexer = init_lexer("test/test.txt");
+    // Lexer lexer = init_lexer("test/test_char.txt");
     // Lexer lexer = init_lexer("test_num.txt");
 
     Token tk = tokenize(lexer);
