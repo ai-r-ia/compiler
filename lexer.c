@@ -355,15 +355,14 @@ Token after_b2d(Lexer lexer, String lexeme)
 {
 
     getNextCharacter(lexer);
+    append(lexeme, lexer->curr_char);
 
     if (isDigit_2_7(lexer->curr_char))
     {
-        append(lexeme, lexer->curr_char);
         return get_tk_id2(lexer, lexeme); // ret fn 7
     }
     if (isLetter_a2z(lexer->curr_char))
     {
-        append(lexeme, lexer->curr_char);
         return get_tk_fieldid(lexer, lexeme);
     }
     // error
