@@ -121,6 +121,7 @@ Token error_function(Lexer lexer, String lexeme, enum TOKEN_TYPE type, bool othe
     case TK_FUNID:
     case TK_RUID:
     case TK_ILLEGAL:
+    case TK_LT:
         value = (char *)malloc(sizeof(char));
         value = lexeme->text;
         break;
@@ -570,8 +571,9 @@ Token get_symbol_tk(Lexer lexer)
             // error
             append(lexeme, lexer->curr_char);
             retract(lexer, lexeme);
+            retract(lexer, lexeme);
 
-            return init_Token(TK_ILLEGAL, lexeme, lexeme->text, lexer->lineNumber, lexer->charNumber);
+             return error_function(lexer, lexeme, TK_LT, true);
         }
         if (lexer->curr_char == '=')
         {

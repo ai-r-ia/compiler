@@ -1,7 +1,7 @@
 #include "whole_include.h"
 #include "test/test.h"
 
-int main(int argc, char** args)
+int main(char *args)
 {
     args = "test";
 
