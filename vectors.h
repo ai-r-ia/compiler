@@ -22,6 +22,7 @@ enum DATATYPE
     TOKEN,
     HASHNODE,
     SYMBOLNODE,
+    RULE,
     VECTOR
 };
 
@@ -34,6 +35,7 @@ static char *data_type_map[] = {
     "TOKEN",
     "HASHNODE",
     "SYMBOLNODE",
+    "RULE",
     "VECTOR",
 };
 
@@ -69,6 +71,8 @@ Vector copy_vector(Vector destination, Vector source);
 void clear(Vector vec);
 
 void *find(Vector vec, void *data);
+
+void printVector(Vector vector);
 
 // for internal workings
 

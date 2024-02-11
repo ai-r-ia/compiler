@@ -121,6 +121,7 @@ Token error_function(Lexer lexer, String lexeme, enum TOKEN_TYPE type, bool othe
     case TK_FUNID:
     case TK_RUID:
     case TK_ILLEGAL:
+    case TK_LT:
         value = (char *)malloc(sizeof(char));
         value = lexeme->text;
         break;
@@ -314,9 +315,9 @@ Token get_tk_rnum6(Lexer lexer, String lexeme)
 
     // getNextCharacter(lexer);
     getNextCharacter(lexer);
+    append(lexeme, lexer->curr_char);
     if (isDigit_0_9(lexer->curr_char))
     {
-        append(lexeme, lexer->curr_char);
         return error_function(lexer, lexeme, TK_RNUM, true);
     }
     // error
@@ -358,13 +359,10 @@ Token after_b2d(Lexer lexer, String lexeme)
     append(lexeme, lexer->curr_char);
 
     if (isDigit_2_7(lexer->curr_char))
-    {
-        return get_tk_id2(lexer, lexeme); // ret fn 7
-    }
+        return get_tk_id2(lexer, lexeme);
     if (isLetter_a2z(lexer->curr_char))
-    {
         return get_tk_fieldid(lexer, lexeme);
-    }
+
     // error
     retract(lexer, lexeme);
     return init_Token(TK_ILLEGAL, lexeme, lexeme->text, lexer->lineNumber, lexer->charNumber);
@@ -569,8 +567,9 @@ Token get_symbol_tk(Lexer lexer)
             // error
             append(lexeme, lexer->curr_char);
             retract(lexer, lexeme);
+            retract(lexer, lexeme);
 
-            return init_Token(TK_ILLEGAL, lexeme, lexeme->text, lexer->lineNumber, lexer->charNumber);
+            return error_function(lexer, lexeme, TK_LT, true);
         }
         if (lexer->curr_char == '=')
         {

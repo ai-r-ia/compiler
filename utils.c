@@ -21,8 +21,7 @@ char *rand_char_ptr()
     return &rand_c;
 }
 
-
-    String rand_string()
+String rand_string()
 {
     String str = init_str();
     size_t len = rand() % 1000;
@@ -65,12 +64,18 @@ Vector rand_vector(enum DATATYPE type)
     return vec;
 }
 
-SymbolNode rand_symbol_node(){
+SymbolNode rand_symbol_node()
+{
     String lexeme = rand_string();
     Token tk = rand_token();
     return init_symbol(lexeme, tk);
 }
 
+Rule rand_rule()
+{
+    Token tk = rand_token();
+    return init_rule(tk);
+}
 
 void *get_randomizer(enum DATATYPE type)
 {

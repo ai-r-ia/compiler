@@ -146,6 +146,19 @@ void *find(Vector vec, void *data)
     return get(vec, index);
 }
 
+void printVector(Vector vec)
+{
+    // TODO: add cases
+    switch (vec->DATATYPE)
+    {
+    case TOKEN:
+        for (int i = 0; i < vec->size; i++)
+        {
+            printf("%s ", (((Token)get(vec, i))->lexeme_str)->text);
+        }
+    }
+}
+
 // for internal use (private)
 
 void _malloc_vector(Vector vec, enum DATATYPE datatype)
@@ -176,6 +189,9 @@ void _malloc_vector(Vector vec, enum DATATYPE datatype)
         break;
     case SYMBOLNODE:
         vec->data = (SymbolNode)malloc(sizeof(struct symbol_node) * VECTOR_INC);
+        break;
+    case RULE:
+        vec->data = (Rule)malloc(sizeof(struct rule) * VECTOR_INC);
         break;
     case VECTOR:
         vec->data = (Vector)malloc(sizeof(struct vector) * VECTOR_INC);
@@ -217,6 +233,9 @@ void _realloc_vector(Vector vec)
     case SYMBOLNODE:
         new_size = sizeof(struct symbol_node) * (vec->memory_size + VECTOR_INC);
         break;
+    case RULE:
+        new_size = sizeof(struct rule) * (vec->memory_size + VECTOR_INC);
+        break;
     case VECTOR:
         new_size = sizeof(struct vector) * (vec->memory_size + VECTOR_INC);
         break;
@@ -249,6 +268,8 @@ bool _checkEqual(void *a, void *b, enum DATATYPE DATATYPE)
         return ((HashNode)a)->value == ((HashNode)b)->value;
     case SYMBOLNODE:
         return (compare(((SymbolNode)a)->lexeme, ((SymbolNode)b)->lexeme));
+    case RULE:
+        return ((((Rule)a)->NT)->type == (((Rule)b)->NT)->type);
     case VECTOR:
         return checkEqual((Vector)a, (Vector)b);
     }
@@ -283,6 +304,9 @@ void _put(Vector vec, size_t index, void *value)
         break;
     case SYMBOLNODE:
         ((SymbolNode)vec->data)[index] = *((SymbolNode)value);
+        break;
+    case RULE:
+        ((Rule)vec->data)[index] = *((Rule)value);
         break;
     case VECTOR:
         ((Vector)vec->data)[index] = *((Vector)value);
@@ -323,6 +347,9 @@ void *_get(Vector vec, size_t ind)
         break;
     case SYMBOLNODE:
         value = &(((SymbolNode)(vec->data))[ind]);
+        break;
+    case RULE:
+        value = &(((Rule)(vec->data))[ind]);
         break;
     case VECTOR:
         value = &(((Vector)(vec->data))[ind]);
