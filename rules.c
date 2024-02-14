@@ -15,7 +15,11 @@ Grammar init_grammar(char *filename)
     grammar->rules = init_vector(RULE);
     _loadGrammar(grammar);
 
+    // printf("%s --> ", ((Rule)get(grammar->rules, 1))->NT->lexeme_str->text);
+    // printf("%s \n", ((Rule)get(grammar->rules, 1))->derivables);
+
     printRule(get(grammar->rules, 0));
+    printRule(get(grammar->rules, 1));
 
     return grammar;
 }
@@ -23,7 +27,11 @@ Grammar init_grammar(char *filename)
 void printRule(Rule rule)
 {
     printf("%s --> ", ((rule->NT)->lexeme_str)->text);
-    printVector(rule->derivables);
+    // printVector(rule->derivables);
+    for (int i = 0; i < rule->derivables->size; i++)
+    {
+        printf("%s ", (((Token)get(rule->derivables, i))->lexeme_str)->text);
+    }
     printf("\n");
 }
 
@@ -57,6 +65,7 @@ void _loadGrammar(Grammar grammar)
 
     // Loading rules
     int line_num = 0;
+    Vector allRules = init_vector(RULE);
     char *line = strtok(strdup(buff), "\n");
     while (line)
     {
@@ -73,7 +82,7 @@ void _loadGrammar(Grammar grammar)
 
         char *rest = line;
 
-        char *tokens = strtok_r(rest, " ", &rest);
+        char *tokens = strtok_r(rest, "~", &rest);
         int flag = 0;
         Rule rule;
         while (tokens)
@@ -82,9 +91,9 @@ void _loadGrammar(Grammar grammar)
             {
                 // printf("LHS %s \n", tokens);
 
-                String non_terminal = init_str();
-                append(non_terminal, tokens[0]);
-                int type = _getNonTerminal(non_terminal);
+                struct string non_terminal = *init_str();
+                append(&non_terminal, tokens[0]);
+                int type = _getNonTerminal(&non_terminal);
                 if (type == -1)
                 {
                     error("Non terminal type does not exist.");
@@ -99,17 +108,26 @@ void _loadGrammar(Grammar grammar)
             else
             {
                 // printf("RHS %s \n", tokens);
+                // char* tok2 = tokens;
+                // char * terms = strtok_r(tok2, "|", &tok2);
 
+                // while(terms){
+                //     terms = strtok_r(NULL, "\n", &tok2);
+                // }
                 Token terminal = init_Token(5, char_to_string(tokens), tokens, line_num, 1);
+
                 push_back(rule->derivables, terminal);
+                flag = 0;
             }
-            tokens = strtok(NULL, "-");
-            push_back(grammar->rules, rule);
+
+            tokens = strtok_r(NULL, "~", &rest);
+            push_back(allRules, rule);
         }
 
         line = strtok(NULL, "\n");
     }
 
+    grammar->rules = allRules;
     // error handling
     if (feof(fp))
     {

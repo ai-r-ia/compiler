@@ -1,5 +1,5 @@
-E - TA
-A - +TA | %              
-T - FB
-B - *FB | %
-F - id | (E)
+E~TA
+A~+TA | %              
+T~FB
+B~*FB | %
+F~id | (E)
