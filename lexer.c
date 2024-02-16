@@ -157,6 +157,7 @@ char getNextCharacter(Lexer lexer)
         lexer->fwd_ptr++;
         if (lexer->fwd_ptr >= lexer->BUFF_SIZE1)
         {
+            lexer->fwd_ptr = 0;
             lexer->BUFF_NUM = 2;
             _readFile(lexer); // will load new data into buff2
         }
@@ -167,6 +168,7 @@ char getNextCharacter(Lexer lexer)
         lexer->fwd_ptr++;
         if (lexer->fwd_ptr >= lexer->BUFF_SIZE2)
         {
+            lexer->fwd_ptr = 0;
             lexer->BUFF_NUM = 1;
             _readFile(lexer); // will load new data into buff1
         }
@@ -821,7 +823,7 @@ void _readFile(Lexer lexer)
 
     // error handling
     // if (feof(lexer->fp))
-    //     buff[fr+1] = '-1';
+    //     buff[fr] = -1;
     // _closeFile(lexer);  //DEBUG:
     if (fr != BUFFER_SIZE)
     {

@@ -154,7 +154,9 @@ void printVector(Vector vec)
     case TOKEN:
         for (int i = 0; i < vec->size; i++)
         {
-            printf("%s ", (((Token)get(vec, i))->lexeme_str)->text);
+            if(i!= vec->size-1) printf("%s,", (((Token)get(vec, i))->lexeme_str)->text);
+            else
+                printf("%s", (((Token)get(vec, i))->lexeme_str)->text);
         }
     // default:
     //     error("type not handled in printVector");

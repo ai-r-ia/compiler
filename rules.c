@@ -15,11 +15,10 @@ Grammar init_grammar(char *filename)
     grammar->rules = init_vector(RULE);
     _loadGrammar(grammar);
 
-    // printf("%s --> ", ((Rule)get(grammar->rules, 1))->NT->lexeme_str->text);
-    // printf("%s \n", ((Rule)get(grammar->rules, 1))->derivables);
-
-    printRule(get(grammar->rules, 0));
-    printRule(get(grammar->rules, 1));
+    for (int i = 0; i < grammar->rules->size; i++)
+    {
+        printRule(get(grammar->rules, i));
+    }
 
     return grammar;
 }
@@ -27,11 +26,7 @@ Grammar init_grammar(char *filename)
 void printRule(Rule rule)
 {
     printf("%s --> ", ((rule->NT)->lexeme_str)->text);
-    // printVector(rule->derivables);
-    for (int i = 0; i < rule->derivables->size; i++)
-    {
-        printf("%s ", (((Token)get(rule->derivables, i))->lexeme_str)->text);
-    }
+    printVector(rule->derivables);
     printf("\n");
 }
 
@@ -71,15 +66,6 @@ void _loadGrammar(Grammar grammar)
     {
         line_num++;
 
-        // char *copy = (char *)malloc(strlen(line) + 1);
-        // if (copy == NULL)
-        // {
-        //     printf("fucked up");
-        // }
-        // strcpy(copy, line);
-
-        // char *tokens = strtok_r(copy, "-");
-
         char *rest = line;
 
         char *tokens = strtok_r(rest, "~", &rest);
@@ -87,11 +73,12 @@ void _loadGrammar(Grammar grammar)
         Rule rule;
         while (tokens)
         {
+
             if (flag == 0)
             {
                 // printf("LHS %s \n", tokens);
-
                 struct string non_terminal = *init_str();
+
                 append(&non_terminal, tokens[0]);
                 int type = _getNonTerminal(&non_terminal);
                 if (type == -1)
@@ -108,22 +95,27 @@ void _loadGrammar(Grammar grammar)
             else
             {
                 // printf("RHS %s \n", tokens);
-                // char* tok2 = tokens;
-                // char * terms = strtok_r(tok2, "|", &tok2);
 
-                // while(terms){
-                //     terms = strtok_r(NULL, "\n", &tok2);
-                // }
-                Token terminal = init_Token(5, char_to_string(tokens), tokens, line_num, 1);
+                char *tok2 = tokens;
+                char *terms = strtok_r(tok2, "|", &tok2);
 
-                push_back(rule->derivables, terminal);
+                while (terms)
+                {
+
+                    Token terminal = init_Token(5, char_to_string(terms), terms, line_num, 1);
+                    push_back(rule->derivables, terminal);
+
+                    terms = strtok_r(NULL, "|", &tok2);
+                }
                 flag = 0;
             }
 
             tokens = strtok_r(NULL, "~", &rest);
-            push_back(allRules, rule);
         }
 
+        push_back(allRules, rule);
+
+        // printf("%s, %s \n", rule->NT->lexeme_str->text, ((Token)get(rule->derivables, 0))->lexeme_str->text);
         line = strtok(NULL, "\n");
     }
 
@@ -152,4 +144,37 @@ int _getNonTerminal(String nonTerminal)
         }
     }
     return -1;
+}
+
+void populateFirst(Grammar grammar)
+{
+    Vector allFirsts = init_vector(TOKEN);
+
+    for (int i = 0; i < grammar->rules->size; i++)
+    {
+        Vector ruleFirst = init_vector(TOKEN);
+        push_back(grammar->first, ruleFirst);
+    }
+
+    // non-terminals in beginning of rule
+    for (int i = 0; i < grammar->rules->size; i++)
+    {
+        Rule rule = get(grammar->rules, i);
+        Token tk = get(rule->derivables, 0);
+
+        while (tk->type != TERMINAL && tk->type!= EPSILON)
+        {
+            // tk = first(tk);
+        }
+
+        push_back((Vector)get(grammar->first,i),tk);
+    }
+
+    //terminals
+    for(int i = 0; i<grammar->rules->size; i++)
+    {
+        Rule rule = get(grammar->rules, i);
+        Token tk = get(rule->derivables, 0);
+
+    }
 }
