@@ -207,6 +207,7 @@ struct token
     size_t line_num;
     size_t char_num;
     void *lexeme_value; // to store value (post conversion) or use stoi/stof
+    char* error_msg;
 } token;
 
 bool checkIfArithmeticOperator(int lexicalToken);

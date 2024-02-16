@@ -13,6 +13,7 @@ Token init_Token(int kind, String valueString, void *value, int lineNumber, int 
     token->lexeme_str = valueString;
     token->type = kind;
     token->lexeme_value = value;
+    token->error_msg = (char*)malloc(sizeof(char)*300);
     return token;
 }
 

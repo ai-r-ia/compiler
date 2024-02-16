@@ -26,8 +26,15 @@ void test_lexer()
     for (int i = 0; i < vec->size; i++)
     {
         printf("Line No. %d  ", ((Token)get(vec, i))->line_num);
-        printf("Lexeme %s       ", (char *)(((Token)get(vec, i))->lexeme_str)->text);
-        printf("Token %s", token_type_list[((Token)get(vec, i))->type]);
+        if (((Token)get(vec, i))->type == 57)
+        {
+            printf("Error: %s", ((Token)get(vec, i))->error_msg);
+        }
+        else
+        {
+            printf("Lexeme %s       ", (char *)(((Token)get(vec, i))->lexeme_str)->text);
+            printf("Token %s", token_type_list[((Token)get(vec, i))->type]);
+        }
 
         printf("\n");
     }

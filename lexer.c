@@ -144,7 +144,9 @@ Token error_function(Lexer lexer, String lexeme, enum TOKEN_TYPE type, bool othe
     }
 
     retract(lexer, lexeme);
-    return init_Token(TK_ILLEGAL, lexeme, lexeme->text, lexer->lineNumber, lexer->charNumber);
+    Token ill_token = init_Token(TK_ILLEGAL, lexeme, lexeme->text, lexer->lineNumber, lexer->charNumber);
+    sprintf(ill_token->error_msg, "Unknown pattern <%s>", lexeme->text);
+    return ill_token;
 }
 
 char getNextCharacter(Lexer lexer)
@@ -261,7 +263,9 @@ Token get_tk_rnum2(Lexer lexer, String lexeme)
     }
     // error
     retract(lexer, lexeme);
-    return error_function(lexer, lexeme, TK_ILLEGAL, true);
+    Token ill_token = init_Token(TK_ILLEGAL, lexeme, lexeme->text, lexer->lineNumber, lexer->charNumber);
+    sprintf(ill_token->error_msg, "Unknown pattern <%s>", lexeme->text);
+    return ill_token;
 }
 
 Token get_tk_rnum3(Lexer lexer, String lexeme)
@@ -294,7 +298,9 @@ Token get_tk_rnum4(Lexer lexer, String lexeme)
     }
     // error
     retract(lexer, lexeme);
-    return error_function(lexer, lexeme, TK_ILLEGAL, true);
+    Token ill_token = init_Token(TK_ILLEGAL, lexeme, lexeme->text, lexer->lineNumber, lexer->charNumber);
+    sprintf(ill_token->error_msg, "Unknown pattern <%s>", lexeme->text);
+    return ill_token;
 }
 
 Token get_tk_rnum5(Lexer lexer, String lexeme)
@@ -309,7 +315,9 @@ Token get_tk_rnum5(Lexer lexer, String lexeme)
 
     // error
     retract(lexer, lexeme);
-    return error_function(lexer, lexeme, TK_ILLEGAL, true);
+    Token ill_token = init_Token(TK_ILLEGAL, lexeme, lexeme->text, lexer->lineNumber, lexer->charNumber);
+    sprintf(ill_token->error_msg, "Unknown pattern <%s>", lexeme->text);
+    return ill_token;
 }
 
 Token get_tk_rnum6(Lexer lexer, String lexeme)
@@ -324,7 +332,9 @@ Token get_tk_rnum6(Lexer lexer, String lexeme)
     }
     // error
     retract(lexer, lexeme);
-    return error_function(lexer, lexeme, TK_ILLEGAL, true);
+    Token ill_token = init_Token(TK_ILLEGAL, lexeme, lexeme->text, lexer->lineNumber, lexer->charNumber);
+    sprintf(ill_token->error_msg, "Unknown pattern <%s>", lexeme->text);
+    return ill_token;
 }
 
 Token get_char_tk(Lexer lexer)
@@ -351,7 +361,9 @@ Token get_char_tk(Lexer lexer)
 
     // error --> should never occur here
     // retract(lexer, lexeme);
-    return init_Token(TK_ILLEGAL, lexeme, lexeme->text, lexer->lineNumber, lexer->charNumber);
+    Token ill_token = init_Token(TK_ILLEGAL, lexeme, lexeme->text, lexer->lineNumber, lexer->charNumber);
+    sprintf(ill_token->error_msg, "Unknown Symbol <%s>", lexeme->text);
+    return ill_token;
 }
 
 Token after_b2d(Lexer lexer, String lexeme)
@@ -367,7 +379,9 @@ Token after_b2d(Lexer lexer, String lexeme)
 
     // error
     retract(lexer, lexeme);
-    return init_Token(TK_ILLEGAL, lexeme, lexeme->text, lexer->lineNumber, lexer->charNumber);
+    Token ill_token = init_Token(TK_ILLEGAL, lexeme, lexeme->text, lexer->lineNumber, lexer->charNumber);
+    sprintf(ill_token->error_msg, "Unknown pattern <%s>", lexeme->text);
+    return ill_token;
 }
 
 Token get_tk_fieldid(Lexer lexer, String lexeme)
@@ -432,6 +446,13 @@ Token get_tk_id3(Lexer lexer, String lexeme)
 
     append(lexeme, lexer->curr_char);
     retract(lexer, lexeme);
+
+    if (lexeme->size > 20)
+    {
+        Token ret = init_Token(TK_ILLEGAL, lexeme, lexeme->text, lexer->lineNumber, lexer->charNumber);
+        ret->error_msg = "Variable Identifier is longer than the prescribed length of 20 characters.";
+        return ret;
+    }
     return error_function(lexer, lexeme, TK_ID, true);
 }
 
@@ -446,7 +467,9 @@ Token get_tk_funid0(Lexer lexer, String lexeme)
     }
     // error
     retract(lexer, lexeme);
-    return init_Token(TK_ILLEGAL, lexeme, lexeme->text, lexer->lineNumber, lexer->charNumber);
+    Token ill_token = init_Token(TK_ILLEGAL, lexeme, lexeme->text, lexer->lineNumber, lexer->charNumber);
+    sprintf(ill_token->error_msg, "Unknown pattern <%s>", lexeme->text);
+    return ill_token;
 }
 
 Token get_tk_funid1(Lexer lexer, String lexeme)
@@ -481,6 +504,13 @@ Token get_tk_funid1(Lexer lexer, String lexeme)
             return init_Token(TK_MAIN, lexeme, lexeme->text, lexer->lineNumber, lexer->charNumber);
         }
     }
+
+    if (lexeme->size > 30)
+    {
+        Token ret = init_Token(TK_ILLEGAL, lexeme, lexeme->text, lexer->lineNumber, lexer->charNumber);
+        ret->error_msg = "Function Identifier is longer than the prescribed length of 30 characters.";
+        return ret;
+    }
     return error_function(lexer, lexeme, TK_FUNID, true);
 }
 
@@ -514,7 +544,9 @@ Token get_tk_ruid0(Lexer lexer, String lexeme)
     }
     // error
     retract(lexer, lexeme);
-    return init_Token(TK_ILLEGAL, lexeme, lexeme->text, lexer->lineNumber, lexer->charNumber);
+    Token ill_token = init_Token(TK_ILLEGAL, lexeme, lexeme->text, lexer->lineNumber, lexer->charNumber);
+    sprintf(ill_token->error_msg, "Unknown pattern <%s>", lexeme->text);
+    return ill_token;
 }
 
 Token get_tk_ruid1(Lexer lexer, String lexeme)
@@ -563,7 +595,9 @@ Token get_symbol_tk(Lexer lexer)
                 // error
                 append(lexeme, lexer->curr_char);
                 retract(lexer, lexeme);
-                return init_Token(TK_ILLEGAL, lexeme, lexeme->text, lexer->lineNumber, lexer->charNumber);
+                Token ill_token = init_Token(TK_ILLEGAL, lexeme, lexeme->text, lexer->lineNumber, lexer->charNumber);
+                sprintf(ill_token->error_msg, "Unknown pattern <%s>", lexeme->text);
+                return ill_token;
             }
 
             // error
@@ -618,15 +652,17 @@ Token get_symbol_tk(Lexer lexer)
             // error
             append(lexeme, lexer->curr_char);
             retract(lexer, lexeme);
-
-            return init_Token(TK_ILLEGAL, lexeme, lexeme->text, lexer->lineNumber, lexer->charNumber);
+            Token ill_token = init_Token(TK_ILLEGAL, lexeme, lexeme->text, lexer->lineNumber, lexer->charNumber);
+            sprintf(ill_token->error_msg, "Unknown pattern <%s>", lexeme->text);
+            return ill_token;
         }
 
         // error
         append(lexeme, lexer->curr_char);
         retract(lexer, lexeme);
-
-        return init_Token(TK_ILLEGAL, lexeme, lexeme->text, lexer->lineNumber, lexer->charNumber);
+        Token ill_token = init_Token(TK_ILLEGAL, lexeme, lexeme->text, lexer->lineNumber, lexer->charNumber);
+        sprintf(ill_token->error_msg, "Unknown Symbol <%s>", lexeme->text);
+        return ill_token;
     }
 
     if (lexer->curr_char == '@')
@@ -648,14 +684,18 @@ Token get_symbol_tk(Lexer lexer)
             append(lexeme, lexer->curr_char);
             retract(lexer, lexeme);
 
-            return init_Token(TK_ILLEGAL, lexeme, lexeme->text, lexer->lineNumber, lexer->charNumber);
+            Token ill_token = init_Token(TK_ILLEGAL, lexeme, lexeme->text, lexer->lineNumber, lexer->charNumber);
+            sprintf(ill_token->error_msg, "Unknown pattern <%s>", lexeme->text);
+            return ill_token;
         }
 
         // error
         append(lexeme, lexer->curr_char);
         retract(lexer, lexeme);
 
-        return init_Token(TK_ILLEGAL, lexeme, lexeme->text, lexer->lineNumber, lexer->charNumber);
+        Token ill_token = init_Token(TK_ILLEGAL, lexeme, lexeme->text, lexer->lineNumber, lexer->charNumber);
+        sprintf(ill_token->error_msg, "Unknown Symbol <%s>", lexeme->text);
+        return ill_token;
     }
 
     if (lexer->curr_char == '=')
@@ -672,7 +712,9 @@ Token get_symbol_tk(Lexer lexer)
         append(lexeme, lexer->curr_char);
         retract(lexer, lexeme);
 
-        return init_Token(TK_ILLEGAL, lexeme, lexeme->text, lexer->lineNumber, lexer->charNumber);
+        Token ill_token = init_Token(TK_ILLEGAL, lexeme, lexeme->text, lexer->lineNumber, lexer->charNumber);
+        sprintf(ill_token->error_msg, "Unknown Symbol <%s>", lexeme->text);
+        return ill_token;
     }
 
     if (lexer->curr_char == '!')
@@ -689,7 +731,9 @@ Token get_symbol_tk(Lexer lexer)
         append(lexeme, lexer->curr_char);
         retract(lexer, lexeme);
 
-        return init_Token(TK_ILLEGAL, lexeme, lexeme->text, lexer->lineNumber, lexer->charNumber);
+        Token ill_token = init_Token(TK_ILLEGAL, lexeme, lexeme->text, lexer->lineNumber, lexer->charNumber);
+        sprintf(ill_token->error_msg, "Unknown Symbol <%s>", lexeme->text);
+        return ill_token;
     }
 
     if (lexer->curr_char == '[')
@@ -735,7 +779,9 @@ Token get_symbol_tk(Lexer lexer)
     append(lexeme, lexer->curr_char);
     retract(lexer, lexeme);
 
-    return init_Token(TK_ILLEGAL, lexeme, lexeme->text, lexer->lineNumber, lexer->charNumber);
+    Token ill_token = init_Token(TK_ILLEGAL, lexeme, lexeme->text, lexer->lineNumber, lexer->charNumber);
+    sprintf(ill_token->error_msg, "Unknown Symbol <%s>", lexeme->text);
+    return ill_token;
 }
 
 Token tokenize(Lexer lexer)
@@ -778,7 +824,9 @@ Token tokenize(Lexer lexer)
 
     String illegal = init_str();
     append(illegal, lexer->curr_char);
-    return init_Token(TK_ILLEGAL, illegal, illegal->text, lexer->lineNumber, lexer->charNumber);
+    Token ill_token = init_Token(TK_ILLEGAL, illegal, illegal->text, lexer->lineNumber, lexer->charNumber);
+    sprintf(ill_token->error_msg, "Unknown Symbol <%s>", illegal->text);
+    return ill_token;
 }
 
 // private functions (internal)
