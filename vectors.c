@@ -72,6 +72,8 @@ void *pop_back(Vector vec)
 
 bool contains(Vector vec, void *data)
 {
+    if (vec == NULL || vec->size == 0)
+        return false;
     if (get_index(vec, data) != vec->size)
         return true;
     return false;
@@ -154,13 +156,14 @@ void printVector(Vector vec)
     case TOKEN:
         for (int i = 0; i < vec->size; i++)
         {
-            if(i!= vec->size-1) printf("%s,", (((Token)get(vec, i))->lexeme_str)->text);
+            if (i != vec->size - 1)
+                printf("%s,", (((Token)get(vec, i))->lexeme_str)->text);
             else
                 printf("%s", (((Token)get(vec, i))->lexeme_str)->text);
         }
-    // default:
-    //     error("type not handled in printVector");
-    //     break;
+        // default:
+        //     error("type not handled in printVector");
+        //     break;
     }
 }
 
@@ -268,7 +271,7 @@ bool _checkEqual(void *a, void *b, enum DATATYPE DATATYPE)
     case STRING:
         return (compare((String)a, (String)b));
     case TOKEN:
-        return ((Token)a)->type == ((Token)b)->type;
+        return (compare(((Token)a)->lexeme_str, ((Token)b)->lexeme_str)); // NOTE:altered for grammar, should compare types
     case HASHNODE:
         return ((HashNode)a)->value == ((HashNode)b)->value;
     case SYMBOLNODE:

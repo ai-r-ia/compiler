@@ -5,109 +5,132 @@
 #include "vectors.h"
 #include "stdio.h"
 
-#define GRAMMAR_LENGTH 1000
-
-// enum GrammarTokenKind
-// {
-//     <program>,
-//     <otherFunctions>,
-//     <mainFunction>,
-//     <stmts>,
-//     <function>,
-//     <input_par>,
-//     <output_par>,
-//     <parameter_list>,
-//     <dataType>,
-//     <remaining_list>,
-//     <primitiveDatatype>,
-//     <constructedDatatype>,
-//     <typeDefinitions>,
-//     <declarations>,
-//     <otherStmts>,
-//     <returnStmt>,
-//     <typeDefinition>,
-//     <definetypestmt>,
-//     <fieldDefinitions>,
-//     <fieldDefinition>,
-//     <moreFields>,
-//     <fieldtype>,
-//     <declaration>,
-//     <global_or_not>,
-//     <otherStmts>,
-//     <assignmentStmt>,
-//     <iterativeStmt>,
-//     <conditionalStmt>,
-//     <ioStmt>,
-//     <funCallStmt>,
-//     <singleOrRecId>,
-//     <arithmeticExpression>,
-//     <recId>,
-//     <outputParameters>,
-//     <inputParameters>,
-//     <idList>,
-//     <booleanExpression>,
-//     <var>,
-//     < operator>, // DEBUG:
-//     <term>,
-//     <factor>,
-//     <termPrime>,
-//     <var1>,
-//     <logicalOp>,
-//     <relationalOp>,
-//     <returnStmt>,
-//     <optionalReturn>,
-//     <idList>,
-//     <more_ids>,
-//     <definetypestmt>,
-//     <A>,
-
-//         // Do not belong to non terminals
-//         TERMINAL,
-//     INVALID_GTOK,
-//     EOF_GTOK
-// };
-
-// static char *grammarTokenKindString[] =
-//     {
-//         "E",
-//         "A",
-//         "T",
-//         "B",
-//         "F",
-
-//         // Not non terminals
-//         "Terminal",
-//         "INVALID_GTOK",
-//         "EOF_GTOK"};
+#define GRAMMAR_LENGTH 10000
 
 enum GrammarTokenKind
 {
-    E,
+    program,
+    mainFunction,
+    otherFunctions,
+    function,
+    input_par,
+    output_par,
+    parameter_list,
+    dataType,
+    primitiveDatatype,
+    constructedDatatype,
+    remaining_list,
+    stmts,
+    typeDefinitions,
+    typeDefinition,
+    fieldDefinitions,
+    fieldDefinition,
+    fieldtype,
+    moreFields,
+    declarations,
+    declaration,
+    global_or_not,
+    otherStmts,
+    stmt,
+    assignmentStmt,
+    singleOrRecId,
+    constructedVariable,
+    funCallStmt,
+    outputParameters,
+    inputParameters,
+    iterativeStmt,
+    conditionalStmt,
+    elsePart,
+    ioStmt,
+    arithmeticExpression,
+    expPrime,
+    term,
+    termPrime,
+    factor,
+    highPrecedenceOperators,
+    lowPrecedenceOperators,
+    booleanExpression,
+    var,
+    logicalOp,
+    relationalOp,
+    returnStmt,
+    optionalReturn,
+    idList,
+    more_ids,
+    definetypestmt,
+    actualOrRedefined,
+    option_single_constructed,
+    oneExpansion,
+    moreExpansions,
     A,
-    T,
-    B,
-    F,
 
     // Do not belong to non terminals
     TERMINAL,
-    EPSILON,
     INVALID_GTOK,
-    EOF_GTOK
+    EO_STACK
 };
 
 static char *grammarTokenKindString[] =
     {
-        "E",
+        "program",
+        "mainFunction",
+        "otherFunctions",
+        "function",
+        "input_par",
+        "output_par",
+        "parameter_list",
+        "dataType",
+        "primitiveDatatype",
+        "constructedDatatype",
+        "remaining_list",
+        "stmts",
+        "typeDefinitions",
+        "typeDefinition",
+        "fieldDefinitions",
+        "fieldDefinition",
+        "fieldtype",
+        "moreFields",
+        "declarations",
+        "declaration",
+        "global_or_not",
+        "otherStmts",
+        "stmt",
+        "assignmentStmt",
+        "singleOrRecId",
+        "constructedVariable",
+        "funCallStmt",
+        "outputParameters",
+        "inputParameters",
+        "iterativeStmt",
+        "conditionalStmt",
+        "elsePart",
+        "ioStmt",
+        "arithmeticExpression",
+        "expPrime",
+        "term",
+        "termPrime",
+        "factor",
+        "highPrecedenceOperators",
+        "lowPrecedenceOperators",
+        "booleanExpression",
+        "var",
+        "logicalOp",
+        "relationalOp",
+        "returnStmt",
+        "optionalReturn",
+        "idList",
+        "more_ids",
+        "definetypestmt",
+        "actualOrRedefined",
+        "option_single_constructed",
+        "oneExpansion",
+        "moreExpansions",
         "A",
-        "T",
-        "B",
-        "F",
 
         // Not non terminals
         "Terminal",
-        "Epsilon",
         "INVALID_GTOK",
-        "EOF_GTOK"};
+        "$"};
 
 typedef struct grammar *Grammar;
 struct grammar
@@ -116,6 +139,7 @@ struct grammar
     Vector rules;
     Vector first;
     Vector follow;
+    int *nullable;
 } grammar;
 
 typedef struct rule *Rule;
@@ -133,10 +157,16 @@ void printRule(Rule rule);
 
 void populateFirst(Grammar grammar);
 
+void populateFollow(Grammar grammar);
+
+Vector getFirst(Token token, Grammar grammar);
+
+Vector getFollow(Token token, Grammar grammar);
+
 // private functions
 
 void _loadGrammar(Grammar grammar);
 
-int _getNonTerminal(String nonTerminal);
+int _matchNonTerminal(String nonTerminal);
 
 #endif

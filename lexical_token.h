@@ -12,7 +12,6 @@ enum TOKEN_TYPE
     TK_ID,
     TK_NUM,
     TK_RNUM,
-    // TK_RNUM, // repeated
     TK_FUNID,
     TK_RUID,
     TK_WITH,
@@ -67,9 +66,6 @@ enum TOKEN_TYPE
 
     // added
     TK_ILLEGAL,
-    // TK_EOF, // '\0'
-    // white space ' '
-    // newline '\n'
 };
 
 static char *token_type_list[] = {
@@ -80,7 +76,6 @@ static char *token_type_list[] = {
     "TK_ID",
     "TK_NUM",
     "TK_RNUM",
-    // "TK_RNUM", // repeated
     "TK_FUNID",
     "TK_RUID",
     "TK_WITH",
@@ -206,13 +201,13 @@ struct token
     String lexeme_str;
     size_t line_num;
     size_t char_num;
-    void *lexeme_value; // to store value (post conversion) or use stoi/stof
-    char* error_msg;
+    void *lexeme_value;
+    char *error_msg;
 } token;
 
-bool checkIfArithmeticOperator(int lexicalToken);
+bool checkIfArithmeticOperator(int lexicalToken); // TODO: REMOVE:
 
-Token init_Token(int type, String lexeme_str, void* value, int lineNumber, int charNumber);
+Token init_Token(int type, String lexeme_str, void *value, int lineNumber, int charNumber);
 
 Token copy_token(Token destination, Token source);
 

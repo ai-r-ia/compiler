@@ -50,7 +50,7 @@ struct vector
 
 Vector init_vector(enum DATATYPE DATATYPE);
 
-// void enqueue(vector *vector, void *data); //stack-like oper
+// void enqueue(vector *vector, void *data); //stack-like oper 
 
 void *get(Vector vec, size_t ind);
 
@@ -74,7 +74,7 @@ void *find(Vector vec, void *data);
 
 void printVector(Vector vector);
 
-// for internal workings
+// private functions
 
 void _malloc_vector(Vector vec, enum DATATYPE DATATYPE);
 

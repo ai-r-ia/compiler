@@ -1,7 +1,6 @@
 #ifndef UTILS
 #define UTILS
 
-// #include "whole_include.h"
 #include "strings.h"
 #include "lexical_token.h"
 #include "hash.h"

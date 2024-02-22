@@ -18,19 +18,14 @@ struct lexer
     char curr_char; // current character
     char *buff1;
     char *buff2;
-    // int buff_begin1;
-    // int buff_begin2;
     int fwd_ptr;
-    int buffp1;
-    int buffp2;
+    // int buffp1;
+    // int buffp2;
     int lineNumber, charNumber, prevLineChar;
 };
 
 // Constructor for Lexer
 Lexer init_lexer(char *filename);
-
-// loads lexer buffer with given string
-// void loadBuffer(Lexer lexer, String data);
 
 // Gives next character in lexer
 char getNextCharacter(Lexer lexer);
@@ -39,10 +34,10 @@ char getNextCharacter(Lexer lexer);
 void retract(Lexer lexer, String lexeme);
 
 // Gets the lex token from file
-Token tokenize(Lexer lexer);
+Token getNextToken(Lexer lexer);
 
 // check delimiter or comment
-bool isDelimiter(char value);
+bool isDelimiter(char value); // TODO: REMOVE:
 
 // Checks whether a character is [a-z] | [A-Z]
 bool isLetter_a2z_A2Z(char value);
@@ -72,7 +67,7 @@ bool isSymbol(char value);
 int getKeyword(String word);
 
 // reads until delimiter reached
-Token error_function(Lexer lexer, String lexeme, enum TOKEN_TYPE type, bool others);
+Token tokenize_function(Lexer lexer, String lexeme, enum TOKEN_TYPE type, bool others);
 
 // Retrieves ID token
 Token get_char_tk(Lexer lexer);
@@ -83,16 +78,26 @@ Token get_numeric_tk(Lexer lexer);
 // Retrieves Symbol Token
 Token get_symbol_tk(Lexer lexer);
 
+// initial state in TK_FIELDID and TK_ID identification branch
 Token after_b2d(Lexer lexer, String lexeme);
+
+// final state in TK_FIELDID identification branch
 Token get_tk_fieldid(Lexer lexer, String lexeme);
+
+// states in TK_ID identification branch
 Token get_tk_id2(Lexer lexer, String lexeme);
 Token get_tk_id3(Lexer lexer, String lexeme);
+
+// states in TK_FUNID identification branch
 Token get_tk_funid0(Lexer lexer, String lexeme);
 Token get_tk_funid1(Lexer lexer, String lexeme);
 Token get_tk_funid3(Lexer lexer, String lexeme);
+
+// states in TK_RUID identification branch
 Token get_tk_ruid0(Lexer lexer, String lexeme);
 Token get_tk_ruid1(Lexer lexer, String lexeme);
 
+// states in TK_RNUM identification branch
 Token get_tk_rnum1(Lexer lexer, String lexeme);
 Token get_tk_rnum2(Lexer lexer, String lexeme);
 Token get_tk_rnum3(Lexer lexer, String lexeme);
@@ -114,43 +119,4 @@ void _closeFile(Lexer lexer);
 // records lexical error
 void _lexical_error(Lexer lexer);
 
-/*  states
--1: error
-0: start- checks whitespaces and eof
-1: get_char_tk ...[a_z] | [_] | [#]
-2: get_numeric_tk
-3: get_symbol_tk
-_____________________________________________
-In character based tokens: 13 states
-4: if [b-d]
-5: if [a |e-z] | [a-z] and check Keyword
-6: ret tk_fieldid
-7: from 4 accepts [2-7] to transition, loops on [b-d]
-8: loops on [2-7]
-9: ret tk_id
-
-10: if [_]
-11: loops on [a-z|A-Z], check keyword
-12: loops on [0-9]
-13: ret tk_funid
-
-14: if[#]
-15: loops on [a-z]
-16: ret tk_ruid
-________________________________________________
-
-In digit based tokens: 10 states
-17: if [.]
-18: ret tk_num
-19: if [0-9] after 17
-20: if [0-9] after 19
-21: if [E]
-22: if [+|-]
-23: if [0-9] after 22
-24: if [0-9] after 23
-25: ret tk_rnum
-__________________________________________________
-
-
-*/
 #endif

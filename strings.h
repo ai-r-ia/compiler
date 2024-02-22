@@ -22,7 +22,7 @@ void append(String str, char val);
 
 void pop_str(String str);
 
-size_t len(String str);
+size_t len(String str); //TODO: REMOVE:
 
 String add(String a, String b);
 
@@ -30,9 +30,9 @@ int compare(String a, String b);
 
 String copy_string(String destination, String source);
 
-String toCapital(String a);
+String toCapital(String a); // TODO: REMOVE:
 
-String toSmall(String a);
+String toSmall(String a); // TODO: REMOVE:
 
 // For internal workings
 

@@ -17,8 +17,8 @@ Lexer init_lexer(char *filename)
 
     // lexer->buff_begin1 = 0;
     // lexer->buff_begin2 = 0;
-    lexer->buffp1 = 0;
-    lexer->buffp2 = 0;
+    // lexer->buffp1 = 0;
+    // lexer->buffp2 = 0;
     lexer->fwd_ptr = 0;
     lexer->lineNumber = 1;
     lexer->charNumber = 1;
@@ -99,7 +99,7 @@ int getKeyword(String word)
     return -1;
 }
 
-Token error_function(Lexer lexer, String lexeme, enum TOKEN_TYPE type, bool others)
+Token tokenize_function(Lexer lexer, String lexeme, enum TOKEN_TYPE type, bool others)
 {
     void *value;
     char *p;
@@ -234,7 +234,7 @@ Token get_numeric_tk(Lexer lexer)
     }
 
     retract(lexer, lexeme);
-    return error_function(lexer, lexeme, TK_NUM, true);
+    return tokenize_function(lexer, lexeme, TK_NUM, true);
 }
 
 Token get_tk_rnum1(Lexer lexer, String lexeme)
@@ -249,7 +249,7 @@ Token get_tk_rnum1(Lexer lexer, String lexeme)
     // error
     retract(lexer, lexeme);
     retract(lexer, lexeme);
-    return error_function(lexer, lexeme, TK_NUM, true);
+    return tokenize_function(lexer, lexeme, TK_NUM, true);
 }
 
 Token get_tk_rnum2(Lexer lexer, String lexeme)
@@ -280,7 +280,7 @@ Token get_tk_rnum3(Lexer lexer, String lexeme)
     }
     // error
     retract(lexer, lexeme);
-    return error_function(lexer, lexeme, TK_RNUM, true);
+    return tokenize_function(lexer, lexeme, TK_RNUM, true);
 }
 
 Token get_tk_rnum4(Lexer lexer, String lexeme)
@@ -328,7 +328,7 @@ Token get_tk_rnum6(Lexer lexer, String lexeme)
     append(lexeme, lexer->curr_char);
     if (isDigit_0_9(lexer->curr_char))
     {
-        return error_function(lexer, lexeme, TK_RNUM, true);
+        return tokenize_function(lexer, lexeme, TK_RNUM, true);
     }
     // error
     retract(lexer, lexeme);
@@ -406,7 +406,7 @@ Token get_tk_fieldid(Lexer lexer, String lexeme)
         return init_Token(keyword_token_value[keyword], lexeme, lexeme->text, lexer->lineNumber, lexer->charNumber);
     }
 
-    return error_function(lexer, lexeme, TK_FIELDID, true);
+    return tokenize_function(lexer, lexeme, TK_FIELDID, true);
 }
 
 Token get_tk_id2(Lexer lexer, String lexeme)
@@ -427,7 +427,7 @@ Token get_tk_id2(Lexer lexer, String lexeme)
 
     append(lexeme, lexer->curr_char);
     retract(lexer, lexeme);
-    return error_function(lexer, lexeme, TK_ID, true);
+    return tokenize_function(lexer, lexeme, TK_ID, true);
 }
 
 Token get_tk_id3(Lexer lexer, String lexeme)
@@ -453,7 +453,7 @@ Token get_tk_id3(Lexer lexer, String lexeme)
         ret->error_msg = "Variable Identifier is longer than the prescribed length of 20 characters.";
         return ret;
     }
-    return error_function(lexer, lexeme, TK_ID, true);
+    return tokenize_function(lexer, lexeme, TK_ID, true);
 }
 
 Token get_tk_funid0(Lexer lexer, String lexeme)
@@ -511,7 +511,7 @@ Token get_tk_funid1(Lexer lexer, String lexeme)
         ret->error_msg = "Function Identifier is longer than the prescribed length of 30 characters.";
         return ret;
     }
-    return error_function(lexer, lexeme, TK_FUNID, true);
+    return tokenize_function(lexer, lexeme, TK_FUNID, true);
 }
 
 Token get_tk_funid3(Lexer lexer, String lexeme)
@@ -530,7 +530,7 @@ Token get_tk_funid3(Lexer lexer, String lexeme)
 
     append(lexeme, lexer->curr_char);
     retract(lexer, lexeme);
-    return error_function(lexer, lexeme, TK_FUNID, true);
+    return tokenize_function(lexer, lexeme, TK_FUNID, true);
 }
 
 Token get_tk_ruid0(Lexer lexer, String lexeme)
@@ -564,7 +564,7 @@ Token get_tk_ruid1(Lexer lexer, String lexeme)
     }
     append(lexeme, lexer->curr_char);
     retract(lexer, lexeme);
-    return error_function(lexer, lexeme, TK_RUID, true);
+    return tokenize_function(lexer, lexeme, TK_RUID, true);
 }
 
 Token get_symbol_tk(Lexer lexer)
@@ -605,7 +605,7 @@ Token get_symbol_tk(Lexer lexer)
             retract(lexer, lexeme);
             retract(lexer, lexeme);
 
-            return error_function(lexer, lexeme, TK_LT, true);
+            return tokenize_function(lexer, lexeme, TK_LT, true);
         }
         if (lexer->curr_char == '=')
         {
@@ -784,13 +784,13 @@ Token get_symbol_tk(Lexer lexer)
     return ill_token;
 }
 
-Token tokenize(Lexer lexer)
+Token getNextToken(Lexer lexer)
 {
     getNextCharacter(lexer);
 
     // whitespaces
     if (lexer->curr_char == ' ' || lexer->curr_char == '\t' || lexer->curr_char == '\n')
-        return tokenize(lexer);
+        return getNextToken(lexer);
 
     // eof
     if (lexer->curr_char == '\0')
@@ -807,7 +807,7 @@ Token tokenize(Lexer lexer)
             // append(lexeme, lexer->curr_char);
         }
 
-        return tokenize(lexer);
+        return getNextToken(lexer);
     }
 
     // initial state for letter based tokens
@@ -885,10 +885,10 @@ void _readFile(Lexer lexer)
         clearerr(lexer->fp);
     }
 
-    if (lexer->BUFF_NUM == 1)
-        lexer->buffp1 = 0;
-    else
-        lexer->buffp2 = 0;
+    // if (lexer->BUFF_NUM == 1)
+    //     lexer->buffp1 = 0;
+    // else
+    //     lexer->buffp2 = 0;
 }
 
 void _closeFile(Lexer lexer)
@@ -904,5 +904,3 @@ void _closeFile(Lexer lexer)
 
     lexer->fp = NULL;
 }
-
-// this is just a trial

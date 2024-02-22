@@ -13,12 +13,16 @@ Grammar init_grammar(char *filename)
     Grammar grammar = (Grammar)malloc(sizeof(struct grammar));
     grammar->filename = filename;
     grammar->rules = init_vector(RULE);
+    grammar->first = init_vector(VECTOR);
+    grammar->follow = init_vector(VECTOR);
+    grammar->nullable = (int *)malloc(sizeof(int) * TERMINAL);
+
     _loadGrammar(grammar);
 
-    for (int i = 0; i < grammar->rules->size; i++)
-    {
-        printRule(get(grammar->rules, i));
-    }
+    // for (int i = 0; i < grammar->rules->size; i++)
+    // {
+    //     printRule(get(grammar->rules, i));
+    // }
 
     return grammar;
 }
@@ -58,68 +62,111 @@ void _loadGrammar(Grammar grammar)
     memset(buff, '\0', GRAMMAR_LENGTH + 1);
     fr = fread(buff, 1, GRAMMAR_LENGTH, fp);
 
-    // Loading rules
-    int line_num = 0;
-    Vector allRules = init_vector(RULE);
-    char *line = strtok(strdup(buff), "\n");
-    while (line)
+    size_t i = 0;
+
+    char curr = buff[i];
+    while (curr != '\0')
     {
-        line_num++;
-
-        char *rest = line;
-
-        char *tokens = strtok_r(rest, "~", &rest);
-        int flag = 0;
-        Rule rule;
-        while (tokens)
+        if (curr == ' ' || curr == '\n')
         {
-
-            if (flag == 0)
-            {
-                // printf("LHS %s \n", tokens);
-                struct string non_terminal = *init_str();
-
-                append(&non_terminal, tokens[0]);
-                int type = _getNonTerminal(&non_terminal);
-                if (type == -1)
-                {
-                    error("Non terminal type does not exist.");
-                    exit(1);
-                }
-
-                Token nonTerminal = init_Token(type, char_to_string(tokens), tokens, line_num, 1);
-                rule = init_rule(nonTerminal);
-
-                flag = 1;
-            }
-            else
-            {
-                // printf("RHS %s \n", tokens);
-
-                char *tok2 = tokens;
-                char *terms = strtok_r(tok2, "|", &tok2);
-
-                while (terms)
-                {
-
-                    Token terminal = init_Token(5, char_to_string(terms), terms, line_num, 1);
-                    push_back(rule->derivables, terminal);
-
-                    terms = strtok_r(NULL, "|", &tok2);
-                }
-                flag = 0;
-            }
-
-            tokens = strtok_r(NULL, "~", &rest);
+            curr = buff[++i];
+            continue;
         }
 
-        push_back(allRules, rule);
+        if (curr == '<')
+        {
+            String nonterm = init_str();
+            curr = buff[++i];
+            while (curr != '>')
+            {
+                append(nonterm, curr);
+                curr = buff[++i];
+            }
+            curr = buff[++i];
 
-        // printf("%s, %s \n", rule->NT->lexeme_str->text, ((Token)get(rule->derivables, 0))->lexeme_str->text);
-        line = strtok(NULL, "\n");
+            Token NT = init_Token(_matchNonTerminal(nonterm), nonterm, NULL, 0, 0);
+            Rule rule = init_rule(NT);
+            // printf("lhs %s ", nonterm->text);
+            while (curr == ' ')
+            {
+                curr = buff[++i];
+            }
+
+            if (curr != '=')
+            {
+                error("Invalid Rule");
+                exit(1);
+            }
+            curr = buff[++i];
+
+            Vector rhs = init_vector(TOKEN);
+
+            while (curr != '\n' && curr != '\0')
+            {
+
+                String term = init_str();
+
+                while (curr == ' ')
+                {
+                    curr = buff[++i];
+                }
+                if (curr == '\n')
+                {
+                    continue;
+                }
+                // if non terminal
+                if (curr == '<')
+                {
+                    curr = buff[++i];
+
+                    while (curr != '>' && curr != '\n')
+                    {
+                        append(term, curr);
+                        curr = buff[++i];
+                    }
+
+                    Token tk = init_Token(_matchNonTerminal(term), term, NULL, 0, 0);
+                    // printf("non terminal %s ", term->text);
+                    curr = buff[++i];
+                    push_back(rhs, tk);
+                }
+                // if terminal
+                else
+                {
+                    while (curr != '<' && curr != '\n' && curr != ' ')
+                    {
+                        append(term, curr);
+                        curr = buff[++i];
+                    }
+
+                    Token tk = init_Token(TERMINAL, term, NULL, 0, 0);
+                    // printf("terminal %s ", term->text);
+
+                    push_back(rhs, tk);
+                }
+                rule->derivables = rhs;
+                // curr = buff[++i];
+                while (curr == ' ')
+                {
+                    curr = buff[++i];
+                }
+            }
+            Token first = (Token)get(rule->derivables, 0);
+            if (compare(first->lexeme_str, char_to_string("#")))
+            {
+                (grammar->nullable)[rule->NT->type] = 1;
+            }
+            push_back(grammar->rules, rule);
+        }
+
+        // else
+        // {
+        //     error("Invalid Rule, doesn't begin with non terminal.");
+        //     exit(1);
+        // }
+        curr = buff[++i];
     }
 
-    grammar->rules = allRules;
     // error handling
     if (feof(fp))
     {
@@ -133,12 +180,12 @@ void _loadGrammar(Grammar grammar)
     }
 }
 
-int _getNonTerminal(String nonTerminal)
+int _matchNonTerminal(String nonTerminal)
 {
 
-    for (int i = 0; i < 8; i++)
+    for (int i = 0; i < TERMINAL; i++)
     {
-        if (compare(char_to_string(grammarTokenKindString[i]), nonTerminal))
+        if (compare(char_to_string(grammarTokenKindString[i]), nonTerminal) == 1)
         {
             return i;
         }
@@ -146,35 +193,179 @@ int _getNonTerminal(String nonTerminal)
     return -1;
 }
 
-void populateFirst(Grammar grammar)
+Vector getFirst(Token token, Grammar grammar)
 {
-    Vector allFirsts = init_vector(TOKEN);
+    Vector first = init_vector(TOKEN);
 
-    for (int i = 0; i < grammar->rules->size; i++)
-    {
-        Vector ruleFirst = init_vector(TOKEN);
-        push_back(grammar->first, ruleFirst);
-    }
-
-    // non-terminals in beginning of rule
     for (int i = 0; i < grammar->rules->size; i++)
     {
         Rule rule = get(grammar->rules, i);
-        Token tk = get(rule->derivables, 0);
 
-        while (tk->type != TERMINAL && tk->type!= EPSILON)
+        if (rule->NT->type != token->type)
+            continue;
+
+        Token tk = (Token)get(rule->derivables, 0);
+
+        if (tk->type == TERMINAL)
         {
-            // tk = first(tk);
+            if (!contains(first, tk))
+                push_back(first, tk);
         }
 
-        push_back((Vector)get(grammar->first,i),tk);
+        else
+        {
+            for (int j = 0; j < rule->derivables->size; j++)
+            {
+                tk = (Token)get(rule->derivables, j);
+                if (tk->type == TERMINAL)
+                {
+                    if (!contains(first, tk))
+                        push_back(first, tk);
+                    break;
+                }
+                Vector tk_firsts = get(grammar->first, tk->type);
+
+                for (int k = 0; k < tk_firsts->size; k++)
+                {
+                    Token token2 = (Token)get(tk_firsts, k);
+                    if (!compare(token2->lexeme_str, char_to_string("#")) && !contains(first, token2))
+                        push_back(first, token2);
+                }
+                if ((grammar->nullable)[tk->type] == 0)
+                    break;
+            }
+        }
+    }
+    return first;
+}
+
+void populateFirst(Grammar grammar)
+{
+    // populating grammar first with empty vectors corresponding to index of each non terminal
+    for (int i = 0; i < TERMINAL; i++)
+    {
+        Vector firstForNonTerminal = init_vector(TOKEN);
+        push_back(grammar->first, firstForNonTerminal);
     }
 
-    //terminals
-    for(int i = 0; i<grammar->rules->size; i++)
+    // add if terminal in beginning of rule for all non terminals(lhs)
+    for (size_t j = 0; j < grammar->rules->size; j++)
     {
-        Rule rule = get(grammar->rules, i);
+
+        Rule rule = get(grammar->rules, j);
+
         Token tk = get(rule->derivables, 0);
 
+        if (tk->type == TERMINAL)
+        {
+
+            Vector firstOfNT = (Vector)get(grammar->first, rule->NT->type);
+
+            if (!firstOfNT)
+                firstOfNT = init_vector(TOKEN);
+
+            if (!contains(firstOfNT, tk))
+            {
+                push_back(firstOfNT, tk);
+            }
+        }
+    }
+
+    // add first of non terminals for each non terminal in lhs
+    bool nonTerminalAdded = true;
+
+    while (nonTerminalAdded)
+    {
+        nonTerminalAdded = false;
+        for (int j = 0; j < TERMINAL; j++)
+        {
+            Token tk = init_Token(j, char_to_string(grammarTokenKindString[j]), NULL, 0, 0);
+
+            Vector firstOfRhsNT = getFirst(tk, grammar);
+
+            Vector firstOfLhsNT = (Vector)get(grammar->first, j);
+
+            for (size_t i = 0; i < firstOfRhsNT->size; i++)
+            {
+                if (!contains(firstOfLhsNT, (Token)get(firstOfRhsNT, i)))
+                {
+                    nonTerminalAdded = true;
+                    push_back(firstOfLhsNT, (Token)get(firstOfRhsNT, i));
+                }
+            }
+        }
+    }
+}
+
+void populateFollow(Grammar grammar)
+{
+    // populating grammar follow with empty vectors corresponding to index of each non terminal
+    for (int i = 0; i < TERMINAL; i++)
+    {
+        Vector followForNonTerminal = init_vector(TOKEN);
+        push_back(grammar->follow, followForNonTerminal);
+    }
+
+    // adding stack symbol $ in follow set of start symbol
+    Token stack_symbol = init_Token(EO_STACK, char_to_string("$"), "$", 0, 0);
+    Vector start_vec = get(grammar->follow, ((Rule)get(grammar->rules, 0))->NT->type);
+    push_back(start_vec, stack_symbol);
+
+    for (int i = 0; i < TERMINAL; i++)
+    {
+        Token nonTerminal = init_Token(i, char_to_string(grammarTokenKindString[i]), grammarTokenKindString[i], 0, 0);
+        Vector currFollow = get(grammar->follow, i);
+
+        for (int r = 0; r < grammar->rules->size; r++)
+        {
+            Rule rule = (Rule)get(grammar->rules, r);
+            Vector rhs = rule->derivables;
+
+            for (int d = 0; d < rhs->size; d++)
+            {
+                Token tk = (Token)get(rhs, d);
+                if (tk->type == nonTerminal->type)
+                {
+
+                    bool includeLhsFollow = false;
+                    if (d == rhs->size - 1)
+                        includeLhsFollow = true;
+                    if (d < rhs->size - 1)
+                    {
+                        for (int k = d + 1; k < rhs->size; k++)
+                        {
+                            Token nextToken = (Token)get(rhs, k);
+                            if (nextToken->type == TERMINAL)
+                            {
+                                if (!contains(currFollow, nextToken) && !compare(nextToken->lexeme_str, char_to_string("#")))
+                                    push_back(currFollow, nextToken);
+                                break;
+                            }
+                            Vector nextFirst = get(grammar->first, nextToken->type);
+                            if ((grammar->nullable)[nextToken->type] && (k + 1 == rhs->size))
+                                includeLhsFollow = true;
+
+                            for (int j = 0; j < nextFirst->size; j++)
+                            {
+                                Token tk = (Token)get(nextFirst, j);
+                                if (!contains(currFollow, tk) && !compare(tk->lexeme_str, char_to_string("#")))
+                                    push_back(currFollow, tk);
+                            }
+                        }
+                    }
+
+                    if (includeLhsFollow)
+                    {
+                        Vector lhsFollow = (Vector)get(grammar->follow, rule->NT->type);
+                        for (int j = 0; j < lhsFollow->size; j++)
+                        {
+                            Token tk = (Token)get(lhsFollow, j);
+                            if (!contains(currFollow, tk) && !compare(tk->lexeme_str, char_to_string("#")))
+                                push_back(currFollow, tk);
+                        }
+                    }
+                }
+            }
+        }
     }
 }
