@@ -3,7 +3,7 @@
 
 void test_grammar()
 {
-    Grammar grammar = init_grammar("real_grammar.txt");
+    Grammar grammar = init_grammar("grammar.txt");
     populateFirst(grammar);
     populateFollow(grammar);
 
