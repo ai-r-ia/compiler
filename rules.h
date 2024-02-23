@@ -140,6 +140,7 @@ struct grammar
     Vector first;
     Vector follow;
     int *nullable;
+    Vector parseTable;
 } grammar;
 
 typedef struct rule *Rule;
@@ -158,6 +159,8 @@ void printRule(Rule rule);
 void populateFirst(Grammar grammar);
 
 void populateFollow(Grammar grammar);
+
+void populateParseTable(Grammar grammar);
 
 Vector getFirst(Token token, Grammar grammar);
 

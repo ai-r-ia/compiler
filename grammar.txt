@@ -11,9 +11,9 @@
 <dataType> = <constructedDatatype>
 <primitiveDatatype> = TK_INT 
 <primitiveDatatype> = TK_REAL
-<constructedDatatype>= TK_RECORD TK_RUID 
-<constructedDatatype>= TK_UNION TK_RUID 
-<constructedDatatype>= TK_RUID 
+<constructedDatatype> = TK_RECORD TK_RUID 
+<constructedDatatype> = TK_UNION TK_RUID 
+<constructedDatatype> = TK_RUID 
 <remaining_list> = TK_COMMA <parameter_list> 
 <remaining_list> = #
 <stmts> = <typeDefinitions> <declarations><otherStmts><returnStmt>

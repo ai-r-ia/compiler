@@ -6,6 +6,7 @@ void test_grammar()
     Grammar grammar = init_grammar("grammar.txt");
     populateFirst(grammar);
     populateFollow(grammar);
+    // populateParseTable(grammar);
 
     printf("FIRST and FOLLOW sets \n");
     for (int i = 0; i < grammar->first->size; i++)
@@ -18,4 +19,17 @@ void test_grammar()
         printVector(rhs2);
         printf("\n");
     }
+
+    // printf("PARSE TABLE");
+    // for (int i = 0; i < grammar->parseTable->size; i++)
+    // {
+    //     Vector row = (Vector)get(grammar->parseTable, i);
+    //     print("%s", grammarTokenKindString[i]);
+    //     for (int j = 0; j < row->size; j++)
+    //     {
+
+    //         print("%s", token_type_list[i]);
+    //         printRule((Rule)get(row, j));
+    //     }
+    // }
 }
