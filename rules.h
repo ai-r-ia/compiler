@@ -22,6 +22,7 @@ enum GrammarTokenKind
     remaining_list,
     stmts,
     typeDefinitions,
+    actualOrRedefined,
     typeDefinition,
     fieldDefinitions,
     fieldDefinition,
@@ -34,7 +35,9 @@ enum GrammarTokenKind
     stmt,
     assignmentStmt,
     singleOrRecId,
-    constructedVariable,
+    option_single_constructed,
+    oneExpansion,
+    moreExpansions,
     funCallStmt,
     outputParameters,
     inputParameters,
@@ -58,10 +61,6 @@ enum GrammarTokenKind
     idList,
     more_ids,
     definetypestmt,
-    actualOrRedefined,
-    option_single_constructed,
-    oneExpansion,
-    moreExpansions,
     A,
 
     // Do not belong to non terminals
@@ -85,6 +84,7 @@ static char *grammarTokenKindString[] =
         "remaining_list",
         "stmts",
         "typeDefinitions",
+        "actualOrRedefined",
         "typeDefinition",
         "fieldDefinitions",
         "fieldDefinition",
@@ -97,7 +97,9 @@ static char *grammarTokenKindString[] =
         "stmt",
         "assignmentStmt",
         "singleOrRecId",
-        "constructedVariable",
+        "option_single_constructed",
+        "oneExpansion",
+        "moreExpansions",
         "funCallStmt",
         "outputParameters",
         "inputParameters",
@@ -121,10 +123,6 @@ static char *grammarTokenKindString[] =
         "idList",
         "more_ids",
         "definetypestmt",
-        "actualOrRedefined",
-        "option_single_constructed",
-        "oneExpansion",
-        "moreExpansions",
         "A",
 
         // Not non terminals
@@ -156,6 +154,8 @@ Grammar init_grammar(char *filename);
 
 void printRule(Rule rule);
 
+void printParseTable(Grammar grammar);
+
 void populateFirst(Grammar grammar);
 
 void populateFollow(Grammar grammar);
@@ -163,8 +163,6 @@ void populateFollow(Grammar grammar);
 void populateParseTable(Grammar grammar);
 
 Vector getFirst(Token token, Grammar grammar);
-
-Vector getFollow(Token token, Grammar grammar);
 
 // private functions
 

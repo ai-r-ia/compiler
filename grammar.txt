@@ -26,7 +26,7 @@
 <fieldDefinitions> = <fieldDefinition><fieldDefinition><moreFields> 
 <fieldDefinition>= TK_TYPE <fieldtype> TK_COLON TK_FIELDID TK_SEM
 <fieldtype> = <primitiveDatatype> 
-<fieldtype> = TK_RUID
+<fieldtype> = <constructedDatatype>
 <moreFields> = <fieldDefinition><moreFields> 
 <moreFields> =  #
 <declarations> = <declaration><declarations> 
@@ -43,14 +43,13 @@
 <stmt> = <funCallStmt>
 <assignmentStmt> = <singleOrRecId>  TK_ASSIGNOP <arithmeticExpression> TK_SEM
 <singleOrRecId> = TK_ID
-<singleOrRecId> = <constructedVariable>
-<constructedVariable> = TK_ID <option_single_constructed>
+<singleOrRecId> = <option_single_constructed>
 <option_single_constructed> = <oneExpansion><moreExpansions>
 <option_single_constructed> = #
 <oneExpansion> = TK_DOT TK_FIELDID
 <moreExpansions> = <oneExpansion><moreExpansions>
 <moreExpansions> = #
- <funCallStmt> = <outputParameters> TK_CALL TK_FUNID TK_WITH  TK_PARAMETERS <inputParameters> TK_SEM
+<funCallStmt> = <outputParameters> TK_CALL TK_FUNID TK_WITH  TK_PARAMETERS <inputParameters> TK_SEM
 <outputParameters> = TK_SQL <idList> TK_SQR TK_ASSIGNOP 
 <outputParameters> =  #
 <inputParameters> = TK_SQL <idList> TK_SQR
@@ -92,6 +91,6 @@
 <idList> = TK_ID <more_ids>
 <more_ids> = TK_COMMA <idList> 
 <more_ids> = #
-<definetypestmt> =TK_DEFINETYPE <A> TK_RUID TK_AS TK_RUID
+<definetypestmt> = TK_DEFINETYPE <A> TK_RUID TK_AS TK_RUID
 <A> = TK_RECORD 
 <A> = TK_UNION
