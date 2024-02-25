@@ -13,27 +13,7 @@ Token init_Token(int kind, String valueString, void *value, int lineNumber, int 
     token->lexeme_str = valueString;
     token->type = kind;
     token->lexeme_value = value;
+    token->error_msg = (char*)malloc(sizeof(char)*300);
     return token;
 }
 
-Token copy_token(Token destination, Token source)
-{
-    if (source == NULL)
-    {
-        destination = NULL;
-        return NULL;
-    }
-
-    if (destination == NULL)
-    {
-        destination = init_Token(TK_ILLEGAL, NULL, 0, 0, 0);
-        return destination;
-    }
-
-    destination->type = source->type;
-    destination->char_num = source->char_num;
-    destination->line_num = source->line_num;
-    destination->lexeme_str = source->lexeme_str; // TODO: use copystring func
-
-    return destination;
-}

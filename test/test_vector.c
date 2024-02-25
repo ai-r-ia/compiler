@@ -5,22 +5,15 @@
 void test_vector()
 {
     // test_vector_int_all_operations();
-    // info("_________________________________\n");
     // test_vector_char_all_operations();
-    // info("_________________________________\n");
     // // test_vector_int_ptr_all_operations();
-    // // info("_________________________________\n");
     // // test_vector_char_ptr_all_operations();
-
     // test_vector_string_all_operations();
-    // info("_________________________________\n");
     // test_vector_token_all_operations();
-    // info("_________________________________\n");
     // test_vector_hash_node_all_operations();
-    // info("_________________________________\n");
     // test_vector_of_vector_all_operations();
-    // info("_________________________________\n");
-    test_vector_symbol_node_all_operations();
+    // test_vector_symbol_node_all_operations();
+    test_vector_rule_all_operations();
 }
 
 void test_vector_int_all_operations()
@@ -762,7 +755,7 @@ void test_vector_symbol_node_all_operations()
         exit(1);
     }
 
-    SymbolNode c = rand_hash_node(); // TODO:
+    SymbolNode c = rand_symbol_node(); // TODO:
     push_back(vec, c);
 
     if (!compare(c->lexeme, ((SymbolNode)pop_back(vec))->lexeme)) // TODO:
@@ -807,6 +800,111 @@ void test_vector_symbol_node_all_operations()
     success("SYMBOL NODE vector tested succesfullly."); // TODO:
 }
 
+void test_vector_rule_all_operations()
+{
+
+    info("Testing for RULE\n");
+    Vector vec = init_vector(RULE);
+
+    Rule not_in_vec = rand_rule(); // TODO:
+    size_t index = rand() % MIN_SIZE;
+    if (index == (MIN_SIZE - 1))
+        index--;
+    Rule in_vec; // TODO:
+
+    for (int i = 0; i < MIN_SIZE; i++)
+    {
+        Rule rand_val = rand_rule(); // TODO:
+        while ((rand_val->NT)->type == (not_in_vec->NT)->type)
+        {
+            rand_val = rand_rule(); // TODO:
+        }
+        if (i == index)
+        {
+            in_vec = rand_val;
+        }
+        // printf("%s\n", rand_val->text);
+        push_back(vec, rand_val);
+    }
+
+    if (vec->size != MIN_SIZE)
+    {
+        error("Size of array inconsistent.");
+        exit(1);
+    }
+    Rule get_value = ((Rule)get(vec, index)); // TODO:
+
+    if ((get_value->NT)->type != (in_vec->NT)->type)
+    {
+        error("Error in get().");
+        exit(1);
+    }
+
+    if (contains(vec, not_in_vec))
+    {
+        error("Error in contains(). --negative case");
+        exit(1);
+    }
+
+    if (!contains(vec, get_value))
+    {
+        error("Error in contains(). --positive case");
+        exit(1);
+    }
+
+    Vector vec2 = copy_vector(NULL, vec);
+
+    if (!checkEqual(vec, vec2))
+    {
+        error("Error in checkEqual().");
+        exit(1);
+    }
+
+    Rule c = rand_rule(); // TODO:
+    push_back(vec, c);
+
+    if ((c->NT)->type != (((Rule)pop_back(vec))->NT)->type) // TODO:
+    {
+        error("Error in pop_back().");
+        exit(1);
+    }
+
+    Rule next = ((Rule)get(vec, index + 1)); // TODO:
+    Rule next_val = init_rule(next->NT);
+
+    // for (int i = 0; i < vec->size; i++)
+    // {
+    //     puts(((String)get(vec, i))->text);
+    // }
+    removeAt(vec, index);
+    // info("breakkk");
+    // for (int i = 0; i < vec->size; i++)
+    // {
+    //     puts(((String)get(vec, i))->text);
+    // }
+
+    Rule curr = ((Rule)get(vec, index)); // TODO:
+
+    if ((curr->NT)->type != (next_val->NT)->type)
+    {
+        error("Error in removeAt().");
+        exit(1);
+    }
+
+    clear(vec2);
+
+    if (vec2->size != 0)
+    {
+        error("Error in clear().");
+        exit(1);
+    }
+
+    c = rand_rule(); // TODO:
+    push_back(vec, c);
+
+    success("RULE vector tested succesfullly."); // TODO:
+}
+
 void test_vector_of_vector_all_operations()
 {
     info("Testing for VECTOR\n");
@@ -820,8 +918,8 @@ void test_vector_of_vector_all_operations()
 
     for (int i = 0; i < MIN_SIZE; i++)
     {
-        Vector rand_val = rand_vector(HASHNODE); // TODO:
-        while (rand_val->size == not_in_vec->size) //all vecs of diff sizes
+        Vector rand_val = rand_vector(HASHNODE);   // TODO:
+        while (rand_val->size == not_in_vec->size) // all vecs of diff sizes
         {
             rand_val = rand_vector(HASHNODE); // TODO:
         }

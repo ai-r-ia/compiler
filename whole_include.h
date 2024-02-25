@@ -15,5 +15,6 @@
 #include "hash.h"
 #include "lexer.h"
 #include "symbol_table.h"
+#include "rules.h"
 
 #endif

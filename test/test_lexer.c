@@ -4,10 +4,10 @@ void test_lexer()
 {
     info("testing LEXER");
     // Lexer lexer = init_lexer("test.txt");
-    Lexer lexer = init_lexer("test/test_char.txt");
-    // Lexer lexer = init_lexer("test_num.txt");
+    // Lexer lexer = init_lexer("test/test_char.txt");
+    Lexer lexer = init_lexer("Test_Cases/t1.txt");
 
-    Token tk = tokenize(lexer);
+    Token tk = getNextToken(lexer);
     // printf("fwd0 %d \n", lexer->fwd_ptr);
 
     Vector vec = init_vector(TOKEN);
@@ -20,13 +20,21 @@ void test_lexer()
         // if(tk1_read)
         // printf("%s\n", token_type_list[tk->type]);
         push_back(vec, tk);
-        tk = tokenize(lexer);
+        tk = getNextToken(lexer);
     }
 
     for (int i = 0; i < vec->size; i++)
     {
-        printf("%s", token_type_list[((Token)get(vec, i))->type]);
-        printf(" : %s", (char *)(((Token)get(vec, i))->lexeme_str)->text);
+        printf("Line No. %ld  ", ((Token)get(vec, i))->line_num);
+        if (((Token)get(vec, i))->type == 57)
+        {
+            printf("Error: %s", ((Token)get(vec, i))->error_msg);
+        }
+        else
+        {
+            printf("Lexeme %s       ", (char *)(((Token)get(vec, i))->lexeme_str)->text);
+            printf("Token %s", token_type_list[((Token)get(vec, i))->type]);
+        }
 
         printf("\n");
     }
