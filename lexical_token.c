@@ -17,24 +17,3 @@ Token init_Token(int kind, String valueString, void *value, int lineNumber, int 
     return token;
 }
 
-Token copy_token(Token destination, Token source)
-{
-    if (source == NULL)
-    {
-        destination = NULL;
-        return NULL;
-    }
-
-    if (destination == NULL)
-    {
-        destination = init_Token(TK_ILLEGAL, NULL, 0, 0, 0);
-        return destination;
-    }
-
-    destination->type = source->type;
-    destination->char_num = source->char_num;
-    destination->line_num = source->line_num;
-    destination->lexeme_str = source->lexeme_str; // TODO: use copystring func
-
-    return destination;
-}

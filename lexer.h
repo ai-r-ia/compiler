@@ -10,8 +10,6 @@ static int BUFFER_SIZE = 256;
 typedef struct lexer *Lexer;
 struct lexer
 {
-    int BUFF_SIZE1; // occupied buffer1 //TODO: REMOVE
-    int BUFF_SIZE2; // occupied buffer2
     int BUFF_NUM;
     FILE *fp;
     char *filename;
@@ -19,8 +17,6 @@ struct lexer
     char *buff1;
     char *buff2;
     int fwd_ptr;
-    // int buffp1;
-    // int buffp2;
     int lineNumber, charNumber, prevLineChar;
 };
 
@@ -37,27 +33,27 @@ void retract(Lexer lexer, String lexeme);
 Token getNextToken(Lexer lexer);
 
 // check delimiter or comment
-bool isDelimiter(char value); // TODO: REMOVE:
+bool isDelimiter(char value);
 
 // Checks whether a character is [a-z] | [A-Z]
 bool isLetter_a2z_A2Z(char value);
 
-//[a-z]
+// Checks whether a character is [a-z]
 bool isLetter_a2z(char value);
 
-//[A-Z]
+// Checks whether a character is [A-Z]
 bool isLetter_A2Z(char value);
 
-// [b-d]
+// Checks whether a character is [b-d]
 bool isLetter_b2d(char value);
 
-// [e-z]
+// Checks whether a character is [e-z]
 bool isLetter_e2z(char value);
 
 // Checks whether a character is [0-9]
 bool isDigit_0_9(char value);
 
-//[2-7]
+// Checks whether a character is [2-7]
 bool isDigit_2_7(char value);
 
 // for valid symbols (except [_],[#])
@@ -115,8 +111,5 @@ void _readFile(Lexer lexer);
 
 // Closes the File pointer in the lexer
 void _closeFile(Lexer lexer);
-
-// records lexical error
-void _lexical_error(Lexer lexer);
 
 #endif

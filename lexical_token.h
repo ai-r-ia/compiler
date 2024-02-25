@@ -209,6 +209,5 @@ bool checkIfArithmeticOperator(int lexicalToken); // TODO: REMOVE:
 
 Token init_Token(int type, String lexeme_str, void *value, int lineNumber, int charNumber);
 
-Token copy_token(Token destination, Token source);
 
 #endif

@@ -7,22 +7,16 @@ Lexer init_lexer(char *filename)
 
     _openFile(lexer);
 
-    lexer->BUFF_SIZE1 = BUFFER_SIZE;
-    lexer->BUFF_SIZE2 = BUFFER_SIZE;
-    lexer->buff1 = (char *)malloc(sizeof(char) * (lexer->BUFF_SIZE1 + 1));
-    lexer->buff2 = (char *)malloc(sizeof(char) * (lexer->BUFF_SIZE2 + 1));
+    lexer->buff1 = (char *)malloc(sizeof(char) * (BUFFER_SIZE + 1));
+    lexer->buff2 = (char *)malloc(sizeof(char) * (BUFFER_SIZE + 1));
 
     lexer->BUFF_NUM = 1;
     _readFile(lexer);
 
-    // lexer->buff_begin1 = 0;
-    // lexer->buff_begin2 = 0;
-    // lexer->buffp1 = 0;
-    // lexer->buffp2 = 0;
     lexer->fwd_ptr = 0;
     lexer->lineNumber = 1;
     lexer->charNumber = 1;
-    // _closeFile(lexer);
+
     return lexer;
 }
 
@@ -133,7 +127,6 @@ Token tokenize_function(Lexer lexer, String lexeme, enum TOKEN_TYPE type, bool o
 
     if (isDelimiter(lexer->curr_char) || isSymbol(lexer->curr_char) || others)
     {
-        // retract(lexer, lexeme);
         return init_Token(type, lexeme, value, lexer->lineNumber, lexer->charNumber);
     }
 
@@ -157,7 +150,7 @@ char getNextCharacter(Lexer lexer)
         // lexer->buff_begin1;
         res = lexer->buff1[lexer->fwd_ptr];
         lexer->fwd_ptr++;
-        if (lexer->fwd_ptr >= lexer->BUFF_SIZE1)
+        if (lexer->fwd_ptr >= BUFFER_SIZE)
         {
             lexer->fwd_ptr = 0;
             lexer->BUFF_NUM = 2;
@@ -168,7 +161,7 @@ char getNextCharacter(Lexer lexer)
     {
         res = lexer->buff2[lexer->fwd_ptr];
         lexer->fwd_ptr++;
-        if (lexer->fwd_ptr >= lexer->BUFF_SIZE2)
+        if (lexer->fwd_ptr >= BUFFER_SIZE)
         {
             lexer->fwd_ptr = 0;
             lexer->BUFF_NUM = 1;
@@ -184,14 +177,6 @@ char getNextCharacter(Lexer lexer)
         lexer->charNumber = 1;
     }
 
-    // if (res == '\0')
-    // {
-    //     printf("eof");
-    // }
-    // if (res != '\0')
-    // {
-    //     lexer->curr_char = res;
-    // }
     return lexer->curr_char = res;
 }
 
@@ -796,7 +781,7 @@ Token getNextToken(Lexer lexer)
     if (lexer->curr_char == '\0')
     {
         _closeFile(lexer);
-        return NULL; // TODO: check if tk_eof needed
+        return NULL;
     }
 
     if (lexer->curr_char == '%')
@@ -866,13 +851,8 @@ void _readFile(Lexer lexer)
         buff = lexer->buff2;
 
     memset(buff, '\0', BUFFER_SIZE + 1);
-    // buff[BUFFER_SIZE] = '-1';
     fr = fread(buff, 1, BUFFER_SIZE, lexer->fp);
 
-    // error handling
-    // if (feof(lexer->fp))
-    //     buff[fr] = -1;
-    // _closeFile(lexer);  //DEBUG:
     if (fr != BUFFER_SIZE)
     {
         // file reading error
@@ -885,10 +865,6 @@ void _readFile(Lexer lexer)
         clearerr(lexer->fp);
     }
 
-    // if (lexer->BUFF_NUM == 1)
-    //     lexer->buffp1 = 0;
-    // else
-    //     lexer->buffp2 = 0;
 }
 
 void _closeFile(Lexer lexer)
@@ -896,7 +872,6 @@ void _closeFile(Lexer lexer)
     if (fclose(lexer->fp) != 0)
     {
         char err_text[300];
-        // sprintf(err_text, "Error in closing file: %s", strerror(errno));
         sprintf(err_text, "Error in closing file: %s", lexer->filename);
         error(err_text);
         exit(1);

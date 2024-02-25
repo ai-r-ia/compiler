@@ -1,16 +1,9 @@
 #ifndef VECTORS
 #define VECTORS
 
-// #include "whole_include.h"
-
 static size_t VECTOR_INC = 10;
 static int STRING_SIZE = 1000;
 
-// All data types supported by vector
-// Remember:
-// Add _O for user defined objects to add vector support
-// Also add the switch case for new vectorType in
-// _malloc_vec , _realloc_vec _put and _get
 
 enum DATATYPE
 {

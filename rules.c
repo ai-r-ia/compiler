@@ -178,12 +178,6 @@ void _loadGrammar(Grammar grammar)
             }
             push_back(grammar->rules, rule);
         }
-
-        // else
-        // {
-        //     error("Invalid Rule, doesn't begin with non terminal.");
-        //     exit(1);
-        // }
         curr = buff[++i];
     }
 
@@ -442,53 +436,68 @@ void populateParseTable(Grammar grammar)
         {
             Vector firstOfRhs = init_vector(TOKEN);
             Token rhs_prefix = (Token)get(rule->derivables, d);
-
+            bool terminal = false;
             if (rhs_prefix->type == TERMINAL)
             {
+                Vector termFirst = init_vector(TOKEN);
+                push_back(termFirst, rhs_prefix);
+                firstOfRhs = termFirst;
+                terminal = true;
                 // if (!compare(rhs_prefix->lexeme_str, char_to_string("#")))
                 // {
-                for (int m = 0; m < TK_ILLEGAL; m++)
-                {
-                    if (strcmp(rhs_prefix->lexeme_str->text, token_type_list[m]) == 0)
-                    {
-                        put(row, m, rule);
-                    }
-                }
+                // for (int m = 0; m < TK_ILLEGAL; m++)
+                // {
+                //     if (strcmp(rhs_prefix->lexeme_str->text, token_type_list[m]) == 0)
+                //     {
+                //         put(row, m, rule);
+                //     }
                 // }
-                break;
+                // }
+                // break;
             }
-            firstOfRhs = (Vector)get(grammar->first, (rhs_prefix)->type);
-
+            else
+            {
+                firstOfRhs = (Vector)get(grammar->first, (rhs_prefix)->type);
+                Token null = init_Token(TERMINAL, char_to_string("#"), NULL, 0, 0);
+                if (!contains(firstOfRhs, null))
+                    terminal = true;
+            }
             for (int i = 0; i < firstOfRhs->size; i++)
             {
                 Token tk = (Token)get(firstOfRhs, i);
-                // if (!compare(tk->lexeme_str, char_to_string("#")))
-                // {
-                for (int m = 0; m < TK_ILLEGAL; m++)
+                if (!compare(tk->lexeme_str, char_to_string("#")))
                 {
-                    if (strcmp(tk->lexeme_str->text, token_type_list[m]) == 0)
-                    {
-                        put(row, m, rule);
-                    }
-                }
-                // }
-                // else
-                // {
-                Vector followOfLhs = (Vector)get(grammar->follow, rule->NT->type);
-
-                for (int l = 0; l < followOfLhs->size; l++)
-                {
-                    Token in_follow_lhs = (Token)get(followOfLhs, l);
                     for (int m = 0; m < TK_ILLEGAL; m++)
                     {
-                        if (strcmp(in_follow_lhs->lexeme_str->text, token_type_list[m]) == 0)
+                        if (strcmp(tk->lexeme_str->text, token_type_list[m]) == 0)
                         {
+                            if(m == TK_END) 
+                            printf("smooth");
                             put(row, m, rule);
                         }
                     }
                 }
-                // }
+                else
+                {
+                    Vector followOfLhs = (Vector)get(grammar->follow, rule->NT->type);
+
+                    for (int l = 0; l < followOfLhs->size; l++)
+                    {
+                        Token in_follow_lhs = (Token)get(followOfLhs, l);
+                        for (int m = 0; m < TK_ILLEGAL; m++)
+                        {
+                            if (strcmp(in_follow_lhs->lexeme_str->text, token_type_list[m]) == 0)
+                            {
+                                if (m == TK_END)
+                                    printf("smooth");
+                                put(row, m, rule);
+                            }
+                        }
+                    }
+                }
             }
+            if (terminal)
+                break;
         }
     }
 }

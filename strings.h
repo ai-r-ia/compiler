@@ -22,19 +22,11 @@ void append(String str, char val);
 
 void pop_str(String str);
 
-size_t len(String str); //TODO: REMOVE:
-
-String add(String a, String b);
-
 int compare(String a, String b);
 
-String copy_string(String destination, String source);
+String copy_string(String destination, String source); //TODO: remove
 
-String toCapital(String a); // TODO: REMOVE:
-
-String toSmall(String a); // TODO: REMOVE:
-
-// For internal workings
+// private functions
 
 void _initialise(char *ref, size_t start, size_t end);
 

@@ -161,9 +161,6 @@ void printVector(Vector vec)
             else
                 printf("%s", (((Token)get(vec, i))->lexeme_str)->text);
         }
-        // default:
-        //     error("type not handled in printVector");
-        //     break;
     }
 }
 
