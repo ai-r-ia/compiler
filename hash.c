@@ -26,7 +26,7 @@ HashNode init_node(String key, int value)
 
 int get_hash(String str)
 {
-    int n = len(str);
+    int n = str->size;
     long long pref_hash = {str->text[0] - 'a' + 1};
     for (int i = 1; i < n; i++)
     {

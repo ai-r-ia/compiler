@@ -5,7 +5,7 @@ void lexical_analysis()
     info("testing LEXER");
     // Lexer lexer = init_lexer("test.txt");
     // Lexer lexer = init_lexer("test/test_char.txt");
-    Lexer lexer = init_lexer("Test Cases/t1.txt");
+    Lexer lexer = init_lexer("Test_Cases/t1.txt");
 
     Token tk = getNextToken(lexer);
     // printf("fwd0 %d \n", lexer->fwd_ptr);
