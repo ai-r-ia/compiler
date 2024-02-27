@@ -1,49 +1,10 @@
 #ifndef VECTORS
 #define VECTORS
 
-static size_t VECTOR_INC = 10;
-static int STRING_SIZE = 1000;
-
-
-enum DATATYPE
-{
-    INT,
-    CHAR,
-    STRING,
-    INT_PTR,
-    CHAR_PTR,
-    TOKEN,
-    HASHNODE,
-    SYMBOLNODE,
-    RULE,
-    VECTOR
-};
-
-static char *data_type_map[] = {
-    "INT",
-    "CHAR",
-    "STRING",
-    "INT_PTR",
-    "CHAR_PTR",
-    "TOKEN",
-    "HASHNODE",
-    "SYMBOLNODE",
-    "RULE",
-    "VECTOR",
-};
-
-typedef struct vector *Vector;
-struct vector
-{
-    enum DATATYPE DATATYPE;
-    void *data;
-    size_t memory_size;
-    size_t size;
-};
+// #include "whole_include.h"
+#include "vectorDef.h"
 
 Vector init_vector(enum DATATYPE DATATYPE);
-
-// void enqueue(vector *vector, void *data); //stack-like oper 
 
 void *get(Vector vec, size_t ind);
 
@@ -59,9 +20,11 @@ bool checkEqual(Vector a, Vector b);
 
 void *pop_back(Vector vec);
 
-Vector copy_vector(Vector destination, Vector source);
+void* top(Vector vec);
 
-void clear(Vector vec);
+Vector copy_vector(Vector destination, Vector source);//NOTE: remove
+
+void clear(Vector vec); // NOTE: remove
 
 void *find(Vector vec, void *data);
 
@@ -76,8 +39,6 @@ void _realloc_vector(Vector vec);
 bool _checkEqual(void *a, void *b, enum DATATYPE DATATYPE);
 
 void _put(Vector vector, size_t index, void *data);
-
-// void *_copy_data(void *destination, void *source, int type);
 
 void *_get(Vector vec, size_t ind);
 

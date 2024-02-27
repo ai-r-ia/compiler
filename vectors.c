@@ -1,4 +1,11 @@
 #include "whole_include.h"
+#include "vectors.h"
+#include "lexical_token.h"
+#include "hash.h"
+#include "rules.h"
+#include "symbol_table.h"
+#include "string.h"
+#include "tree.h"
 
 // all private methods begin with "_"(underscore)
 
@@ -67,6 +74,11 @@ void *pop_back(Vector vec)
 {
     void *ret = get(vec, vec->size - 1);
     vec->size--;
+    return ret;
+}
+
+void *top(Vector vec){
+    void *ret = get(vec, vec->size - 1);
     return ret;
 }
 
@@ -198,6 +210,9 @@ void _malloc_vector(Vector vec, enum DATATYPE datatype)
     case RULE:
         vec->data = (Rule)malloc(sizeof(struct rule) * VECTOR_INC);
         break;
+    case TREENODE:
+        vec->data = (TreeNode)malloc(sizeof(struct treeNode) * VECTOR_INC);
+        break;
     case VECTOR:
         vec->data = (Vector)malloc(sizeof(struct vector) * VECTOR_INC);
         break;
@@ -241,6 +256,9 @@ void _realloc_vector(Vector vec)
     case RULE:
         new_size = sizeof(struct rule) * (vec->memory_size + VECTOR_INC);
         break;
+    case TREENODE:
+        new_size = sizeof(struct treeNode) * (vec->memory_size + VECTOR_INC);
+        break;
     case VECTOR:
         new_size = sizeof(struct vector) * (vec->memory_size + VECTOR_INC);
         break;
@@ -275,6 +293,8 @@ bool _checkEqual(void *a, void *b, enum DATATYPE DATATYPE)
         return (compare(((SymbolNode)a)->lexeme, ((SymbolNode)b)->lexeme));
     case RULE:
         return ((((Rule)a)->NT)->type == (((Rule)b)->NT)->type);
+    case TREENODE:
+        return ((((TreeNode)a)->value)->type == (((TreeNode)b)->value)->type);
     case VECTOR:
         return checkEqual((Vector)a, (Vector)b);
     }
@@ -312,6 +332,9 @@ void _put(Vector vec, size_t index, void *value)
         break;
     case RULE:
         ((Rule)vec->data)[index] = *((Rule)value);
+        break;
+    case TREENODE:
+        ((TreeNode)vec->data)[index] = *((TreeNode)value);
         break;
     case VECTOR:
         ((Vector)vec->data)[index] = *((Vector)value);
@@ -355,6 +378,9 @@ void *_get(Vector vec, size_t ind)
         break;
     case RULE:
         value = &(((Rule)(vec->data))[ind]);
+        break;
+    case TREENODE:
+        value = &(((TreeNode)(vec->data))[ind]);
         break;
     case VECTOR:
         value = &(((Vector)(vec->data))[ind]);

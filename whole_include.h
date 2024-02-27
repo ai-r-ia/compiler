@@ -16,5 +16,10 @@
 #include "lexer.h"
 #include "symbol_table.h"
 #include "rules.h"
+#include "vectorDef.h"
+#include "parserDef.h"
+#include "parser.h"
+#include "treeDef.h"
+#include "tree.h"
 
 #endif

@@ -4,6 +4,7 @@
 #include "strings.h"
 #include "vectors.h"
 #include "lexical_token.h"
+#include "vectorDef.h"
 
 #define SYMBOL_TABLE_SIZE 1000
 

@@ -13,7 +13,8 @@ void test_vector()
     // test_vector_hash_node_all_operations();
     // test_vector_of_vector_all_operations();
     // test_vector_symbol_node_all_operations();
-    test_vector_rule_all_operations();
+    // test_vector_rule_all_operations();
+    test_vector_tree_node_all_operations();
 }
 
 void test_vector_int_all_operations()
@@ -557,7 +558,7 @@ void test_vector_token_all_operations()
     }
 
     Token next = ((Token)get(vec, index + 1)); // TODO:
-    Token next_val = init_Token(next->type, next->lexeme_str, next->lexeme_value, next->line_num, next->char_num);
+    Token next_val = init_token(next->type, next->lexeme_str, next->lexeme_value, next->line_num, next->char_num);
 
     // for (int i = 0; i < vec->size; i++)
     // {
@@ -755,7 +756,7 @@ void test_vector_symbol_node_all_operations()
         exit(1);
     }
 
-    SymbolNode c = rand_symbol_node(); // TODO:
+    SymbolNode c = rand_hash_node(); // TODO:
     push_back(vec, c);
 
     if (!compare(c->lexeme, ((SymbolNode)pop_back(vec))->lexeme)) // TODO:
@@ -798,6 +799,109 @@ void test_vector_symbol_node_all_operations()
     push_back(vec, c);
 
     success("SYMBOL NODE vector tested succesfullly."); // TODO:
+}
+
+void test_vector_tree_node_all_operations(){
+    info("Testing for TREENODE\n");
+    Vector vec = init_vector(TREENODE);
+
+    TreeNode not_in_vec = rand_tree_node(); // TODO:
+    size_t index = rand() % MIN_SIZE;
+    if (index == (MIN_SIZE - 1))
+        index--;
+    TreeNode in_vec; // TODO:
+
+    for (int i = 0; i < MIN_SIZE; i++)
+    {
+        TreeNode rand_val = rand_tree_node(); // TODO:
+        while (rand_val->value->type == not_in_vec->value->type)
+        {
+            rand_val = rand_tree_node(); // TODO:
+        }
+        if (i == index)
+        {
+            in_vec = rand_val;
+        }
+        // printf("%s\n", rand_val->text);
+        push_back(vec, rand_val);
+    }
+
+    if (vec->size != MIN_SIZE)
+    {
+        error("Size of array inconsistent.");
+        exit(1);
+    }
+    TreeNode get_value = ((TreeNode)get(vec, index)); // TODO:
+
+    if (get_value->value->type != in_vec->value->type)
+    {
+        error("Error in get().");
+        exit(1);
+    }
+
+    if (contains(vec, not_in_vec))
+    {
+        error("Error in contains(). --negative case");
+        exit(1);
+    }
+
+    if (!contains(vec, get_value))
+    {
+        error("Error in contains(). --positive case");
+        exit(1);
+    }
+
+    Vector vec2 = copy_vector(NULL, vec);
+
+    if (!checkEqual(vec, vec2))
+    {
+        error("Error in checkEqual().");
+        exit(1);
+    }
+
+    TreeNode c = rand_tree_node(); // TODO:
+    push_back(vec, c);
+
+    if (c->value->type != ((TreeNode)pop_back(vec))->value->type) // TODO:
+    {
+        error("Error in pop_back().");
+        exit(1);
+    }
+
+    TreeNode next = ((TreeNode)get(vec, index + 1)); // TODO:
+    TreeNode next_val = init_treenode(next->value);
+
+    // for (int i = 0; i < vec->size; i++)
+    // {
+    //     puts(((String)get(vec, i))->text);
+    // }
+    removeAt(vec, index);
+    // info("breakkk");
+    // for (int i = 0; i < vec->size; i++)
+    // {
+    //     puts(((String)get(vec, i))->text);
+    // }
+
+    TreeNode curr = ((TreeNode)get(vec, index)); // TODO:
+
+    if (curr->value->type != next_val->value->type)
+    {
+        error("Error in removeAt().");
+        exit(1);
+    }
+
+    clear(vec2);
+
+    if (vec2->size != 0)
+    {
+        error("Error in clear().");
+        exit(1);
+    }
+
+    c = rand_tree_node(); // TODO:
+    push_back(vec, c);
+
+    success("TREE NODE vector tested succesfullly."); // TODO:
 }
 
 void test_vector_rule_all_operations()

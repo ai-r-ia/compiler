@@ -46,9 +46,12 @@ void printParseTable(Grammar grammar)
         for (int j = 0; j < row->size; j++)
         {
             Rule rule = (Rule)get(row, j);
+            char *column = token_type_list[j];
             if (rule->NT->type == TK_ILLEGAL)
                 continue;
-            printf("[%s, %s] ", grammarTokenKindString[i], token_type_list[j]);
+            if (j == row->size - 1)
+                column = "$";
+            printf("[%s, %s] ", grammarTokenKindString[i], column);
             printRule(rule);
         }
     }
@@ -58,6 +61,7 @@ void printParseTable(Grammar grammar)
 
 void _loadGrammar(Grammar grammar)
 {
+    Vector allrules = init_vector(RULE);
 
     FILE *fp = fopen(grammar->filename, "r");
     char err_text[300];
@@ -104,7 +108,7 @@ void _loadGrammar(Grammar grammar)
             }
             curr = buff[++i];
 
-            Token NT = init_Token(_matchNonTerminal(nonterm), nonterm, NULL, 0, 0);
+            Token NT = init_token(_matchNonTerminal(nonterm), nonterm, NULL, 0, 0);
             Rule rule = init_rule(NT);
             // printf("lhs %s ", nonterm->text);
             while (curr == ' ')
@@ -145,7 +149,7 @@ void _loadGrammar(Grammar grammar)
                         curr = buff[++i];
                     }
 
-                    Token tk = init_Token(_matchNonTerminal(term), term, NULL, 0, 0);
+                    Token tk = init_token(_matchNonTerminal(term), term, NULL, 0, 0);
                     // printf("non terminal %s ", term->text);
                     curr = buff[++i];
                     push_back(rhs, tk);
@@ -159,7 +163,7 @@ void _loadGrammar(Grammar grammar)
                         curr = buff[++i];
                     }
 
-                    Token tk = init_Token(TERMINAL, term, NULL, 0, 0);
+                    Token tk = init_token(TERMINAL, term, NULL, 0, 0);
                     // printf("terminal %s ", term->text);
 
                     push_back(rhs, tk);
@@ -176,7 +180,7 @@ void _loadGrammar(Grammar grammar)
             {
                 (grammar->nullable)[rule->NT->type] = 1;
             }
-            push_back(grammar->rules, rule);
+            push_back(allrules, rule);
         }
         curr = buff[++i];
     }
@@ -192,6 +196,7 @@ void _loadGrammar(Grammar grammar)
 
         fp = NULL;
     }
+    grammar->rules = allrules;
 }
 
 int _matchNonTerminal(String nonTerminal)
@@ -246,7 +251,7 @@ Vector getFirst(Token token, Grammar grammar)
                     {
                         push_back(first, token2);
                     }
-                    if (compare(token2->lexeme_str, char_to_string("#")))
+                    if (compare(token2->lexeme_str, char_to_string("#")) && (j == rule->derivables->size - 1))
                     {
                         (grammar->nullable)[token->type] = 1;
                     }
@@ -300,7 +305,7 @@ void populateFirst(Grammar grammar)
         for (int j = 0; j < TERMINAL; j++)
         {
 
-            Token tk = init_Token(j, char_to_string(grammarTokenKindString[j]), NULL, 0, 0);
+            Token tk = init_token(j, char_to_string(grammarTokenKindString[j]), NULL, 0, 0);
 
             Vector toAddinFirst = getFirst(tk, grammar);
 
@@ -318,7 +323,7 @@ void populateFirst(Grammar grammar)
 
             if ((grammar->nullable)[j] == 1)
             {
-                Token null = init_Token(TERMINAL, char_to_string("#"), NULL, 0, 0);
+                Token null = init_token(TERMINAL, char_to_string("#"), NULL, 0, 0);
                 if (!contains(previousFirst, null))
                     push_back(previousFirst, null);
             }
@@ -328,6 +333,17 @@ void populateFirst(Grammar grammar)
 
 void populateFollow(Grammar grammar)
 {
+
+    /*
+    • Always include $ in FOLLOW(S)
+        where S is the start symbol and $ is the input right end marker.
+    • if there is a production A →αBβ
+        then everything in FIRST(β)(except ε) is in FOLLOW(B)
+    • if there is a production A→αBβ and FIRST(β) contains ε
+        then everything in FOLLOW(A) is in FOLLOW(B)
+    • if there is a production A→αB
+        then everything in FOLLOW(A) is in FOLLOW(B)*/
+
     // populating grammar follow with empty vectors corresponding to index of each non terminal
     for (int i = 0; i < TERMINAL; i++)
     {
@@ -336,27 +352,25 @@ void populateFollow(Grammar grammar)
     }
 
     // adding stack symbol $ in follow set of start symbol
-    Token stack_symbol = init_Token(EO_STACK, char_to_string("$"), "$", 0, 0);
+    Token stack_symbol = init_token(EO_STACK, char_to_string("$"), "$", 0, 0);
     Vector start_vec = get(grammar->follow, ((Rule)get(grammar->rules, 0))->NT->type);
     push_back(start_vec, stack_symbol);
 
     for (int i = 0; i < TERMINAL; i++)
     {
 
-        Token nonTerminal = init_Token(i, char_to_string(grammarTokenKindString[i]), grammarTokenKindString[i], 0, 0);
+        Token nonTerminal = init_token(i, char_to_string(grammarTokenKindString[i]), grammarTokenKindString[i], 0, 0);
         Vector currFollow = get(grammar->follow, i);
 
         for (int r = 0; r < grammar->rules->size; r++)
         {
             Rule rule = (Rule)get(grammar->rules, r);
             Vector rhs = rule->derivables;
-
             for (int d = 0; d < rhs->size; d++)
             {
                 Token tk = (Token)get(rhs, d);
                 if (tk->type == nonTerminal->type)
                 {
-
                     bool includeLhsFollow = false;
                     if (d == rhs->size - 1)
                         includeLhsFollow = true;
@@ -374,6 +388,9 @@ void populateFollow(Grammar grammar)
                             Vector nextFirst = get(grammar->first, nextToken->type);
                             if ((grammar->nullable)[nextToken->type] && (k + 1 == rhs->size))
                                 includeLhsFollow = true;
+
+                            if (nextToken->type == nonTerminal->type)
+                                break;
 
                             for (int j = 0; j < nextFirst->size; j++)
                             {
@@ -418,86 +435,117 @@ void populateParseTable(Grammar grammar)
         Vector vec = init_vector(RULE);
         for (int j = 0; j < TK_ILLEGAL + 1; j++)
         {
-            Token error_tok = init_Token(TK_ILLEGAL, char_to_string(token_type_list[TK_ILLEGAL]), NULL, 0, 0);
+            Token error_tok = init_token(TK_ILLEGAL, char_to_string(token_type_list[TK_ILLEGAL]), NULL, 0, 0);
             Rule rule = init_rule(error_tok);
             push_back(vec, rule);
         }
         push_back(grammar->parseTable, vec);
     }
 
-    // printParseTable(grammar);
-
     for (int r = 0; r < grammar->rules->size; r++)
     {
         Rule rule = (Rule)get(grammar->rules, r);
         Vector row = (Vector)get(grammar->parseTable, rule->NT->type);
+        bool containsNull = false;
 
         for (int d = 0; d < rule->derivables->size; d++)
         {
             Vector firstOfRhs = init_vector(TOKEN);
             Token rhs_prefix = (Token)get(rule->derivables, d);
             bool terminal = false;
+            containsNull = false;
             if (rhs_prefix->type == TERMINAL)
             {
                 Vector termFirst = init_vector(TOKEN);
                 push_back(termFirst, rhs_prefix);
                 firstOfRhs = termFirst;
                 terminal = true;
-                // if (!compare(rhs_prefix->lexeme_str, char_to_string("#")))
-                // {
-                // for (int m = 0; m < TK_ILLEGAL; m++)
-                // {
-                //     if (strcmp(rhs_prefix->lexeme_str->text, token_type_list[m]) == 0)
-                //     {
-                //         put(row, m, rule);
-                //     }
-                // }
-                // }
-                // break;
             }
             else
             {
                 firstOfRhs = (Vector)get(grammar->first, (rhs_prefix)->type);
-                Token null = init_Token(TERMINAL, char_to_string("#"), NULL, 0, 0);
-                if (!contains(firstOfRhs, null))
-                    terminal = true;
+                Token null = init_token(TERMINAL, char_to_string("#"), NULL, 0, 0);
+                if (contains(firstOfRhs, null))
+                    containsNull = true;
             }
             for (int i = 0; i < firstOfRhs->size; i++)
             {
                 Token tk = (Token)get(firstOfRhs, i);
-                if (!compare(tk->lexeme_str, char_to_string("#")))
+                if (compare(tk->lexeme_str, char_to_string("#")) && (d == 0) && r != 0)
                 {
-                    for (int m = 0; m < TK_ILLEGAL; m++)
-                    {
-                        if (strcmp(tk->lexeme_str->text, token_type_list[m]) == 0)
-                        {
-                            if(m == TK_END) 
-                            printf("smooth");
-                            put(row, m, rule);
-                        }
-                    }
-                }
-                else
-                {
-                    Vector followOfLhs = (Vector)get(grammar->follow, rule->NT->type);
 
-                    for (int l = 0; l < followOfLhs->size; l++)
+                    Vector followSet = (Vector)get(grammar->follow, rule->NT->type);
+                    // printVector(followSet);
+                    // printf("\n");
+                    for (int f = 0; f < followSet->size; f++)
                     {
-                        Token in_follow_lhs = (Token)get(followOfLhs, l);
+                        Token inFollowSet = (Token)get(followSet, f);
                         for (int m = 0; m < TK_ILLEGAL; m++)
                         {
-                            if (strcmp(in_follow_lhs->lexeme_str->text, token_type_list[m]) == 0)
+                            if (strcmp(inFollowSet->lexeme_str->text, token_type_list[m]) == 0)
                             {
-                                if (m == TK_END)
-                                    printf("smooth");
                                 put(row, m, rule);
                             }
                         }
                     }
+
+                    // printf("%s\n", rule->NT->lexeme_str->text);
+                }
+
+                for (int m = 0; m < TK_ILLEGAL; m++)
+                {
+                    if (strcmp(tk->lexeme_str->text, token_type_list[m]) == 0)
+                    {
+                        // Rule existing_rule = (Rule)get(row, m);
+                        // if (existing_rule->NT->type == TK_ILLEGAL)
+                        put(row, m, rule);
+                    }
                 }
             }
-            if (terminal)
+            if (terminal || !containsNull)
                 break;
+        }
+
+        if (containsNull)
+        {
+            Vector followOfLhs = (Vector)get(grammar->follow, rule->NT->type);
+
+            for (int l = 0; l < followOfLhs->size; l++)
+            {
+                Token in_follow_lhs = (Token)get(followOfLhs, l);
+                for (int m = 0; m < TK_ILLEGAL; m++)
+                {
+                    if (strcmp(in_follow_lhs->lexeme_str->text, token_type_list[m]) == 0)
+                    {
+                        // Rule existing_rule = (Rule)get(row, m);
+                        // if (existing_rule->NT->type == TK_ILLEGAL)
+                        put(row, m, rule);
+                    }
+                }
+            }
+            Token stack_symbol = init_token(EO_STACK, char_to_string("$"), "$", 0, 0);
+            if (contains(followOfLhs, stack_symbol))
+            {
+                put(row, TK_ILLEGAL, rule);
+            }
+        }
+
+        // adding SYN tokens for error recovery
+        Vector followSet = (Vector)get(grammar->follow, rule->NT->type);
+        for (int f = 0; f < followSet->size; f++)
+        {
+            Token inFollowSet = (Token)get(followSet, f);
+            Token syn_tok = init_token(SYN, char_to_string("SYN"), "SYN", 0, 0);
+            Rule syn_rule = init_rule(syn_tok);
+            for (int m = 0; m < TK_ILLEGAL; m++)
+            {
+                if (strcmp(inFollowSet->lexeme_str->text, token_type_list[m]) == 0)
+                {
+                    Rule currentEntry = (Rule)get(row, m);
+                    if (currentEntry->NT->type == TK_ILLEGAL)
+                        put(row, m, syn_rule);
+                }
+            }
         }
     }
 }

@@ -40,7 +40,7 @@ Token rand_token()
     // NOTE: always keep type as tk_fieldid, tk_funid, tk_id, tk_ruid.....update for more
     int type = rand() % 58; //(tk_illegal +1)
     String value = char_to_string(token_type_list[type]);
-    Token tk = init_Token(type, value, value->text, rand() % 1000, rand() % 1000);
+    Token tk = init_token(type, value, value->text, rand() % 1000, rand() % 1000);
     return tk;
 }
 
@@ -77,7 +77,12 @@ Rule rand_rule()
     return init_rule(tk);
 }
 
-void *get_randomizer(enum DATATYPE type)
+TreeNode rand_tree_node(){
+    Token tk = rand_token();
+    return init_treenode(tk);
+}
+
+    void *get_randomizer(enum DATATYPE type)
 {
     switch (type)
     {

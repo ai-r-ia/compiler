@@ -4,6 +4,7 @@
 #include "lexical_token.h"
 #include "vectors.h"
 #include "stdio.h"
+#include "vectorDef.h"
 
 #define GRAMMAR_LENGTH 10000
 
@@ -34,6 +35,12 @@ enum GrammarTokenKind
     otherStmts,
     stmt,
     assignmentStmt,
+    arithmeticExpression,
+    expPrime,
+    term,
+    termPrime,
+    factor,
+    var,
     singleOrRecId,
     option_single_constructed,
     oneExpansion,
@@ -45,15 +52,9 @@ enum GrammarTokenKind
     conditionalStmt,
     elsePart,
     ioStmt,
-    arithmeticExpression,
-    expPrime,
-    term,
-    termPrime,
-    factor,
     highPrecedenceOperators,
     lowPrecedenceOperators,
     booleanExpression,
-    var,
     logicalOp,
     relationalOp,
     returnStmt,
@@ -66,7 +67,8 @@ enum GrammarTokenKind
     // Do not belong to non terminals
     TERMINAL,
     INVALID_GTOK,
-    EO_STACK
+    EO_STACK,
+    SYN,
 };
 
 static char *grammarTokenKindString[] =
@@ -96,6 +98,12 @@ static char *grammarTokenKindString[] =
         "otherStmts",
         "stmt",
         "assignmentStmt",
+        "arithmeticExpression",
+        "expPrime",
+        "term",
+        "termPrime",
+        "factor",
+        "var",
         "singleOrRecId",
         "option_single_constructed",
         "oneExpansion",
@@ -107,15 +115,9 @@ static char *grammarTokenKindString[] =
         "conditionalStmt",
         "elsePart",
         "ioStmt",
-        "arithmeticExpression",
-        "expPrime",
-        "term",
-        "termPrime",
-        "factor",
         "highPrecedenceOperators",
         "lowPrecedenceOperators",
         "booleanExpression",
-        "var",
         "logicalOp",
         "relationalOp",
         "returnStmt",
@@ -128,7 +130,9 @@ static char *grammarTokenKindString[] =
         // Not non terminals
         "Terminal",
         "INVALID_GTOK",
-        "$"};
+        "$",
+        "SYN",
+};
 
 typedef struct grammar *Grammar;
 struct grammar

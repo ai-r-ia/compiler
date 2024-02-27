@@ -7,6 +7,7 @@
 #include "vectors.h"
 #include "symbol_table.h"
 #include "rules.h"
+#include "tree.h"
 
 char rand_char();
 int *rand_int_ptr();
@@ -15,7 +16,8 @@ String rand_string();
 Token rand_token();
 HashNode rand_hash_node();
 SymbolNode rand_symbol_node();
-Rule rand_rule();
+TreeNode rand_tree_node();
+    Rule rand_rule();
 Vector rand_vector(enum DATATYPE type);
 void *get_randomizer(enum DATATYPE type);
 #endif

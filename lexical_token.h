@@ -3,6 +3,7 @@
 
 // #include "whole_include.h"
 #include "strings.h"
+#include <stdbool.h>
 
 enum TOKEN_TYPE
 {
@@ -207,7 +208,6 @@ struct token
 
 bool checkIfArithmeticOperator(int lexicalToken); // TODO: REMOVE:
 
-Token init_Token(int type, String lexeme_str, void *value, int lineNumber, int charNumber);
-
+Token init_token(int type, String lexeme_str, void *value, int lineNumber, int charNumber);
 
 #endif

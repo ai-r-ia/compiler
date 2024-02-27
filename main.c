@@ -3,9 +3,9 @@
 
 int main(int argc, char** args)
 {
-    args = "test";
+    *args = "test";
 
-    if (strcmp(args, "test") == 0)
+    if (strcmp(*args, "test") == 0)
     {
         testAll();
         return 0;

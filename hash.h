@@ -3,6 +3,8 @@
 
 #include "lexical_token.h"
 #include "vectors.h"
+#include "vectorDef.h"
+
 // #include "whole_include.h"
 
 #define TABLE_SIZE 1000
