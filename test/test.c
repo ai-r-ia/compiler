@@ -3,7 +3,7 @@
 void testAll()
 {
     // Calls all the wrappers of every module.
-    info("testing all\n");
+    info("testing\n");
     // test_vector();
     // test_hash_table();
     // test_lexer();

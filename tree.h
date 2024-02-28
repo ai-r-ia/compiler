@@ -12,7 +12,7 @@ void addChild(TreeNode node, Token token);
 
 void tokenToChildren(TreeNode parent, Vector tokens);
 
-TreeNode addToTree(TreeNode parent, Rule rule);
+void addToTree(TreeNode parent, Rule rule);
 
-void printTree(TreeNode root);
+void printTree(TreeNode root, int level);
 #endif

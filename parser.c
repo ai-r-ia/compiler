@@ -56,8 +56,8 @@ Parser init_parser(char *lexer_filename, char *grammar_filename)
     return parser;
 }
 
-void _panicRecovery(){
-
+void _panicRecovery()
+{
 }
 
 /*Let 𝑎 be the first symbol in 𝑤
@@ -90,7 +90,6 @@ TreeNode parseInputSourceCode(char *testcaseFile)
     // Pushing start symbol of our grammar in stack
     TreeNode tree = init_treenode(start_symbol->NT);
     tokenToChildren(tree, start_symbol->derivables);
-    
 
     TreeNode currentParent = tree;
     push_back(parser->stack, start_symbol->NT);
@@ -112,9 +111,11 @@ TreeNode parseInputSourceCode(char *testcaseFile)
             // printf("current: %s \n", parser->currentNode->lexeme_str->text);
             if (top_of_stack->type == TERMINAL)
             {
-                error("ERROR");
-                // pop_back(parser->stack);
-                // top_of_stack = top(parser->stack);
+                char err_terminal[100];
+                sprintf(err_terminal,"Terminal %s popped from stack.", top_of_stack->lexeme_str->text);
+                error(err_terminal);
+                pop_back(parser->stack);
+                top_of_stack = top(parser->stack);
                 break;
             }
             Vector tableRow = (Vector)get(parseTable, top_of_stack->type);
@@ -138,7 +139,7 @@ TreeNode parseInputSourceCode(char *testcaseFile)
             else if (rule)
             {
                 printRule(rule);
-                currentParent = addToTree(currentParent, rule);
+                addToTree(currentParent, rule);
                 pop_back(parser->stack);
 
                 for (int i = rule->derivables->size - 1; i > -1; i--)
@@ -156,7 +157,7 @@ TreeNode parseInputSourceCode(char *testcaseFile)
         top_of_stack = top(parser->stack);
     }
 
-    // printf("\n PARSE TREE \n");
-    // printTree(tree);
+    printf("\nPARSE TREE \n");
+    printTree(tree,0);
     return tree;
 }
