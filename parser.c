@@ -99,28 +99,28 @@ TreeNode parseInputSourceCode(char *testcaseFile)
 
     while (top_of_stack->type != EO_STACK)
     {
-        // printVector(parser->stack);
-        // printf("\n");
+        printf("STACK: ");
+        printVector(parser->stack);
+        printf("\n");
         if (compare(char_to_string(token_type_list[parser->currentNode->type]), top_of_stack->lexeme_str))
         {
+            updateTerminalInTree(tree, parser->currentNode);
             pop_back(parser->stack);
             parser->currentNode = getNextToken(parser->lexer);
         }
         else
         {
-            // printf("current: %s \n", parser->currentNode->lexeme_str->text);
+            printf("current: %s \n", parser->currentNode->lexeme_str->text);
             if (top_of_stack->type == TERMINAL)
             {
                 char err_terminal[100];
-                sprintf(err_terminal,"Terminal %s popped from stack.", top_of_stack->lexeme_str->text);
+                sprintf(err_terminal, "Terminal %s popped from stack.", top_of_stack->lexeme_str->text);
                 error(err_terminal);
                 pop_back(parser->stack);
                 top_of_stack = top(parser->stack);
-                break;
+                continue;
             }
             Vector tableRow = (Vector)get(parseTable, top_of_stack->type);
-            if (top_of_stack->type == singleOrRecId) // NOTE: v bad makeshift code
-                parser->currentNode = getNextToken(parser->lexer);
 
             Rule rule = (Rule)get(tableRow, parser->currentNode->type);
 
@@ -145,8 +145,10 @@ TreeNode parseInputSourceCode(char *testcaseFile)
                 for (int i = rule->derivables->size - 1; i > -1; i--)
                 {
                     Token tk = (Token)get(rule->derivables, i);
+                    Token new_tk = NULL;
+                    new_tk = copy_token(new_tk, tk);
                     if (!compare(tk->lexeme_str, char_to_string("#")))
-                        push_back(parser->stack, tk);
+                        push_back(parser->stack, new_tk);
                 }
             }
             else
@@ -158,6 +160,8 @@ TreeNode parseInputSourceCode(char *testcaseFile)
     }
 
     printf("\nPARSE TREE \n");
-    printTree(tree,0);
-    return tree;
+    // printTree(tree, 0);
+    saveParseTree(tree,0);
+        // prettyPrintParseTree(tree);
+        return tree;
 }

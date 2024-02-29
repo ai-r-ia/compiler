@@ -110,7 +110,7 @@ String copy_string(String destination, String source)
     {
         destination->text[destination->size++] = source->text[i++];
     }
-    destination->size--;
+    destination->size = source->size;
     return destination;
 }
 

@@ -11,8 +11,15 @@
         printf(__VA_ARGS__);                       \
     } while (0)
 
+#include "tree.h"
+
 void debug(char *message);
 void error(char *message);
 void info(char *message);
 void success(char *message);
+void prettyPrintParseTree(TreeNode node);
+void _prettyPrintParseTree(TreeNode node, int level);
+// void prettyPrintParseTreeF(TreeNode node, FILE *fp);
+// void _prettyPrintParseTreeF(TreeNode node, int level, FILE *fp);
+void prettyPrintAST(TreeNode node);
 #endif

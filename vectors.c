@@ -169,7 +169,8 @@ void printVector(Vector vec)
         for (int i = 0; i < vec->size; i++)
         {
             if (i != vec->size - 1)
-                printf("%s,", (((Token)get(vec, i))->lexeme_str)->text);
+                {Token tk = (Token)get(vec, i);
+                    printf("%s,", (((Token)get(vec, i))->lexeme_str)->text);}
             else
                 printf("%s", (((Token)get(vec, i))->lexeme_str)->text);
         }

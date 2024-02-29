@@ -42,8 +42,7 @@
 <stmt> = <ioStmt> 
 <stmt> = <funCallStmt>
 <assignmentStmt> = <singleOrRecId>  TK_ASSIGNOP <arithmeticExpression> TK_SEM
-<singleOrRecId> = TK_ID
-<singleOrRecId> = <option_single_constructed>
+<singleOrRecId> = TK_ID <option_single_constructed>
 <option_single_constructed> = <oneExpansion><moreExpansions>
 <option_single_constructed> = #
 <oneExpansion> = TK_DOT TK_FIELDID
