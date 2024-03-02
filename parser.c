@@ -87,7 +87,7 @@ TreeNode parseInputSourceCode(char *testcaseFile)
 
     Rule start_symbol = get(parser->grammar->rules, 0);
 
-    // Pushing start symbol of our grammar in stack
+    // Pushing start symbol of the grammar into the stack
     TreeNode tree = init_treenode(start_symbol->NT);
     tokenToChildren(tree, start_symbol->derivables);
 
@@ -113,8 +113,9 @@ TreeNode parseInputSourceCode(char *testcaseFile)
             printf("current: %s, type: %s \n", parser->currentNode->lexeme_str->text, token_type_list[parser->currentNode->type]);
             if (top_of_stack->type == TERMINAL)
             {
+
                 char err_terminal[100];
-                sprintf(err_terminal, "Terminal %s popped from stack. Expected '%s", top_of_stack->lexeme_str->text, top_of_stack->lexeme_value);
+                sprintf(err_terminal, "Terminal %s popped from stack. Expected '%s'", top_of_stack->lexeme_str->text, top_of_stack->lexeme_str->text);
                 error(err_terminal);
                 pop_back(parser->stack);
                 top_of_stack = top(parser->stack);
