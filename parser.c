@@ -119,6 +119,7 @@ TreeNode parseInputSourceCode(char *testcaseFile)
         {
             updateTerminalInTree(tree, parser->currentNode);
             pop_back(parser->stack);
+            
             printf(" before match- current: %s, type: %s\n", parser->currentNode->lexeme_str->text, token_type_list[parser->currentNode->type]);
             parser->currentNode = getNextToken(parser->lexer);
             printf(" after match- current: %s, type: %s\n", parser->currentNode->lexeme_str->text, token_type_list[parser->currentNode->type]);
