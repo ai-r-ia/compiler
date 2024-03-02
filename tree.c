@@ -137,8 +137,8 @@ void printTree(FILE *fp, TreeNode root, int level)
         printTree(fp, (TreeNode)get(root->children, i), level + 1);
     }
     // printf("%s      ---%d\n", root->value->lexeme_str->text, level);
-    printf("Lexeme:%13s CurrentNode:%25s Line no.:%3d  tokenName:%13s valueIfNumber:%.3f parentNodeSymbol:%25s isLeafNode:%4s NodeSymbol:%25s \n", lexeme, CurrentNode, lineno,
-           tokenName, valueIfNumber, parentNodeSymbol, isLeafNode, NodeSymbol);
+    // printf("Lexeme:%13s CurrentNode:%25s Line no.:%3d  tokenName:%13s valueIfNumber:%.3f parentNodeSymbol:%25s isLeafNode:%4s NodeSymbol:%25s \n", lexeme, CurrentNode, lineno,
+    //        tokenName, valueIfNumber, parentNodeSymbol, isLeafNode, NodeSymbol);
     fprintf(fp, "Lexeme:%13s CurrentNode:%25s Line no.:%3d  tokenName:%13s valueIfNumber:%.3f parentNodeSymbol:%25s isLeafNode:%4s NodeSymbol:%25s \n", lexeme, CurrentNode, lineno,
             tokenName, valueIfNumber, parentNodeSymbol, isLeafNode, NodeSymbol);
 

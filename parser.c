@@ -81,7 +81,7 @@ TreeNode parseInputSourceCode(char *testcaseFile)
     populateFollow(parser->grammar);
     populateParseTable(parser->grammar);
 
-    // printParseTable(parser->grammar);
+    printParseTable(parser->grammar);
 
     Vector parseTable = parser->grammar->parseTable;
 
@@ -110,11 +110,11 @@ TreeNode parseInputSourceCode(char *testcaseFile)
         }
         else
         {
-            printf("current: %s \n", parser->currentNode->lexeme_str->text);
+            printf("current: %s, type: %s \n", parser->currentNode->lexeme_str->text, token_type_list[parser->currentNode->type]);
             if (top_of_stack->type == TERMINAL)
             {
                 char err_terminal[100];
-                sprintf(err_terminal, "Terminal %s popped from stack.", top_of_stack->lexeme_str->text);
+                sprintf(err_terminal, "Terminal %s popped from stack. Expected '%s", top_of_stack->lexeme_str->text, top_of_stack->lexeme_value);
                 error(err_terminal);
                 pop_back(parser->stack);
                 top_of_stack = top(parser->stack);
@@ -124,17 +124,27 @@ TreeNode parseInputSourceCode(char *testcaseFile)
 
             Rule rule = (Rule)get(tableRow, parser->currentNode->type);
 
-            if (rule->NT->type == TK_ILLEGAL || rule->NT->type == SYN)
+            if (rule->NT->type == TK_ILLEGAL || rule->NT->type == SYN || rule->NT->type == ERROR)
             {
-                error("Error recovery invoked.");
                 // error recovery mechanism: Panic-Mode Recovery
                 /*If the parser looks up entry M[A,a] and finds that it is blank/error, the input symbol a is skipped.
                     If the entry is syn, then the nonterminal on top of the stack is popped.*/
 
-                if (rule->NT->type == TK_ILLEGAL)
+                if (rule->NT->type == TK_ILLEGAL) //  lexical errors
+                {
                     parser->currentNode = getNextToken(parser->lexer);
+                    error("Error recovery invoked. Lexical error");
+                }
+                else if (rule->NT->type == ERROR) // error entry in parse table
+                {
+                    parser->currentNode = getNextToken(parser->lexer);
+                    error("Error recovery invoked. ERROR entry");
+                }
                 else if (rule->NT->type == SYN)
+                {
                     pop_back(parser->stack);
+                    error("Error recovery invoked. SYN(follow set)");
+                }
             }
             else if (rule)
             {
@@ -161,7 +171,7 @@ TreeNode parseInputSourceCode(char *testcaseFile)
 
     printf("\nPARSE TREE \n");
     // printTree(tree, 0);
-    saveParseTree(tree,0);
-        // prettyPrintParseTree(tree);
-        return tree;
+    saveParseTree(tree, 0);
+    // prettyPrintParseTree(tree);
+    return tree;
 }

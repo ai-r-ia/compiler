@@ -69,6 +69,7 @@ enum GrammarTokenKind
     INVALID_GTOK,
     EO_STACK,
     SYN,
+    ERROR,
 };
 
 static char *grammarTokenKindString[] =
@@ -132,6 +133,7 @@ static char *grammarTokenKindString[] =
         "INVALID_GTOK",
         "$",
         "SYN",
+        "ERROR",
 };
 
 typedef struct grammar *Grammar;

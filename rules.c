@@ -47,8 +47,8 @@ void printParseTable(Grammar grammar)
         {
             Rule rule = (Rule)get(row, j);
             char *column = token_type_list[j];
-            if (rule->NT->type == TK_ILLEGAL)
-                continue;
+            // if (rule->NT->type == TK_ILLEGAL)
+            //     continue;
             if (j == row->size - 1)
                 column = "$";
             printf("[%s, %s] ", grammarTokenKindString[i], column);
@@ -435,7 +435,7 @@ void populateParseTable(Grammar grammar)
         Vector vec = init_vector(RULE);
         for (int j = 0; j < TK_ILLEGAL + 1; j++)
         {
-            Token error_tok = init_token(TK_ILLEGAL, char_to_string(token_type_list[TK_ILLEGAL]), NULL, 0, 0);
+            Token error_tok = init_token(ERROR, char_to_string(grammarTokenKindString[ERROR]), grammarTokenKindString[ERROR], 0, 0);
             Rule rule = init_rule(error_tok);
             push_back(vec, rule);
         }
@@ -542,7 +542,7 @@ void populateParseTable(Grammar grammar)
                 if (strcmp(inFollowSet->lexeme_str->text, token_type_list[m]) == 0)
                 {
                     Rule currentEntry = (Rule)get(row, m);
-                    if (currentEntry->NT->type == TK_ILLEGAL)
+                    if (currentEntry->NT->type == ERROR)
                         put(row, m, syn_rule);
                 }
             }
