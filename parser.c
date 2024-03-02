@@ -81,7 +81,7 @@ TreeNode parseInputSourceCode(char *testcaseFile)
     populateFollow(parser->grammar);
     populateParseTable(parser->grammar);
 
-    printParseTable(parser->grammar);
+    // printParseTable(parser->grammar);
 
     Vector parseTable = parser->grammar->parseTable;
 
@@ -124,13 +124,13 @@ TreeNode parseInputSourceCode(char *testcaseFile)
 
             Rule rule = (Rule)get(tableRow, parser->currentNode->type);
 
-            if (rule->NT->type == TK_ILLEGAL || rule->NT->type == SYN || rule->NT->type == ERROR)
+            if (parser->currentNode->type == TK_ILLEGAL || rule->NT->type == SYN || rule->NT->type == ERROR)
             {
                 // error recovery mechanism: Panic-Mode Recovery
                 /*If the parser looks up entry M[A,a] and finds that it is blank/error, the input symbol a is skipped.
                     If the entry is syn, then the nonterminal on top of the stack is popped.*/
 
-                if (rule->NT->type == TK_ILLEGAL) //  lexical errors
+                if (parser->currentNode->type == TK_ILLEGAL) //  lexical errors
                 {
                     parser->currentNode = getNextToken(parser->lexer);
                     error("Error recovery invoked. Lexical error");

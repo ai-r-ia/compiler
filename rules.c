@@ -47,8 +47,8 @@ void printParseTable(Grammar grammar)
         {
             Rule rule = (Rule)get(row, j);
             char *column = token_type_list[j];
-            // if (rule->NT->type == TK_ILLEGAL)
-            //     continue;
+            if (compare(rule->NT->lexeme_str, char_to_string("ERROR")))
+                continue;
             if (j == row->size - 1)
                 column = "$";
             printf("[%s, %s] ", grammarTokenKindString[i], column);
