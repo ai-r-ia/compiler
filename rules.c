@@ -547,5 +547,22 @@ void populateParseTable(Grammar grammar)
                 }
             }
         }
+
+        Vector firstSet = (Vector)get(grammar->first, rule->NT->type);
+        for (int f = 0; f < firstSet->size; f++)
+        {
+            Token inFirstSet = (Token)get(firstSet, f);
+            Token syn_tok = init_token(SYN, char_to_string("SYN"), "SYN", 0, 0);
+            Rule syn_rule = init_rule(syn_tok);
+            for (int m = 0; m < TK_ILLEGAL; m++)
+            {
+                if (strcmp(inFirstSet->lexeme_str->text, token_type_list[m]) == 0)
+                {
+                    Rule currentEntry = (Rule)get(row, m);
+                    if (currentEntry->NT->type == ERROR)
+                        put(row, m, syn_rule);
+                }
+            }
+        }
     }
 }

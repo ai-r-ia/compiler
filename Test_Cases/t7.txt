@@ -1,11 +1,12 @@
 
-_computeFunctionValue input parameter list[int c3, int c4, int c5]
-output parameter list [real c6];
-	c6 <--- (5000.7 + 200.74)
-    ;
-end
-
 _main
     type int : b5;
+    _computeFunctionValue input parameter list[int c3, int c4, int c5]
+    output parameter list [real c6];
+        c6 <--- (5000.74 + 200.74)
+        ;
+        return;
+    end
+    
     return;
 end
