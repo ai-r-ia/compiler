@@ -7,7 +7,7 @@
 
 // #include "whole_include.h"
 
-#define TABLE_SIZE 1000
+#define TABLE_SIZE 100
 
 typedef struct symbol_node *SymbolNode;
 struct symbol_node

@@ -76,5 +76,15 @@ Token get_value(SymbolTable tb, String key)
 
 void printSymbolTable(SymbolTable tb)
 {
-    
+    printf("SYMBOL TABLE\n");
+    for (int i = 0; i < tb->items->size; i++)
+    {
+        Vector row = get(tb->items, i);
+
+        for (int j = 0; j < row->size; j++)
+        {
+            SymbolNode item = get(row, j);
+            printf("Lexeme: %20s  Token: %s\n", item->key->text, token_type_list[item->value->type]);
+        }
+    }
 }

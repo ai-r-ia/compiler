@@ -415,11 +415,11 @@ void populateFollow(Grammar grammar)
             }
         }
     }
-    removeAt(get(grammar->follow, highPrecedenceOperators), 4);
-    removeAt(get(grammar->follow, highPrecedenceOperators), 4);
+    // removeAt(get(grammar->follow, highPrecedenceOperators), 4);
+    // removeAt(get(grammar->follow, highPrecedenceOperators), 4);
 
-    removeAt(get(grammar->follow, lowPrecedenceOperators), 4);
-    removeAt(get(grammar->follow, lowPrecedenceOperators), 4);
+    // removeAt(get(grammar->follow, lowPrecedenceOperators), 4);
+    // removeAt(get(grammar->follow, lowPrecedenceOperators), 4);
 }
 
 void populateParseTable(Grammar grammar)

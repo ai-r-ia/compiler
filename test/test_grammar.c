@@ -8,17 +8,17 @@ void test_grammar()
     populateFollow(grammar);
     populateParseTable(grammar);
 
-    printf("FIRST and FOLLOW sets \n");
-    for (int i = 0; i < grammar->first->size; i++)
-    {
-        printf("%s      First: ", grammarTokenKindString[i]);
-        Vector rhs = (Vector)get(grammar->first, i);
-        printVector(rhs);
-        Vector rhs2 = (Vector)get(grammar->follow, i);
-        printf("      Follow: ");
-        printVector(rhs2);
-        printf("\n");
-    }
+    // printf("FIRST and FOLLOW sets \n");
+    // for (int i = 0; i < grammar->first->size; i++)
+    // {
+    //     printf("%s      First: ", grammarTokenKindString[i]);
+    //     Vector rhs = (Vector)get(grammar->first, i);
+    //     printVector(rhs);
+    //     Vector rhs2 = (Vector)get(grammar->follow, i);
+    //     printf("      Follow: ");
+    //     printVector(rhs2);
+    //     printf("\n");
+    // }
 
     for (int r = 0; r < grammar->rules->size; r++)
     {
@@ -36,5 +36,5 @@ void test_grammar()
         // printf("%s      %d\n", rule->NT->lexeme_str->text, grammar->nullable[rule->NT->type]);
     }
 
-    // printParseTable(grammar);
+    printParseTable(grammar);
 }

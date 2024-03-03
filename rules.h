@@ -10,8 +10,6 @@
 
 enum GrammarTokenKind
 {
-    highPrecedenceOperators,
-    lowPrecedenceOperators,
     program,
     mainFunction,
     otherFunctions,
@@ -54,6 +52,8 @@ enum GrammarTokenKind
     conditionalStmt,
     elsePart,
     ioStmt,
+    highPrecedenceOperators,
+    lowPrecedenceOperators,
     booleanExpression,
     logicalOp,
     relationalOp,
@@ -75,8 +75,6 @@ enum GrammarTokenKind
 
 static char *grammarTokenKindString[] =
     {
-        "highPrecedenceOperators",
-        "lowPrecedenceOperators",
         "program",
         "mainFunction",
         "otherFunctions",
@@ -119,6 +117,8 @@ static char *grammarTokenKindString[] =
         "conditionalStmt",
         "elsePart",
         "ioStmt",
+        "highPrecedenceOperators",
+        "lowPrecedenceOperators",
         "booleanExpression",
         "logicalOp",
         "relationalOp",
