@@ -147,14 +147,14 @@ struct grammar
     Vector follow;
     int *nullable;
     Vector parseTable;
-} grammar;
+} extern grammar;
 
 typedef struct rule *Rule;
 struct rule
 {
     Token NT;          // non terminal
     Vector derivables; // rhs of rule
-} rule;
+} extern rule;
 
 Rule init_rule(Token NT);
 

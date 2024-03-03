@@ -14,14 +14,14 @@ struct symbol_node
 {
     String key;
     Token value; // token type
-} symbol_node;
+} extern symbol_node;
 
 typedef struct symbol_table *SymbolTable;
 struct symbol_table
 {
     Vector items; // vector of vector of hash_nodes
     int count;
-} symbol_table;
+} extern symbol_table;
 
 SymbolTable init_table();
 

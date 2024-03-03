@@ -12,7 +12,7 @@ struct string
     char *text;
     size_t memory_size; // available memory
     size_t size;        // filled length
-} string;
+} extern string;
 
 String init_str();
 

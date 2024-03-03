@@ -204,7 +204,7 @@ struct token
     size_t char_num;
     void *lexeme_value;
     char *error_msg;
-} token;
+} extern token;
 
 bool checkIfArithmeticOperator(int lexicalToken); // TODO: REMOVE:
 

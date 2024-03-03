@@ -13,7 +13,7 @@ struct treeNode
     // TreeNode rightchild, leftchild;
     TreeNode parent;
 
-} treeNode;
+} extern treeNode;
 
 typedef struct tree *Tree;
 struct tree
@@ -21,6 +21,6 @@ struct tree
     TreeNode root;
     // Token token;
 
-} tree;
+} extern tree;
 
 #endif

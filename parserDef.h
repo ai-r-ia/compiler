@@ -17,7 +17,7 @@ struct parser
     Vector stack;
     bool noError;
 
-} parser;
+} extern parser;
 
 static char *keyword_syn_token_list[] = {
     "TK_COMMENT",
