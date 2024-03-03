@@ -115,10 +115,10 @@ TreeNode parseInputSourceCode(char *testcaseFile)
 
     while (top_of_stack->type != EO_STACK)
     {
-        printf("current: %s, type: %s\n", parser->currentNode->lexeme_str->text, token_type_list[parser->currentNode->type]);
-        printf("STACK: ");
-        printVector(parser->stack);
-        printf("\n\n");
+        // printf("current: %s, type: %s\n", parser->currentNode->lexeme_str->text, token_type_list[parser->currentNode->type]);
+        // printf("STACK: ");
+        // printVector(parser->stack);
+        // printf("\n\n");
         if (compare(char_to_string(token_type_list[parser->currentNode->type]), top_of_stack->lexeme_str))
         {
             updateTerminalInTree(tree, parser->currentNode);
@@ -147,6 +147,7 @@ TreeNode parseInputSourceCode(char *testcaseFile)
                     // info("Error recovery invoked. Lexical error");
                     char *error_msg_tk = parser->currentNode->error_msg;
                     sprintf(error_msg, "Line %2d Error: %s", parser->currentNode->line_num, error_msg_tk);
+                    
                     // while (parser->currentNode->type == TK_ILLEGAL)
                     // printf("2 before match- current: %s, type: %s\n", parser->currentNode->lexeme_str->text, token_type_list[parser->currentNode->type]);
                     parser->currentNode = getNextToken(parser->lexer);
@@ -180,7 +181,9 @@ TreeNode parseInputSourceCode(char *testcaseFile)
                 if (parser->currentNode->type == TK_ILLEGAL) //  lexical errors
                 {
                     info("Error recovery invoked. Lexical error");
-                    char *error_msg = parser->currentNode->error_msg;
+
+                    char *error_msg_tk = parser->currentNode->error_msg;
+                    sprintf(error_msg, "Line %2d Error: %s", parser->currentNode->line_num, error_msg_tk);
                     error(error_msg);
                     // while (parser->currentNode->type == TK_ILLEGAL)
                     parser->currentNode = getNextToken(parser->lexer);
@@ -230,7 +233,7 @@ TreeNode parseInputSourceCode(char *testcaseFile)
                         // top_of_stack = top(parser->stack);
                     }
                     // if (isKeywordSynToken(char_to_string(token_type_list[parser->currentNode->type])))
-                    //     parser->currentNode = getNextToken(parser->lexer);
+                        parser->currentNode = getNextToken(parser->lexer);
                 }
                 else if (rule->NT->type == SYN)
                 {
@@ -249,7 +252,7 @@ TreeNode parseInputSourceCode(char *testcaseFile)
             }
             else if (rule)
             {
-                printRule(rule);
+                // printRule(rule);
                 addToTree(currentParent, rule);
                 pop_back(parser->stack);
 

@@ -398,6 +398,9 @@ void populateFollow(Grammar grammar)
                                 if (!contains(currFollow, tk) && !compare(tk->lexeme_str, char_to_string("#")))
                                     push_back(currFollow, tk);
                             }
+
+                            if ((grammar->nullable)[nextToken->type] == 0)
+                                break;
                         }
                     }
 
@@ -415,11 +418,6 @@ void populateFollow(Grammar grammar)
             }
         }
     }
-    // removeAt(get(grammar->follow, highPrecedenceOperators), 4);
-    // removeAt(get(grammar->follow, highPrecedenceOperators), 4);
-
-    // removeAt(get(grammar->follow, lowPrecedenceOperators), 4);
-    // removeAt(get(grammar->follow, lowPrecedenceOperators), 4);
 }
 
 void populateParseTable(Grammar grammar)
@@ -450,90 +448,114 @@ void populateParseTable(Grammar grammar)
     for (int r = 0; r < grammar->rules->size; r++)
     {
         Rule rule = (Rule)get(grammar->rules, r);
+
         Vector row = (Vector)get(grammar->parseTable, rule->NT->type);
         bool containsNull = false;
 
+        Vector firstOfRhs = init_vector(TOKEN);
         for (int d = 0; d < rule->derivables->size; d++)
         {
-            Vector firstOfRhs = init_vector(TOKEN);
             Token rhs_prefix = (Token)get(rule->derivables, d);
             bool terminal = false;
             containsNull = false;
             if (rhs_prefix->type == TERMINAL)
             {
-                Vector termFirst = init_vector(TOKEN);
-                push_back(termFirst, rhs_prefix);
-                firstOfRhs = termFirst;
+                // Vector termFirst = init_vector(TOKEN);
+                // push_back(termFirst, rhs_prefix);
+                // firstOfRhs = termFirst;
+                push_back(firstOfRhs, rhs_prefix);
                 terminal = true;
+                if (compare(rhs_prefix->lexeme_str, char_to_string("#")))
+                    containsNull = true;
+                break;
             }
             else
             {
-                firstOfRhs = (Vector)get(grammar->first, (rhs_prefix)->type);
+                Vector firstOfNT = (Vector)get(grammar->first, (rhs_prefix)->type);
+                for (int m = 0; m < firstOfNT->size; m++)
+                {
+                    Token tk = (Token)get(firstOfNT, m);
+                    if (!contains(firstOfRhs, tk))
+                        push_back(firstOfRhs, tk);
+                }
                 Token null = init_token(TERMINAL, char_to_string("#"), NULL, 0, 0);
-                if (contains(firstOfRhs, null))
-                    containsNull = true;
-            }
-            for (int i = 0; i < firstOfRhs->size; i++)
-            {
-                Token tk = (Token)get(firstOfRhs, i);
-                if (compare(tk->lexeme_str, char_to_string("#")) && (d == 0) && r != 0)
+                if (contains(firstOfNT, null))
                 {
+                    size_t index = get_index(firstOfRhs, null);
+                    removeAt(firstOfRhs, index);
 
-                    Vector followSet = (Vector)get(grammar->follow, rule->NT->type);
-                    // printVector(followSet);
-                    // printf("\n");
-                    for (int f = 0; f < followSet->size; f++)
-                    {
-                        Token inFollowSet = (Token)get(followSet, f);
-                        for (int m = 0; m < TK_ILLEGAL; m++)
-                        {
-                            if (strcmp(inFollowSet->lexeme_str->text, token_type_list[m]) == 0)
-                            {
-                                put(row, m, rule);
-                            }
-                        }
-                    }
+                    if (d == rule->derivables->size - 1) // check
+                        containsNull = true;
 
-                    // printf("%s\n", rule->NT->lexeme_str->text);
+                    continue;
                 }
-
-                for (int m = 0; m < TK_ILLEGAL; m++)
-                {
-                    if (strcmp(tk->lexeme_str->text, token_type_list[m]) == 0)
-                    {
-                        // Rule existing_rule = (Rule)get(row, m);
-                        // if (existing_rule->NT->type == TK_ILLEGAL)
-                        put(row, m, rule);
-                    }
-                }
+                else
+                    break;
             }
-            if (terminal || !containsNull)
-                break;
         }
 
         if (containsNull)
         {
-            Vector followOfLhs = (Vector)get(grammar->follow, rule->NT->type);
 
-            for (int l = 0; l < followOfLhs->size; l++)
+            Vector followSet = (Vector)get(grammar->follow, rule->NT->type);
+            // printVector(followSet);
+            // printf("\n");
+            for (int f = 0; f < followSet->size; f++)
             {
-                Token in_follow_lhs = (Token)get(followOfLhs, l);
+                Token inFollowSet = (Token)get(followSet, f);
                 for (int m = 0; m < TK_ILLEGAL; m++)
                 {
-                    if (strcmp(in_follow_lhs->lexeme_str->text, token_type_list[m]) == 0)
+                    if (strcmp(inFollowSet->lexeme_str->text, token_type_list[m]) == 0)
                     {
-                        // Rule existing_rule = (Rule)get(row, m);
-                        // if (existing_rule->NT->type == TK_ILLEGAL)
                         put(row, m, rule);
                     }
                 }
             }
             Token stack_symbol = init_token(EO_STACK, char_to_string("$"), "$", 0, 0);
-            if (contains(followOfLhs, stack_symbol))
+            if (contains(followSet, stack_symbol))
             {
                 put(row, TK_ILLEGAL, rule);
             }
+            // printf("%s\n", rule->NT->lexeme_str->text);
         }
+
+        for (int i = 0; i < firstOfRhs->size; i++)
+        {
+            Token tk = (Token)get(firstOfRhs, i);
+
+            for (int m = 0; m < TK_ILLEGAL; m++)
+            {
+                if (strcmp(tk->lexeme_str->text, token_type_list[m]) == 0)
+                {
+                    // Rule existing_rule = (Rule)get(row, m);
+                    // if (existing_rule->NT->type == TK_ILLEGAL)
+                    put(row, m, rule);
+                }
+            }
+        }
+
+        // if (terminal || !containsNull)
+        //     break;
+
+        // if (containsNull)
+        // {
+        //     Vector followOfLhs = (Vector)get(grammar->follow, rule->NT->type);
+
+        //     for (int l = 0; l < followOfLhs->size; l++)
+        //     {
+        //         Token in_follow_lhs = (Token)get(followOfLhs, l);
+        //         for (int m = 0; m < TK_ILLEGAL; m++)
+        //         {
+        //             if (strcmp(in_follow_lhs->lexeme_str->text, token_type_list[m]) == 0)
+        //             {
+        //                 // Rule existing_rule = (Rule)get(row, m);
+        //                 // if (existing_rule->NT->type == TK_ILLEGAL)
+        //                 put(row, m, rule);
+        //             }
+        //         }
+        //     }
+        //
+        // }
 
         // adding SYN tokens for error recovery
         Vector followSet = (Vector)get(grammar->follow, rule->NT->type);

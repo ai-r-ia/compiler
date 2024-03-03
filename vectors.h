@@ -20,15 +20,17 @@ bool checkEqual(Vector a, Vector b);
 
 void *pop_back(Vector vec);
 
-void* top(Vector vec);
+void *top(Vector vec);
 
-Vector copy_vector(Vector destination, Vector source);//NOTE: remove
+Vector copy_vector(Vector destination, Vector source); // NOTE: remove
 
 void clear(Vector vec); // NOTE: remove
 
 void *find(Vector vec, void *data);
 
 void printVector(Vector vector);
+
+size_t get_index(Vector vec, void *data);
 
 // private functions
 
