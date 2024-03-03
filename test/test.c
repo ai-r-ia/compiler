@@ -6,8 +6,8 @@ void testAll()
     info("testing\n");
     // test_vector();
     // test_hash_table();
-    test_lexer();
+    // test_lexer();
     // test_grammar();
-    // test_parser();
+    test_parser();
     return;
 }

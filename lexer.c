@@ -150,26 +150,44 @@ char getNextCharacter(Lexer lexer)
     if (lexer->BUFF_NUM == 1)
     {
         // lexer->buff_begin1;
-        res = lexer->buff1[lexer->fwd_ptr];
-        lexer->fwd_ptr++;
-        if (lexer->fwd_ptr >= BUFFER_SIZE)
+        if (eof_retraction)
         {
-            printf("%s\n", lexer->buff1);
-            lexer->fwd_ptr = 0;
-            lexer->BUFF_NUM = 2;
-            _readFile(lexer); // will load new data into buff2
+            // printf("eof_retraction %d\n", eof_retraction);
+            eof_retraction = false;
+            return lexer->curr_char;
+        }
+        else
+        {
+            res = lexer->buff1[lexer->fwd_ptr];
+            lexer->fwd_ptr++;
+            if (lexer->fwd_ptr >= BUFFER_SIZE)
+            {
+                // printf("%s\n", lexer->buff1);
+                lexer->fwd_ptr = 0;
+                lexer->BUFF_NUM = 2;
+                _readFile(lexer); // will load new data into buff2
+            }
         }
     }
     else
     {
-        res = lexer->buff2[lexer->fwd_ptr];
-        lexer->fwd_ptr++;
-        if (lexer->fwd_ptr >= BUFFER_SIZE)
+        if (eof_retraction)
         {
-            printf("%s\n", lexer->buff2);
-            lexer->fwd_ptr = 0;
-            lexer->BUFF_NUM = 1;
-            _readFile(lexer); // will load new data into buff1
+            // printf("eof_retraction %d\n", eof_retraction);
+            eof_retraction = false;
+            return lexer->curr_char;
+        }
+        else
+        {
+            res = lexer->buff2[lexer->fwd_ptr];
+            lexer->fwd_ptr++;
+            if (lexer->fwd_ptr >= BUFFER_SIZE)
+            {
+                // printf("%s\n", lexer->buff2);
+                lexer->fwd_ptr = 0;
+                lexer->BUFF_NUM = 1;
+                _readFile(lexer); // will load new data into buff1
+            }
         }
     }
     lexer->charNumber++;
@@ -196,8 +214,11 @@ void retract(Lexer lexer, String lexeme)
     // eof
     // if (buffer[lexer->fwd_ptr] == '\0')
     //     eof_retraction = true;
-    if (lexer->fwd_ptr != '\0')
+
+    if ((lexer->fwd_ptr) != '\0')
         lexer->fwd_ptr--;
+    else
+        eof_retraction = true;
 
     lexer->charNumber--;
     if (buffer[lexer->fwd_ptr] == '\n')

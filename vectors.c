@@ -1,9 +1,8 @@
 #include "whole_include.h"
 #include "vectors.h"
 #include "lexical_token.h"
-#include "hash.h"
-#include "rules.h"
 #include "symbol_table.h"
+#include "rules.h"
 #include "strings.h"
 #include "tree.h"
 
@@ -205,9 +204,6 @@ void _malloc_vector(Vector vec, enum DATATYPE datatype)
     case TOKEN:
         vec->data = (Token)malloc(sizeof(struct token) * VECTOR_INC);
         break;
-    case HASHNODE:
-        vec->data = (HashNode)malloc(sizeof(struct hash_node) * VECTOR_INC);
-        break;
     case SYMBOLNODE:
         vec->data = (SymbolNode)malloc(sizeof(struct symbol_node) * VECTOR_INC);
         break;
@@ -251,9 +247,6 @@ void _realloc_vector(Vector vec)
     case TOKEN:
         new_size = sizeof(struct token) * (vec->memory_size + VECTOR_INC);
         break;
-    case HASHNODE:
-        new_size = sizeof(struct hash_node) * (vec->memory_size + VECTOR_INC);
-        break;
     case SYMBOLNODE:
         new_size = sizeof(struct symbol_node) * (vec->memory_size + VECTOR_INC);
         break;
@@ -291,10 +284,8 @@ bool _checkEqual(void *a, void *b, enum DATATYPE DATATYPE)
         return (compare((String)a, (String)b));
     case TOKEN:
         return (compare(((Token)a)->lexeme_str, ((Token)b)->lexeme_str)); // NOTE:altered for grammar, should compare types
-    case HASHNODE:
-        return ((HashNode)a)->value == ((HashNode)b)->value;
     case SYMBOLNODE:
-        return (compare(((SymbolNode)a)->lexeme, ((SymbolNode)b)->lexeme));
+        return (compare(((SymbolNode)a)->key, ((SymbolNode)b)->key));
     case RULE:
         return ((((Rule)a)->NT)->type == (((Rule)b)->NT)->type);
     case TREENODE:
@@ -327,9 +318,6 @@ void _put(Vector vec, size_t index, void *value)
         break;
     case TOKEN:
         ((Token)vec->data)[index] = *((Token)value);
-        break;
-    case HASHNODE:
-        ((HashNode)vec->data)[index] = *((HashNode)value);
         break;
     case SYMBOLNODE:
         ((SymbolNode)vec->data)[index] = *((SymbolNode)value);
@@ -373,9 +361,6 @@ void *_get(Vector vec, size_t ind)
         break;
     case TOKEN:
         value = &(((Token)(vec->data))[ind]);
-        break;
-    case HASHNODE:
-        value = &(((HashNode)(vec->data))[ind]);
         break;
     case SYMBOLNODE:
         value = &(((SymbolNode)(vec->data))[ind]);

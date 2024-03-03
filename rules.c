@@ -415,6 +415,11 @@ void populateFollow(Grammar grammar)
             }
         }
     }
+    removeAt(get(grammar->follow, highPrecedenceOperators), 4);
+    removeAt(get(grammar->follow, highPrecedenceOperators), 4);
+
+    removeAt(get(grammar->follow, lowPrecedenceOperators), 4);
+    removeAt(get(grammar->follow, lowPrecedenceOperators), 4);
 }
 
 void populateParseTable(Grammar grammar)
@@ -552,7 +557,7 @@ void populateParseTable(Grammar grammar)
         for (int f = 0; f < firstSet->size; f++)
         {
             Token inFirstSet = (Token)get(firstSet, f);
-            Token syn_tok = init_token(SYN, char_to_string("SYN"), "SYN", 0, 0);
+            Token syn_tok = init_token(FIRST_SYN, char_to_string("FIRST_SYN"), "FIRST_SYN", 0, 0);
             Rule syn_rule = init_rule(syn_tok);
             for (int m = 0; m < TK_ILLEGAL; m++)
             {

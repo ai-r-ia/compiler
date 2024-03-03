@@ -44,15 +44,15 @@ Token rand_token()
     return tk;
 }
 
-HashNode rand_hash_node() // rename
-{
-    HashNode node = init_node(rand_string(), rand() % 1000);
-    return node;
-}
+// HashNode rand_hash_node() // rename
+// {
+//     HashNode node = init_node(rand_string(), rand() % 1000);
+//     return node;
+// }
 
 Vector rand_vector(enum DATATYPE type)
 {
-    Vector vec = init_vector(HASHNODE);
+    Vector vec = init_vector(SYMBOLNODE);
 
     int len = rand() % 10;
     for (int i = 0; i < len; i++)
@@ -68,7 +68,7 @@ SymbolNode rand_symbol_node()
 {
     String lexeme = rand_string();
     Token tk = rand_token();
-    return init_symbol(lexeme, tk);
+    return init_node(lexeme, tk);
 }
 
 Rule rand_rule()
@@ -77,12 +77,13 @@ Rule rand_rule()
     return init_rule(tk);
 }
 
-TreeNode rand_tree_node(){
+TreeNode rand_tree_node()
+{
     Token tk = rand_token();
     return init_treenode(tk);
 }
 
-    void *get_randomizer(enum DATATYPE type)
+void *get_randomizer(enum DATATYPE type)
 {
     switch (type)
     {
@@ -98,8 +99,6 @@ TreeNode rand_tree_node(){
         return &rand_int_ptr;
     case CHAR_PTR:
         return &rand_char_ptr;
-    case HASHNODE:
-        return &rand_hash_node;
     case SYMBOLNODE:
         return &rand_symbol_node;
     default:

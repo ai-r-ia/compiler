@@ -1,27 +1,42 @@
-#ifndef SYMBOL
-#define SYMBOL
+#ifndef HASH
+#define HASH
 
-#include "strings.h"
-#include "vectors.h"
 #include "lexical_token.h"
+#include "vectors.h"
 #include "vectorDef.h"
 
-#define SYMBOL_TABLE_SIZE 1000
+// #include "whole_include.h"
+
+#define TABLE_SIZE 1000
 
 typedef struct symbol_node *SymbolNode;
 struct symbol_node
 {
-    String lexeme;
-    Token token; // token
+    String key;
+    Token value; // token type
 } symbol_node;
 
-// initialize symbol_node
-SymbolNode init_symbol(String lexeme, Token token);
+typedef struct symbol_table *SymbolTable;
+struct symbol_table
+{
+    Vector items; // vector of vector of hash_nodes
+    int count;
+} symbol_table;
 
-// insert entry into symbol table
-void insert(Vector vec, String lexeme, Token token);
+SymbolTable init_table();
 
-// lookup
-SymbolNode search(String lexeme);
+SymbolNode init_node(String key, Token value);
+
+void insert_item(SymbolTable tb, String key, Token value);
+
+Token get_value(SymbolTable tb, String key);
+
+int get_hash(String str);
+
+void printSymbolTable(SymbolTable tb);
+
+// private
+
+SymbolNode _find(Vector vec, String key);
 
 #endif

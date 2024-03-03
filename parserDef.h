@@ -21,7 +21,7 @@ struct parser
 
 static char *keyword_syn_token_list[] = {
     "TK_COMMENT",
-    "TK_END",   // check
+    "TK_END", // check
     "TK_WHILE",
     "TK_UNION",
     "TK_DEFINETYPE",
@@ -29,11 +29,11 @@ static char *keyword_syn_token_list[] = {
     "TK_MAIN",
     "TK_ENDWHILE", // check
     "TK_IF",
-    "TK_READ",
-    "TK_WRITE",
     "TK_CALL",
     "TK_RECORD",
+    "TK_CL",
     "TK_SEM",
+    "TK_ENDIF",
 };
 
 #endif

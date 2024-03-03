@@ -5,7 +5,7 @@
 #include "strings.h"
 #include "lexical_token.h"
 
-static int BUFFER_SIZE = 256;
+static int BUFFER_SIZE = 512;
 
 typedef struct lexer *Lexer;
 struct lexer

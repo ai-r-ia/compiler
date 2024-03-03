@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include "parser.h"
 #include "printers.h"
+#include "symbol_table.h"
 
 /*FirstAndFollow
 ComputeFirstAndFollowSets (grammar G):
@@ -87,6 +88,7 @@ while 𝑋≠ $:
 TreeNode parseInputSourceCode(char *testcaseFile)
 {
     char error_msg[200];
+    SymbolTable symbolTable = init_table();
     Parser parser = init_parser(testcaseFile, "grammar.txt");
 
     populateFirst(parser->grammar);
@@ -111,25 +113,26 @@ TreeNode parseInputSourceCode(char *testcaseFile)
 
     while (top_of_stack->type != EO_STACK)
     {
-        printf("current: %s, type: %s\n", parser->currentNode->lexeme_str->text, token_type_list[parser->currentNode->type]);
-        printf("STACK: ");
-        printVector(parser->stack);
-        printf("\n\n");
+        // printf("current: %s, type: %s\n", parser->currentNode->lexeme_str->text, token_type_list[parser->currentNode->type]);
+        // printf("STACK: ");
+        // printVector(parser->stack);
+        // printf("\n\n");
         if (compare(char_to_string(token_type_list[parser->currentNode->type]), top_of_stack->lexeme_str))
         {
             updateTerminalInTree(tree, parser->currentNode);
+            insert_item(symbolTable, parser->currentNode->lexeme_str, parser->currentNode);
             pop_back(parser->stack);
 
-            printf(" before match- current: %s, type: %s\n", parser->currentNode->lexeme_str->text, token_type_list[parser->currentNode->type]);
+            // printf(" before match- current: %s, type: %s\n", parser->currentNode->lexeme_str->text, token_type_list[parser->currentNode->type]);
             // if(parser->lexer->BUFF_NUM==1){
             //     printf("%s\n", parser->lexer->buff1[parser->lexer->fwd_ptr]);
             // }
-            // else 
+            // else
             //     printf("%s\n", parser->lexer->buff2[parser->lexer->fwd_ptr]);
             parser->currentNode = getNextToken(parser->lexer);
-            printf(" after match- current: %s, type: %s\n", parser->currentNode->lexeme_str->text, token_type_list[parser->currentNode->type]);
+            // printf(" after match- current: %s, type: %s\n", parser->currentNode->lexeme_str->text, token_type_list[parser->currentNode->type]);
         }
-        else
+        else //error-recovery
         {
             if (top_of_stack->type == TERMINAL)
             {
@@ -175,37 +178,54 @@ TreeNode parseInputSourceCode(char *testcaseFile)
                     char *error_msg = parser->currentNode->error_msg;
                     error(error_msg);
                     // while (parser->currentNode->type == TK_ILLEGAL)
-                    // printf("3 before match- current: %s, type: %s\n", parser->currentNode->lexeme_str->text, token_type_list[parser->currentNode->type]);
                     parser->currentNode = getNextToken(parser->lexer);
-                    // printf("3 after match- current: %s, type: %s\n", parser->currentNode->lexeme_str->text, token_type_list[parser->currentNode->type]);
                 }
                 else if (rule->NT->type == ERROR) // error entry in parse table
                 {
                     info("Error recovery invoked. ERROR entry");
                     error("syntactical error");
 
-                    while (!isKeywordSynToken(char_to_string(token_type_list[parser->currentNode->type])) && (rule->NT->type != SYN)) // special keyword check
+                    if (isKeywordSynToken(char_to_string(token_type_list[parser->currentNode->type])))
+                        parser->currentNode = getNextToken(parser->lexer);
+
+                    char *prev_sync;
+                    while (!isKeywordSynToken(char_to_string(token_type_list[parser->currentNode->type])) && (rule->NT->type != SYN) && (rule->NT->type != FIRST_SYN)) // special keyword check
                     {
                         // printf("4 before match- current: %s, type: %s\n", parser->currentNode->lexeme_str->text, token_type_list[parser->currentNode->type]);
+                        prev_sync = parser->currentNode->lexeme_str->text;
                         parser->currentNode = getNextToken(parser->lexer);
                         // printf("4 after match- current: %s, type: %s\n", parser->currentNode->lexeme_str->text, token_type_list[parser->currentNode->type]);
-
                         rule = (Rule)get(tableRow, parser->currentNode->type);
                         // printf("lexeme: %s, type: %s line: %ld ",
                         //        parser->currentNode->lexeme_str->text,
                         //        token_type_list[parser->currentNode->type],
                         //        parser->currentNode->line_num);
 
-                        // printf("---bool: %d \n", isKeywordSynToken(parser->currentNode->lexeme_str));
+                        // printf("---bool: %d \n", isKeywordSynToken(char_to_string(token_type_list[parser->currentNode->type])));
                     }
-                    // if (rule->NT->type == SYN)
-                    pop_back(parser->stack);
-                    // else if (isKeywordSynToken(parser->currentNode->lexeme_str))
-                    // printf("5 before match- current: %s, type: %s\n", parser->currentNode->lexeme_str->text, token_type_list[parser->currentNode->type]);
-                    parser->currentNode = getNextToken(parser->lexer);
-                    // printf("5 after match- current: %s, type: %s\n", parser->currentNode->lexeme_str->text, token_type_list[parser->currentNode->type]);
-
-                    // keep skipping until syn entry found
+                    // while (rule->NT->type == SYN || isKeywordSynToken(char_to_string(token_type_list[parser->currentNode->type])))
+                    // {
+                    //     pop_back(parser->stack);
+                    //     top_of_stack = top(parser->stack);
+                    //     if(top_of_stack->type==TERMINAL) break;
+                    //     tableRow = (Vector)get(parseTable, top_of_stack->type);
+                    //     rule = (Rule)get(tableRow, parser->currentNode->type);
+                    // }
+                    info("Error recovery invoked. SYN(follow set)");
+                    sprintf(error_msg, "Line %2d Error: Invalid token %s encountered with value %s stack top %s",
+                            parser->currentNode->line_num,
+                            token_type_list[parser->currentNode->type],
+                            parser->currentNode->lexeme_str->text,
+                            top_of_stack->lexeme_str->text);
+                    error(error_msg);
+                    // continue;
+                    if (rule->NT->type != FIRST_SYN)
+                    {
+                        pop_back(parser->stack);
+                        // top_of_stack = top(parser->stack);
+                    }
+                    // if (isKeywordSynToken(char_to_string(token_type_list[parser->currentNode->type])))
+                    //     parser->currentNode = getNextToken(parser->lexer);
                 }
                 else if (rule->NT->type == SYN)
                 {
@@ -218,11 +238,13 @@ TreeNode parseInputSourceCode(char *testcaseFile)
                             parser->currentNode->lexeme_str->text,
                             top_of_stack->lexeme_str->text);
                     error(error_msg);
+                    // top_of_stack = top(parser->stack);
+                    // continue;
                 }
             }
             else if (rule)
             {
-                printRule(rule);
+                // printRule(rule);
                 addToTree(currentParent, rule);
                 pop_back(parser->stack);
 
@@ -244,7 +266,6 @@ TreeNode parseInputSourceCode(char *testcaseFile)
     }
 
     printf("\nPARSE TREE \n");
-    // printTree(tree, 0);
     saveParseTree(tree, 0);
     // prettyPrintParseTree(tree);
     return tree;

@@ -10,6 +10,8 @@
 
 enum GrammarTokenKind
 {
+    highPrecedenceOperators,
+    lowPrecedenceOperators,
     program,
     mainFunction,
     otherFunctions,
@@ -52,8 +54,6 @@ enum GrammarTokenKind
     conditionalStmt,
     elsePart,
     ioStmt,
-    highPrecedenceOperators,
-    lowPrecedenceOperators,
     booleanExpression,
     logicalOp,
     relationalOp,
@@ -70,10 +70,13 @@ enum GrammarTokenKind
     EO_STACK,
     SYN,
     ERROR,
+    FIRST_SYN,
 };
 
 static char *grammarTokenKindString[] =
     {
+        "highPrecedenceOperators",
+        "lowPrecedenceOperators",
         "program",
         "mainFunction",
         "otherFunctions",
@@ -116,8 +119,6 @@ static char *grammarTokenKindString[] =
         "conditionalStmt",
         "elsePart",
         "ioStmt",
-        "highPrecedenceOperators",
-        "lowPrecedenceOperators",
         "booleanExpression",
         "logicalOp",
         "relationalOp",
@@ -134,6 +135,7 @@ static char *grammarTokenKindString[] =
         "$",
         "SYN",
         "ERROR",
+        "FIRST_SYN",
 };
 
 typedef struct grammar *Grammar;

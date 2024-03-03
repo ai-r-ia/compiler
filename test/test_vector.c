@@ -8,11 +8,11 @@ void test_vector()
     // test_vector_char_all_operations();
     // // test_vector_int_ptr_all_operations();
     // // test_vector_char_ptr_all_operations();
-    test_vector_string_all_operations();
+    // test_vector_string_all_operations();
     // test_vector_token_all_operations();
     // test_vector_hash_node_all_operations();
     // test_vector_of_vector_all_operations();
-    // test_vector_symbol_node_all_operations();
+    test_vector_symbol_node_all_operations();
     // test_vector_rule_all_operations();
     // test_vector_tree_node_all_operations();
 }
@@ -593,113 +593,113 @@ void test_vector_token_all_operations()
     success("TOKEN vector tested succesfullly."); // TODO:
 }
 
-void test_vector_hash_node_all_operations()
-{
-    info("Testing for HASHNODE\n");
-    Vector vec = init_vector(HASHNODE);
+// void test_vector_hash_node_all_operations()
+// {
+//     info("Testing for HASHNODE\n");
+//     Vector vec = init_vector(HASHNODE);
 
-    HashNode not_in_vec = rand_hash_node(); // TODO:
-    size_t index = rand() % MIN_SIZE;
-    if (index == (MIN_SIZE - 1))
-        index--;
-    HashNode in_vec; // TODO:
+//     HashNode not_in_vec = rand_hash_node(); // TODO:
+//     size_t index = rand() % MIN_SIZE;
+//     if (index == (MIN_SIZE - 1))
+//         index--;
+//     HashNode in_vec; // TODO:
 
-    for (int i = 0; i < MIN_SIZE; i++)
-    {
-        HashNode rand_val = rand_hash_node(); // TODO:
-        while (rand_val->value == not_in_vec->value)
-        {
-            rand_val = rand_hash_node(); // TODO:
-        }
-        if (i == index)
-        {
-            in_vec = rand_val;
-        }
-        // printf("%s\n", rand_val->text);
-        push_back(vec, rand_val);
-    }
+//     for (int i = 0; i < MIN_SIZE; i++)
+//     {
+//         HashNode rand_val = rand_hash_node(); // TODO:
+//         while (rand_val->value == not_in_vec->value)
+//         {
+//             rand_val = rand_hash_node(); // TODO:
+//         }
+//         if (i == index)
+//         {
+//             in_vec = rand_val;
+//         }
+//         // printf("%s\n", rand_val->text);
+//         push_back(vec, rand_val);
+//     }
 
-    if (vec->size != MIN_SIZE)
-    {
-        error("Size of array inconsistent.");
-        exit(1);
-    }
-    HashNode get_value = ((HashNode)get(vec, index)); // TODO:
+//     if (vec->size != MIN_SIZE)
+//     {
+//         error("Size of array inconsistent.");
+//         exit(1);
+//     }
+//     HashNode get_value = ((HashNode)get(vec, index)); // TODO:
 
-    if (get_value->value != in_vec->value)
-    {
-        error("Error in get().");
-        exit(1);
-    }
+//     if (get_value->value != in_vec->value)
+//     {
+//         error("Error in get().");
+//         exit(1);
+//     }
 
-    if (contains(vec, not_in_vec))
-    {
-        error("Error in contains(). --negative case");
-        exit(1);
-    }
+//     if (contains(vec, not_in_vec))
+//     {
+//         error("Error in contains(). --negative case");
+//         exit(1);
+//     }
 
-    if (!contains(vec, get_value))
-    {
-        error("Error in contains(). --positive case");
-        exit(1);
-    }
+//     if (!contains(vec, get_value))
+//     {
+//         error("Error in contains(). --positive case");
+//         exit(1);
+//     }
 
-    Vector vec2 = copy_vector(NULL, vec);
+//     Vector vec2 = copy_vector(NULL, vec);
 
-    if (!checkEqual(vec, vec2))
-    {
-        error("Error in checkEqual().");
-        exit(1);
-    }
+//     if (!checkEqual(vec, vec2))
+//     {
+//         error("Error in checkEqual().");
+//         exit(1);
+//     }
 
-    HashNode c = rand_hash_node(); // TODO:
-    push_back(vec, c);
+//     HashNode c = rand_hash_node(); // TODO:
+//     push_back(vec, c);
 
-    if (c->value != ((HashNode)pop_back(vec))->value) // TODO:
-    {
-        error("Error in pop_back().");
-        exit(1);
-    }
+//     if (c->value != ((HashNode)pop_back(vec))->value) // TODO:
+//     {
+//         error("Error in pop_back().");
+//         exit(1);
+//     }
 
-    HashNode next = ((HashNode)get(vec, index + 1)); // TODO:
-    HashNode next_val = init_node(next->key, next->value);
+//     HashNode next = ((HashNode)get(vec, index + 1)); // TODO:
+//     HashNode next_val = init_node(next->key, next->value);
 
-    // for (int i = 0; i < vec->size; i++)
-    // {
-    //     puts(((String)get(vec, i))->text);
-    // }
-    removeAt(vec, index);
-    // info("breakkk");
-    // for (int i = 0; i < vec->size; i++)
-    // {
-    //     puts(((String)get(vec, i))->text);
-    // }
+//     // for (int i = 0; i < vec->size; i++)
+//     // {
+//     //     puts(((String)get(vec, i))->text);
+//     // }
+//     removeAt(vec, index);
+//     // info("breakkk");
+//     // for (int i = 0; i < vec->size; i++)
+//     // {
+//     //     puts(((String)get(vec, i))->text);
+//     // }
 
-    HashNode curr = ((HashNode)get(vec, index)); // TODO:
+//     HashNode curr = ((HashNode)get(vec, index)); // TODO:
 
-    if (curr->value != next_val->value)
-    {
-        error("Error in removeAt().");
-        exit(1);
-    }
+//     if (curr->value != next_val->value)
+//     {
+//         error("Error in removeAt().");
+//         exit(1);
+//     }
 
-    clear(vec2);
+//     clear(vec2);
 
-    if (vec2->size != 0)
-    {
-        error("Error in clear().");
-        exit(1);
-    }
+//     if (vec2->size != 0)
+//     {
+//         error("Error in clear().");
+//         exit(1);
+//     }
 
-    c = rand_hash_node(); // TODO:
-    push_back(vec, c);
+//     c = rand_hash_node(); // TODO:
+//     push_back(vec, c);
 
-    success("HASH NODE vector tested succesfullly."); // TODO:
-}
+//     success("HASH NODE vector tested succesfullly."); // TODO:
+// }
 
 void test_vector_symbol_node_all_operations()
 {
-    info("Testing for SYMBOLNODE\n");
+    info("Testing for SYMBOL NODE\n");
     Vector vec = init_vector(SYMBOLNODE);
 
     SymbolNode not_in_vec = rand_symbol_node(); // TODO:
@@ -711,7 +711,7 @@ void test_vector_symbol_node_all_operations()
     for (int i = 0; i < MIN_SIZE; i++)
     {
         SymbolNode rand_val = rand_symbol_node(); // TODO:
-        while (compare(rand_val->lexeme, not_in_vec->lexeme))
+        while (compare(rand_val->key, not_in_vec->key))
         {
             rand_val = rand_symbol_node(); // TODO:
         }
@@ -730,7 +730,7 @@ void test_vector_symbol_node_all_operations()
     }
     SymbolNode get_value = ((SymbolNode)get(vec, index)); // TODO:
 
-    if (!compare(get_value->lexeme, in_vec->lexeme))
+    if (!compare(get_value->key, in_vec->key))
     {
         error("Error in get().");
         exit(1);
@@ -756,17 +756,17 @@ void test_vector_symbol_node_all_operations()
         exit(1);
     }
 
-    SymbolNode c = rand_hash_node(); // TODO:
+    SymbolNode c = rand_symbol_node(); // TODO:
     push_back(vec, c);
 
-    if (!compare(c->lexeme, ((SymbolNode)pop_back(vec))->lexeme)) // TODO:
+    if (!compare(c->key, ((SymbolNode)pop_back(vec))->key)) // TODO:
     {
         error("Error in pop_back().");
         exit(1);
     }
 
     SymbolNode next = ((SymbolNode)get(vec, index + 1)); // TODO:
-    SymbolNode next_val = init_symbol(next->lexeme, next->token);
+    SymbolNode next_val = init_node(next->key, next->value);
 
     // for (int i = 0; i < vec->size; i++)
     // {
@@ -781,7 +781,7 @@ void test_vector_symbol_node_all_operations()
 
     SymbolNode curr = ((SymbolNode)get(vec, index)); // TODO:
 
-    if (!compare(curr->lexeme, next_val->lexeme))
+    if (!compare(curr->key, next_val->key))
     {
         error("Error in removeAt().");
         exit(1);
@@ -1015,7 +1015,7 @@ void test_vector_of_vector_all_operations()
     info("Testing for VECTOR\n");
     Vector vec = init_vector(VECTOR);
 
-    Vector not_in_vec = rand_vector(HASHNODE); // TODO:
+    Vector not_in_vec = rand_vector(SYMBOLNODE); // TODO:
     size_t index = rand() % MIN_SIZE;
     if (index == (MIN_SIZE - 1))
         index--;
@@ -1023,10 +1023,10 @@ void test_vector_of_vector_all_operations()
 
     for (int i = 0; i < MIN_SIZE; i++)
     {
-        Vector rand_val = rand_vector(HASHNODE);   // TODO:
+        Vector rand_val = rand_vector(SYMBOLNODE); // TODO:
         while (rand_val->size == not_in_vec->size) // all vecs of diff sizes
         {
-            rand_val = rand_vector(HASHNODE); // TODO:
+            rand_val = rand_vector(SYMBOLNODE); // TODO:
         }
         if (i == index)
         {
@@ -1069,7 +1069,7 @@ void test_vector_of_vector_all_operations()
         exit(1);
     }
 
-    Vector c = rand_vector(HASHNODE); // TODO:
+    Vector c = rand_vector(SYMBOLNODE); // TODO:
     push_back(vec, c);
 
     if (!checkEqual(c, (Vector)pop_back(vec))) // TODO:
@@ -1079,7 +1079,7 @@ void test_vector_of_vector_all_operations()
     }
 
     Vector next = ((Vector)get(vec, index + 1)); // TODO:
-    Vector next_val = init_vector(HASHNODE);
+    Vector next_val = init_vector(SYMBOLNODE);
     next_val = copy_vector(next_val, next);
 
     // for (int i = 0; i < vec->size; i++)
@@ -1111,7 +1111,7 @@ void test_vector_of_vector_all_operations()
         exit(1);
     }
 
-    c = rand_vector(HASHNODE); // TODO:
+    c = rand_vector(SYMBOLNODE); // TODO:
     push_back(vec, c);
 
     success("VECTOR vector tested succesfullly."); // TODO:

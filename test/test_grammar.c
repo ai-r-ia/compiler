@@ -36,5 +36,5 @@ void test_grammar()
         // printf("%s      %d\n", rule->NT->lexeme_str->text, grammar->nullable[rule->NT->type]);
     }
 
-    printParseTable(grammar);
+    // printParseTable(grammar);
 }
