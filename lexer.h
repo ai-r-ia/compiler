@@ -59,6 +59,9 @@ bool isDigit_2_7(char value);
 // for valid symbols (except [_],[#])
 bool isSymbol(char value);
 
+// checks for valid symbol table operator entries
+bool isSymbolTableOperator(String str);
+
 // Retrieves kind of keyword
 int getKeyword(String word);
 

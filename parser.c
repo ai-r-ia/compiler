@@ -68,6 +68,8 @@ bool isKeywordSynToken(String string)
     return false;
 }
 
+
+
 void _panicRecovery()
 {
 }
@@ -122,7 +124,10 @@ TreeNode parseInputSourceCode(char *testcaseFile)
         if (compare(char_to_string(token_type_list[parser->currentNode->type]), top_of_stack->lexeme_str))
         {
             updateTerminalInTree(tree, parser->currentNode);
-            insert_item(symbolTable, parser->currentNode->lexeme_str, parser->currentNode);
+            if (!isSymbol(parser->currentNode->lexeme_str->text[0]))
+                insert_item(symbolTable, parser->currentNode->lexeme_str, parser->currentNode);
+            else if (isSymbolTableOperator(parser->currentNode->lexeme_str))
+                insert_item(symbolTable, parser->currentNode->lexeme_str, parser->currentNode);
             pop_back(parser->stack);
 
             // printf(" before match- current: %s, type: %s\n", parser->currentNode->lexeme_str->text, token_type_list[parser->currentNode->type]);

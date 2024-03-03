@@ -84,6 +84,24 @@ bool isSymbol(char value)
            value == '@' || value == '~' || value == '=' || value == '!';
 }
 
+//checks for valid symbol table operator entries
+bool isSymbolTableOperator(String str)
+{
+    return compare(str, char_to_string("+")) ||
+        compare(str, char_to_string("-")) ||
+        compare(str, char_to_string("*")) ||
+        compare(str, char_to_string("/")) ||
+        compare(str, char_to_string("&&&")) ||
+        compare(str, char_to_string("@@@")) ||
+        compare(str, char_to_string("~")) ||
+        compare(str, char_to_string("<")) ||
+        compare(str, char_to_string(">")) ||
+        compare(str, char_to_string("<=")) ||
+        compare(str, char_to_string(">=")) ||
+        compare(str, char_to_string("==")) ||
+        compare(str, char_to_string("!="));
+}
+
 int getKeyword(String word)
 {
     for (int i = 0; i < 28; i++)
