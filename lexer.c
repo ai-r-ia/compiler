@@ -1,5 +1,7 @@
 #include "whole_include.h"
 
+bool eof_retraction = false;
+
 Lexer init_lexer(char *filename)
 {
     Lexer lexer = (Lexer)malloc(sizeof(struct lexer));
@@ -152,6 +154,7 @@ char getNextCharacter(Lexer lexer)
         lexer->fwd_ptr++;
         if (lexer->fwd_ptr >= BUFFER_SIZE)
         {
+            printf("%s\n", lexer->buff1);
             lexer->fwd_ptr = 0;
             lexer->BUFF_NUM = 2;
             _readFile(lexer); // will load new data into buff2
@@ -163,12 +166,12 @@ char getNextCharacter(Lexer lexer)
         lexer->fwd_ptr++;
         if (lexer->fwd_ptr >= BUFFER_SIZE)
         {
+            printf("%s\n", lexer->buff2);
             lexer->fwd_ptr = 0;
             lexer->BUFF_NUM = 1;
             _readFile(lexer); // will load new data into buff1
         }
     }
-
     lexer->charNumber++;
     if (res == '\n')
     {
@@ -191,6 +194,8 @@ void retract(Lexer lexer, String lexeme)
         buffer = lexer->buff2;
 
     // eof
+    // if (buffer[lexer->fwd_ptr] == '\0')
+    //     eof_retraction = true;
     if (lexer->fwd_ptr != '\0')
         lexer->fwd_ptr--;
 

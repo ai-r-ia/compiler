@@ -3,18 +3,19 @@
 void test_lexer()
 {
     info("testing LEXER");
-    Lexer lexer = init_lexer("test.txt");
+    Lexer lexer = init_lexer("test/test.txt");
     // Lexer lexer = init_lexer("test/test_char.txt");
     // Lexer lexer = init_lexer("Test_Cases/t1.txt");
 
     Token tk = getNextToken(lexer);
-    // printf("fwd0 %d \n", lexer->fwd_ptr);
+    printf("fwd0 %d \n", lexer->fwd_ptr);
+
 
     Vector vec = init_vector(TOKEN);
     // push_back(vec, tk1);
 
     // Token tk = NULL;
-    printf("%s \n", lexer->buff1);
+    // printf("%s \n", lexer->buff1);
     while ((lexer->fp))
     {
         // if(tk1_read)

@@ -7,7 +7,7 @@
 #include "../hash.h"
 #include "../rules.h"
 #include "../symbol_table.h"
-#include "../string.h"
+#include "../strings.h"
 #include "../utils.h"
 #include "../printers.h"
 
