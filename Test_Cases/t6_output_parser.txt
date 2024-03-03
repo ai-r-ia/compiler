@@ -1,0 +1,1643 @@
+current: _computeFunctionValue, type: TK_FUNID
+STACK: $,program
+
+program --> otherFunctions,mainFunction
+current: _computeFunctionValue, type: TK_FUNID
+STACK: $,mainFunction,otherFunctions
+
+otherFunctions --> function,otherFunctions
+current: _computeFunctionValue, type: TK_FUNID
+STACK: $,mainFunction,otherFunctions,function
+
+function --> TK_FUNID,input_par,output_par,TK_SEM,stmts,TK_END
+current: _computeFunctionValue, type: TK_FUNID
+STACK: $,mainFunction,otherFunctions,TK_END,stmts,TK_SEM,output_par,input_par,TK_FUNID
+
+current: input, type: TK_INPUT
+STACK: $,mainFunction,otherFunctions,TK_END,stmts,TK_SEM,output_par,input_par
+
+input_par --> TK_INPUT,TK_PARAMETER,TK_LIST,TK_SQL,parameter_list,TK_SQR
+current: input, type: TK_INPUT
+STACK: $,mainFunction,otherFunctions,TK_END,stmts,TK_SEM,output_par,TK_SQR,parameter_list,TK_SQL,TK_LIST,TK_PARAMETER,TK_INPUT
+
+current: parameter, type: TK_PARAMETER
+STACK: $,mainFunction,otherFunctions,TK_END,stmts,TK_SEM,output_par,TK_SQR,parameter_list,TK_SQL,TK_LIST,TK_PARAMETER
+
+current: list, type: TK_LIST
+STACK: $,mainFunction,otherFunctions,TK_END,stmts,TK_SEM,output_par,TK_SQR,parameter_list,TK_SQL,TK_LIST
+
+current: [, type: TK_SQL
+STACK: $,mainFunction,otherFunctions,TK_END,stmts,TK_SEM,output_par,TK_SQR,parameter_list,TK_SQL
+
+current: int, type: TK_INT
+STACK: $,mainFunction,otherFunctions,TK_END,stmts,TK_SEM,output_par,TK_SQR,parameter_list
+
+parameter_list --> dataType,TK_ID,remaining_list
+current: int, type: TK_INT
+STACK: $,mainFunction,otherFunctions,TK_END,stmts,TK_SEM,output_par,TK_SQR,remaining_list,TK_ID,dataType
+
+dataType --> primitiveDatatype
+current: int, type: TK_INT
+STACK: $,mainFunction,otherFunctions,TK_END,stmts,TK_SEM,output_par,TK_SQR,remaining_list,TK_ID,primitiveDatatype
+
+primitiveDatatype --> TK_INT
+current: int, type: TK_INT
+STACK: $,mainFunction,otherFunctions,TK_END,stmts,TK_SEM,output_par,TK_SQR,remaining_list,TK_ID,TK_INT
+
+current: c3, type: TK_ID
+STACK: $,mainFunction,otherFunctions,TK_END,stmts,TK_SEM,output_par,TK_SQR,remaining_list,TK_ID
+
+current: ,, type: TK_COMMA
+STACK: $,mainFunction,otherFunctions,TK_END,stmts,TK_SEM,output_par,TK_SQR,remaining_list
+
+remaining_list --> TK_COMMA,parameter_list
+current: ,, type: TK_COMMA
+STACK: $,mainFunction,otherFunctions,TK_END,stmts,TK_SEM,output_par,TK_SQR,parameter_list,TK_COMMA
+
+current: int, type: TK_INT
+STACK: $,mainFunction,otherFunctions,TK_END,stmts,TK_SEM,output_par,TK_SQR,parameter_list
+
+parameter_list --> dataType,TK_ID,remaining_list
+current: int, type: TK_INT
+STACK: $,mainFunction,otherFunctions,TK_END,stmts,TK_SEM,output_par,TK_SQR,remaining_list,TK_ID,dataType
+
+dataType --> primitiveDatatype
+current: int, type: TK_INT
+STACK: $,mainFunction,otherFunctions,TK_END,stmts,TK_SEM,output_par,TK_SQR,remaining_list,TK_ID,primitiveDatatype
+
+primitiveDatatype --> TK_INT
+current: int, type: TK_INT
+STACK: $,mainFunction,otherFunctions,TK_END,stmts,TK_SEM,output_par,TK_SQR,remaining_list,TK_ID,TK_INT
+
+current: c4, type: TK_ID
+STACK: $,mainFunction,otherFunctions,TK_END,stmts,TK_SEM,output_par,TK_SQR,remaining_list,TK_ID
+
+current: ,, type: TK_COMMA
+STACK: $,mainFunction,otherFunctions,TK_END,stmts,TK_SEM,output_par,TK_SQR,remaining_list
+
+remaining_list --> TK_COMMA,parameter_list
+current: ,, type: TK_COMMA
+STACK: $,mainFunction,otherFunctions,TK_END,stmts,TK_SEM,output_par,TK_SQR,parameter_list,TK_COMMA
+
+current: int, type: TK_INT
+STACK: $,mainFunction,otherFunctions,TK_END,stmts,TK_SEM,output_par,TK_SQR,parameter_list
+
+parameter_list --> dataType,TK_ID,remaining_list
+current: int, type: TK_INT
+STACK: $,mainFunction,otherFunctions,TK_END,stmts,TK_SEM,output_par,TK_SQR,remaining_list,TK_ID,dataType
+
+dataType --> primitiveDatatype
+current: int, type: TK_INT
+STACK: $,mainFunction,otherFunctions,TK_END,stmts,TK_SEM,output_par,TK_SQR,remaining_list,TK_ID,primitiveDatatype
+
+primitiveDatatype --> TK_INT
+current: int, type: TK_INT
+STACK: $,mainFunction,otherFunctions,TK_END,stmts,TK_SEM,output_par,TK_SQR,remaining_list,TK_ID,TK_INT
+
+current: c5, type: TK_ID
+STACK: $,mainFunction,otherFunctions,TK_END,stmts,TK_SEM,output_par,TK_SQR,remaining_list,TK_ID
+
+current: ], type: TK_SQR
+STACK: $,mainFunction,otherFunctions,TK_END,stmts,TK_SEM,output_par,TK_SQR,remaining_list
+
+remaining_list --> #
+current: ], type: TK_SQR
+STACK: $,mainFunction,otherFunctions,TK_END,stmts,TK_SEM,output_par,TK_SQR
+
+current: output, type: TK_OUTPUT
+STACK: $,mainFunction,otherFunctions,TK_END,stmts,TK_SEM,output_par
+
+output_par --> TK_OUTPUT,TK_PARAMETER,TK_LIST,TK_SQL,parameter_list,TK_SQR
+current: output, type: TK_OUTPUT
+STACK: $,mainFunction,otherFunctions,TK_END,stmts,TK_SEM,TK_SQR,parameter_list,TK_SQL,TK_LIST,TK_PARAMETER,TK_OUTPUT
+
+current: parameter, type: TK_PARAMETER
+STACK: $,mainFunction,otherFunctions,TK_END,stmts,TK_SEM,TK_SQR,parameter_list,TK_SQL,TK_LIST,TK_PARAMETER
+
+current: [, type: TK_SQL
+STACK: $,mainFunction,otherFunctions,TK_END,stmts,TK_SEM,TK_SQR,parameter_list,TK_SQL,TK_LIST
+
+Error:- Line  7 Error: The token TK_SQL for lexeme [  does not match with the expected token TK_LIST
+current: [, type: TK_SQL
+STACK: $,mainFunction,otherFunctions,TK_END,stmts,TK_SEM,TK_SQR,parameter_list,TK_SQL
+
+current: real, type: TK_REAL
+STACK: $,mainFunction,otherFunctions,TK_END,stmts,TK_SEM,TK_SQR,parameter_list
+
+parameter_list --> dataType,TK_ID,remaining_list
+current: real, type: TK_REAL
+STACK: $,mainFunction,otherFunctions,TK_END,stmts,TK_SEM,TK_SQR,remaining_list,TK_ID,dataType
+
+dataType --> primitiveDatatype
+current: real, type: TK_REAL
+STACK: $,mainFunction,otherFunctions,TK_END,stmts,TK_SEM,TK_SQR,remaining_list,TK_ID,primitiveDatatype
+
+primitiveDatatype --> TK_REAL
+current: real, type: TK_REAL
+STACK: $,mainFunction,otherFunctions,TK_END,stmts,TK_SEM,TK_SQR,remaining_list,TK_ID,TK_REAL
+
+current: c6, type: TK_ID
+STACK: $,mainFunction,otherFunctions,TK_END,stmts,TK_SEM,TK_SQR,remaining_list,TK_ID
+
+current: ], type: TK_SQR
+STACK: $,mainFunction,otherFunctions,TK_END,stmts,TK_SEM,TK_SQR,remaining_list
+
+remaining_list --> #
+current: ], type: TK_SQR
+STACK: $,mainFunction,otherFunctions,TK_END,stmts,TK_SEM,TK_SQR
+
+current: ;, type: TK_SEM
+STACK: $,mainFunction,otherFunctions,TK_END,stmts,TK_SEM
+
+current: type, type: TK_TYPE
+STACK: $,mainFunction,otherFunctions,TK_END,stmts
+
+stmts --> typeDefinitions,declarations,otherStmts,returnStmt
+current: type, type: TK_TYPE
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,declarations,typeDefinitions
+
+typeDefinitions --> #
+current: type, type: TK_TYPE
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,declarations
+
+declarations --> declaration,declarations
+current: type, type: TK_TYPE
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,declarations,declaration
+
+declaration --> TK_TYPE,dataType,TK_COLON,TK_ID,global_or_not,TK_SEM
+current: type, type: TK_TYPE
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,declarations,TK_SEM,global_or_not,TK_ID,TK_COLON,dataType,TK_TYPE
+
+current: real, type: TK_REAL
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,declarations,TK_SEM,global_or_not,TK_ID,TK_COLON,dataType
+
+dataType --> primitiveDatatype
+current: real, type: TK_REAL
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,declarations,TK_SEM,global_or_not,TK_ID,TK_COLON,primitiveDatatype
+
+primitiveDatatype --> TK_REAL
+current: real, type: TK_REAL
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,declarations,TK_SEM,global_or_not,TK_ID,TK_COLON,TK_REAL
+
+current: :, type: TK_COLON
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,declarations,TK_SEM,global_or_not,TK_ID,TK_COLON
+
+current: d4cbcccccccccccccbbbbbbbbdddd5222222222222633333333333377, type: TK_ILLEGAL
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,declarations,TK_SEM,global_or_not,TK_ID
+
+Error:- Line  8 Error: Variable Identifier is longer than the prescribed length of 20 characters.
+Error:- Line  8 Error: The token TK_SEM for lexeme ;  does not match with the expected token TK_ID
+current: ;, type: TK_SEM
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,declarations,TK_SEM,global_or_not
+
+global_or_not --> #
+current: ;, type: TK_SEM
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,declarations,TK_SEM
+
+current: type, type: TK_TYPE
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,declarations
+
+declarations --> declaration,declarations
+current: type, type: TK_TYPE
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,declarations,declaration
+
+declaration --> TK_TYPE,dataType,TK_COLON,TK_ID,global_or_not,TK_SEM
+current: type, type: TK_TYPE
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,declarations,TK_SEM,global_or_not,TK_ID,TK_COLON,dataType,TK_TYPE
+
+current: real, type: TK_REAL
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,declarations,TK_SEM,global_or_not,TK_ID,TK_COLON,dataType
+
+dataType --> primitiveDatatype
+current: real, type: TK_REAL
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,declarations,TK_SEM,global_or_not,TK_ID,TK_COLON,primitiveDatatype
+
+primitiveDatatype --> TK_REAL
+current: real, type: TK_REAL
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,declarations,TK_SEM,global_or_not,TK_ID,TK_COLON,TK_REAL
+
+current: :, type: TK_COLON
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,declarations,TK_SEM,global_or_not,TK_ID,TK_COLON
+
+current: c4bbb, type: TK_ID
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,declarations,TK_SEM,global_or_not,TK_ID
+
+current: ;, type: TK_SEM
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,declarations,TK_SEM,global_or_not
+
+global_or_not --> #
+current: ;, type: TK_SEM
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,declarations,TK_SEM
+
+current: c6, type: TK_ID
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,declarations
+
+declarations --> #
+current: c6, type: TK_ID
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts
+
+otherStmts --> stmt,otherStmts
+current: c6, type: TK_ID
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,stmt
+
+stmt --> assignmentStmt
+current: c6, type: TK_ID
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,assignmentStmt
+
+assignmentStmt --> singleOrRecId,TK_ASSIGNOP,arithmeticExpression,TK_SEM
+current: c6, type: TK_ID
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,TK_SEM,arithmeticExpression,TK_ASSIGNOP,singleOrRecId
+
+singleOrRecId --> TK_ID,option_single_constructed
+current: c6, type: TK_ID
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,TK_SEM,arithmeticExpression,TK_ASSIGNOP,option_single_constructed,TK_ID
+
+current: <---, type: TK_ASSIGNOP
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,TK_SEM,arithmeticExpression,TK_ASSIGNOP,option_single_constructed
+
+option_single_constructed --> #
+current: <---, type: TK_ASSIGNOP
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,TK_SEM,arithmeticExpression,TK_ASSIGNOP
+
+current: 5000.7, type: TK_ILLEGAL
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,TK_SEM,arithmeticExpression
+
+error lexeme: 5000.7, type: TK_ILLEGAL line: 10
+info:- Error recovery invoked. Lexical error
+Error:- Unknown pattern <5000.7>
+current: ;, type: TK_SEM
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,TK_SEM,arithmeticExpression
+
+arithmeticExpression --> term,expPrime
+current: ;, type: TK_SEM
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,TK_SEM,expPrime,term
+
+error lexeme: ;, type: TK_SEM line: 10
+info:- Error recovery invoked. SYN(follow set)
+Error:- Line 10 Error: Invalid token TK_SEM encountered with value ; stack top term
+current: ;, type: TK_SEM
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,TK_SEM,expPrime
+
+expPrime --> #
+current: ;, type: TK_SEM
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,TK_SEM
+
+current: d4cbcd5677, type: TK_ID
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts
+
+otherStmts --> stmt,otherStmts
+current: d4cbcd5677, type: TK_ID
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,stmt
+
+stmt --> assignmentStmt
+current: d4cbcd5677, type: TK_ID
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,assignmentStmt
+
+assignmentStmt --> singleOrRecId,TK_ASSIGNOP,arithmeticExpression,TK_SEM
+current: d4cbcd5677, type: TK_ID
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,TK_SEM,arithmeticExpression,TK_ASSIGNOP,singleOrRecId
+
+singleOrRecId --> TK_ID,option_single_constructed
+current: d4cbcd5677, type: TK_ID
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,TK_SEM,arithmeticExpression,TK_ASSIGNOP,option_single_constructed,TK_ID
+
+current: <---, type: TK_ASSIGNOP
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,TK_SEM,arithmeticExpression,TK_ASSIGNOP,option_single_constructed
+
+option_single_constructed --> #
+current: <---, type: TK_ASSIGNOP
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,TK_SEM,arithmeticExpression,TK_ASSIGNOP
+
+current: (, type: TK_OP
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,TK_SEM,arithmeticExpression
+
+arithmeticExpression --> term,expPrime
+current: (, type: TK_OP
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,TK_SEM,expPrime,term
+
+term --> factor,termPrime
+current: (, type: TK_OP
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,TK_SEM,expPrime,termPrime,factor
+
+factor --> TK_OP,arithmeticExpression,TK_CL
+current: (, type: TK_OP
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,TK_SEM,expPrime,termPrime,TK_CL,arithmeticExpression,TK_OP
+
+current: (, type: TK_OP
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,TK_SEM,expPrime,termPrime,TK_CL,arithmeticExpression
+
+arithmeticExpression --> term,expPrime
+current: (, type: TK_OP
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,TK_SEM,expPrime,termPrime,TK_CL,expPrime,term
+
+term --> factor,termPrime
+current: (, type: TK_OP
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,TK_SEM,expPrime,termPrime,TK_CL,expPrime,termPrime,factor
+
+factor --> TK_OP,arithmeticExpression,TK_CL
+current: (, type: TK_OP
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,TK_SEM,expPrime,termPrime,TK_CL,expPrime,termPrime,TK_CL,arithmeticExpression,TK_OP
+
+current: c3, type: TK_ID
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,TK_SEM,expPrime,termPrime,TK_CL,expPrime,termPrime,TK_CL,arithmeticExpression
+
+arithmeticExpression --> term,expPrime
+current: c3, type: TK_ID
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,TK_SEM,expPrime,termPrime,TK_CL,expPrime,termPrime,TK_CL,expPrime,term
+
+term --> factor,termPrime
+current: c3, type: TK_ID
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,TK_SEM,expPrime,termPrime,TK_CL,expPrime,termPrime,TK_CL,expPrime,termPrime,factor
+
+factor --> var
+current: c3, type: TK_ID
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,TK_SEM,expPrime,termPrime,TK_CL,expPrime,termPrime,TK_CL,expPrime,termPrime,var
+
+var --> singleOrRecId
+current: c3, type: TK_ID
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,TK_SEM,expPrime,termPrime,TK_CL,expPrime,termPrime,TK_CL,expPrime,termPrime,singleOrRecId
+
+singleOrRecId --> TK_ID,option_single_constructed
+current: c3, type: TK_ID
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,TK_SEM,expPrime,termPrime,TK_CL,expPrime,termPrime,TK_CL,expPrime,termPrime,option_single_constructed,TK_ID
+
+current: +, type: TK_PLUS
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,TK_SEM,expPrime,termPrime,TK_CL,expPrime,termPrime,TK_CL,expPrime,termPrime,option_single_constructed
+
+option_single_constructed --> #
+current: +, type: TK_PLUS
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,TK_SEM,expPrime,termPrime,TK_CL,expPrime,termPrime,TK_CL,expPrime,termPrime
+
+termPrime --> #
+current: +, type: TK_PLUS
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,TK_SEM,expPrime,termPrime,TK_CL,expPrime,termPrime,TK_CL,expPrime
+
+expPrime --> lowPrecedenceOperators,term,expPrime
+current: +, type: TK_PLUS
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,TK_SEM,expPrime,termPrime,TK_CL,expPrime,termPrime,TK_CL,expPrime,term,lowPrecedenceOperators
+
+lowPrecedenceOperators --> TK_PLUS
+current: +, type: TK_PLUS
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,TK_SEM,expPrime,termPrime,TK_CL,expPrime,termPrime,TK_CL,expPrime,term,TK_PLUS
+
+current: 2, type: TK_NUM
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,TK_SEM,expPrime,termPrime,TK_CL,expPrime,termPrime,TK_CL,expPrime,term
+
+term --> factor,termPrime
+current: 2, type: TK_NUM
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,TK_SEM,expPrime,termPrime,TK_CL,expPrime,termPrime,TK_CL,expPrime,termPrime,factor
+
+factor --> var
+current: 2, type: TK_NUM
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,TK_SEM,expPrime,termPrime,TK_CL,expPrime,termPrime,TK_CL,expPrime,termPrime,var
+
+var --> TK_NUM
+current: 2, type: TK_NUM
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,TK_SEM,expPrime,termPrime,TK_CL,expPrime,termPrime,TK_CL,expPrime,termPrime,TK_NUM
+
+current: *, type: TK_MUL
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,TK_SEM,expPrime,termPrime,TK_CL,expPrime,termPrime,TK_CL,expPrime,termPrime
+
+termPrime --> highPrecedenceOperators,factor,termPrime
+current: *, type: TK_MUL
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,TK_SEM,expPrime,termPrime,TK_CL,expPrime,termPrime,TK_CL,expPrime,termPrime,factor,highPrecedenceOperators
+
+highPrecedenceOperators --> TK_MUL
+current: *, type: TK_MUL
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,TK_SEM,expPrime,termPrime,TK_CL,expPrime,termPrime,TK_CL,expPrime,termPrime,factor,TK_MUL
+
+current: c4, type: TK_ID
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,TK_SEM,expPrime,termPrime,TK_CL,expPrime,termPrime,TK_CL,expPrime,termPrime,factor
+
+factor --> var
+current: c4, type: TK_ID
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,TK_SEM,expPrime,termPrime,TK_CL,expPrime,termPrime,TK_CL,expPrime,termPrime,var
+
+var --> singleOrRecId
+current: c4, type: TK_ID
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,TK_SEM,expPrime,termPrime,TK_CL,expPrime,termPrime,TK_CL,expPrime,termPrime,singleOrRecId
+
+singleOrRecId --> TK_ID,option_single_constructed
+current: c4, type: TK_ID
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,TK_SEM,expPrime,termPrime,TK_CL,expPrime,termPrime,TK_CL,expPrime,termPrime,option_single_constructed,TK_ID
+
+current: -, type: TK_MINUS
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,TK_SEM,expPrime,termPrime,TK_CL,expPrime,termPrime,TK_CL,expPrime,termPrime,option_single_constructed
+
+option_single_constructed --> #
+current: -, type: TK_MINUS
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,TK_SEM,expPrime,termPrime,TK_CL,expPrime,termPrime,TK_CL,expPrime,termPrime
+
+termPrime --> #
+current: -, type: TK_MINUS
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,TK_SEM,expPrime,termPrime,TK_CL,expPrime,termPrime,TK_CL,expPrime
+
+expPrime --> lowPrecedenceOperators,term,expPrime
+current: -, type: TK_MINUS
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,TK_SEM,expPrime,termPrime,TK_CL,expPrime,termPrime,TK_CL,expPrime,term,lowPrecedenceOperators
+
+lowPrecedenceOperators --> TK_MINUS
+current: -, type: TK_MINUS
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,TK_SEM,expPrime,termPrime,TK_CL,expPrime,termPrime,TK_CL,expPrime,term,TK_MINUS
+
+current: (, type: TK_OP
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,TK_SEM,expPrime,termPrime,TK_CL,expPrime,termPrime,TK_CL,expPrime,term
+
+term --> factor,termPrime
+current: (, type: TK_OP
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,TK_SEM,expPrime,termPrime,TK_CL,expPrime,termPrime,TK_CL,expPrime,termPrime,factor
+
+factor --> TK_OP,arithmeticExpression,TK_CL
+current: (, type: TK_OP
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,TK_SEM,expPrime,termPrime,TK_CL,expPrime,termPrime,TK_CL,expPrime,termPrime,TK_CL,arithmeticExpression,TK_OP
+
+current: c5, type: TK_ID
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,TK_SEM,expPrime,termPrime,TK_CL,expPrime,termPrime,TK_CL,expPrime,termPrime,TK_CL,arithmeticExpression
+
+arithmeticExpression --> term,expPrime
+current: c5, type: TK_ID
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,TK_SEM,expPrime,termPrime,TK_CL,expPrime,termPrime,TK_CL,expPrime,termPrime,TK_CL,expPrime,term
+
+term --> factor,termPrime
+current: c5, type: TK_ID
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,TK_SEM,expPrime,termPrime,TK_CL,expPrime,termPrime,TK_CL,expPrime,termPrime,TK_CL,expPrime,termPrime,factor
+
+factor --> var
+current: c5, type: TK_ID
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,TK_SEM,expPrime,termPrime,TK_CL,expPrime,termPrime,TK_CL,expPrime,termPrime,TK_CL,expPrime,termPrime,var
+
+var --> singleOrRecId
+current: c5, type: TK_ID
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,TK_SEM,expPrime,termPrime,TK_CL,expPrime,termPrime,TK_CL,expPrime,termPrime,TK_CL,expPrime,termPrime,singleOrRecId
+
+singleOrRecId --> TK_ID,option_single_constructed
+current: c5, type: TK_ID
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,TK_SEM,expPrime,termPrime,TK_CL,expPrime,termPrime,TK_CL,expPrime,termPrime,TK_CL,expPrime,termPrime,option_single_constructed,TK_ID
+
+current: -, type: TK_MINUS
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,TK_SEM,expPrime,termPrime,TK_CL,expPrime,termPrime,TK_CL,expPrime,termPrime,TK_CL,expPrime,termPrime,option_single_constructed
+
+option_single_constructed --> #
+current: -, type: TK_MINUS
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,TK_SEM,expPrime,termPrime,TK_CL,expPrime,termPrime,TK_CL,expPrime,termPrime,TK_CL,expPrime,termPrime
+
+termPrime --> #
+current: -, type: TK_MINUS
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,TK_SEM,expPrime,termPrime,TK_CL,expPrime,termPrime,TK_CL,expPrime,termPrime,TK_CL,expPrime
+
+expPrime --> lowPrecedenceOperators,term,expPrime
+current: -, type: TK_MINUS
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,TK_SEM,expPrime,termPrime,TK_CL,expPrime,termPrime,TK_CL,expPrime,termPrime,TK_CL,expPrime,term,lowPrecedenceOperators
+
+lowPrecedenceOperators --> TK_MINUS
+current: -, type: TK_MINUS
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,TK_SEM,expPrime,termPrime,TK_CL,expPrime,termPrime,TK_CL,expPrime,termPrime,TK_CL,expPrime,term,TK_MINUS
+
+current: 5, type: TK_NUM
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,TK_SEM,expPrime,termPrime,TK_CL,expPrime,termPrime,TK_CL,expPrime,termPrime,TK_CL,expPrime,term
+
+term --> factor,termPrime
+current: 5, type: TK_NUM
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,TK_SEM,expPrime,termPrime,TK_CL,expPrime,termPrime,TK_CL,expPrime,termPrime,TK_CL,expPrime,termPrime,factor
+
+factor --> var
+current: 5, type: TK_NUM
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,TK_SEM,expPrime,termPrime,TK_CL,expPrime,termPrime,TK_CL,expPrime,termPrime,TK_CL,expPrime,termPrime,var
+
+var --> TK_NUM
+current: 5, type: TK_NUM
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,TK_SEM,expPrime,termPrime,TK_CL,expPrime,termPrime,TK_CL,expPrime,termPrime,TK_CL,expPrime,termPrime,TK_NUM
+
+current: ), type: TK_CL
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,TK_SEM,expPrime,termPrime,TK_CL,expPrime,termPrime,TK_CL,expPrime,termPrime,TK_CL,expPrime,termPrime
+
+termPrime --> #
+current: ), type: TK_CL
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,TK_SEM,expPrime,termPrime,TK_CL,expPrime,termPrime,TK_CL,expPrime,termPrime,TK_CL,expPrime
+
+expPrime --> #
+current: ), type: TK_CL
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,TK_SEM,expPrime,termPrime,TK_CL,expPrime,termPrime,TK_CL,expPrime,termPrime,TK_CL
+
+current: ), type: TK_CL
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,TK_SEM,expPrime,termPrime,TK_CL,expPrime,termPrime,TK_CL,expPrime,termPrime
+
+termPrime --> #
+current: ), type: TK_CL
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,TK_SEM,expPrime,termPrime,TK_CL,expPrime,termPrime,TK_CL,expPrime
+
+expPrime --> #
+current: ), type: TK_CL
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,TK_SEM,expPrime,termPrime,TK_CL,expPrime,termPrime,TK_CL
+
+current: /, type: TK_DIV
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,TK_SEM,expPrime,termPrime,TK_CL,expPrime,termPrime
+
+termPrime --> highPrecedenceOperators,factor,termPrime
+current: /, type: TK_DIV
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,TK_SEM,expPrime,termPrime,TK_CL,expPrime,termPrime,factor,highPrecedenceOperators
+
+highPrecedenceOperators --> TK_DIV
+current: /, type: TK_DIV
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,TK_SEM,expPrime,termPrime,TK_CL,expPrime,termPrime,factor,TK_DIV
+
+current: 4, type: TK_NUM
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,TK_SEM,expPrime,termPrime,TK_CL,expPrime,termPrime,factor
+
+factor --> var
+current: 4, type: TK_NUM
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,TK_SEM,expPrime,termPrime,TK_CL,expPrime,termPrime,var
+
+var --> TK_NUM
+current: 4, type: TK_NUM
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,TK_SEM,expPrime,termPrime,TK_CL,expPrime,termPrime,TK_NUM
+
+current: ;, type: TK_SEM
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,TK_SEM,expPrime,termPrime,TK_CL,expPrime,termPrime
+
+termPrime --> #
+current: ;, type: TK_SEM
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,TK_SEM,expPrime,termPrime,TK_CL,expPrime
+
+expPrime --> #
+current: ;, type: TK_SEM
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,TK_SEM,expPrime,termPrime,TK_CL
+
+Error:- Line 11 Error: The token TK_SEM for lexeme ;  does not match with the expected token TK_CL
+current: ;, type: TK_SEM
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,TK_SEM,expPrime,termPrime
+
+termPrime --> #
+current: ;, type: TK_SEM
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,TK_SEM,expPrime
+
+expPrime --> #
+current: ;, type: TK_SEM
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,TK_SEM
+
+current: c4bbb, type: TK_ID
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts
+
+otherStmts --> stmt,otherStmts
+current: c4bbb, type: TK_ID
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,stmt
+
+stmt --> assignmentStmt
+current: c4bbb, type: TK_ID
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,assignmentStmt
+
+assignmentStmt --> singleOrRecId,TK_ASSIGNOP,arithmeticExpression,TK_SEM
+current: c4bbb, type: TK_ID
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,TK_SEM,arithmeticExpression,TK_ASSIGNOP,singleOrRecId
+
+singleOrRecId --> TK_ID,option_single_constructed
+current: c4bbb, type: TK_ID
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,TK_SEM,arithmeticExpression,TK_ASSIGNOP,option_single_constructed,TK_ID
+
+current: <---, type: TK_ASSIGNOP
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,TK_SEM,arithmeticExpression,TK_ASSIGNOP,option_single_constructed
+
+option_single_constructed --> #
+current: <---, type: TK_ASSIGNOP
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,TK_SEM,arithmeticExpression,TK_ASSIGNOP
+
+current: (, type: TK_OP
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,TK_SEM,arithmeticExpression
+
+arithmeticExpression --> term,expPrime
+current: (, type: TK_OP
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,TK_SEM,expPrime,term
+
+term --> factor,termPrime
+current: (, type: TK_OP
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,TK_SEM,expPrime,termPrime,factor
+
+factor --> TK_OP,arithmeticExpression,TK_CL
+current: (, type: TK_OP
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,TK_SEM,expPrime,termPrime,TK_CL,arithmeticExpression,TK_OP
+
+current: (, type: TK_OP
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,TK_SEM,expPrime,termPrime,TK_CL,arithmeticExpression
+
+arithmeticExpression --> term,expPrime
+current: (, type: TK_OP
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,TK_SEM,expPrime,termPrime,TK_CL,expPrime,term
+
+term --> factor,termPrime
+current: (, type: TK_OP
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,TK_SEM,expPrime,termPrime,TK_CL,expPrime,termPrime,factor
+
+factor --> TK_OP,arithmeticExpression,TK_CL
+current: (, type: TK_OP
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,TK_SEM,expPrime,termPrime,TK_CL,expPrime,termPrime,TK_CL,arithmeticExpression,TK_OP
+
+current: d4cbcd5677, type: TK_ID
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,TK_SEM,expPrime,termPrime,TK_CL,expPrime,termPrime,TK_CL,arithmeticExpression
+
+arithmeticExpression --> term,expPrime
+current: d4cbcd5677, type: TK_ID
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,TK_SEM,expPrime,termPrime,TK_CL,expPrime,termPrime,TK_CL,expPrime,term
+
+term --> factor,termPrime
+current: d4cbcd5677, type: TK_ID
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,TK_SEM,expPrime,termPrime,TK_CL,expPrime,termPrime,TK_CL,expPrime,termPrime,factor
+
+factor --> var
+current: d4cbcd5677, type: TK_ID
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,TK_SEM,expPrime,termPrime,TK_CL,expPrime,termPrime,TK_CL,expPrime,termPrime,var
+
+var --> singleOrRecId
+current: d4cbcd5677, type: TK_ID
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,TK_SEM,expPrime,termPrime,TK_CL,expPrime,termPrime,TK_CL,expPrime,termPrime,singleOrRecId
+
+singleOrRecId --> TK_ID,option_single_constructed
+current: d4cbcd5677, type: TK_ID
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,TK_SEM,expPrime,termPrime,TK_CL,expPrime,termPrime,TK_CL,expPrime,termPrime,option_single_constructed,TK_ID
+
+current: -, type: TK_MINUS
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,TK_SEM,expPrime,termPrime,TK_CL,expPrime,termPrime,TK_CL,expPrime,termPrime,option_single_constructed
+
+option_single_constructed --> #
+current: -, type: TK_MINUS
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,TK_SEM,expPrime,termPrime,TK_CL,expPrime,termPrime,TK_CL,expPrime,termPrime
+
+termPrime --> #
+current: -, type: TK_MINUS
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,TK_SEM,expPrime,termPrime,TK_CL,expPrime,termPrime,TK_CL,expPrime
+
+expPrime --> lowPrecedenceOperators,term,expPrime
+current: -, type: TK_MINUS
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,TK_SEM,expPrime,termPrime,TK_CL,expPrime,termPrime,TK_CL,expPrime,term,lowPrecedenceOperators
+
+lowPrecedenceOperators --> TK_MINUS
+current: -, type: TK_MINUS
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,TK_SEM,expPrime,termPrime,TK_CL,expPrime,termPrime,TK_CL,expPrime,term,TK_MINUS
+
+current: 2.35, type: TK_RNUM
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,TK_SEM,expPrime,termPrime,TK_CL,expPrime,termPrime,TK_CL,expPrime,term
+
+term --> factor,termPrime
+current: 2.35, type: TK_RNUM
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,TK_SEM,expPrime,termPrime,TK_CL,expPrime,termPrime,TK_CL,expPrime,termPrime,factor
+
+factor --> var
+current: 2.35, type: TK_RNUM
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,TK_SEM,expPrime,termPrime,TK_CL,expPrime,termPrime,TK_CL,expPrime,termPrime,var
+
+var --> TK_RNUM
+current: 2.35, type: TK_RNUM
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,TK_SEM,expPrime,termPrime,TK_CL,expPrime,termPrime,TK_CL,expPrime,termPrime,TK_RNUM
+
+current: ), type: TK_CL
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,TK_SEM,expPrime,termPrime,TK_CL,expPrime,termPrime,TK_CL,expPrime,termPrime
+
+termPrime --> #
+current: ), type: TK_CL
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,TK_SEM,expPrime,termPrime,TK_CL,expPrime,termPrime,TK_CL,expPrime
+
+expPrime --> #
+current: ), type: TK_CL
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,TK_SEM,expPrime,termPrime,TK_CL,expPrime,termPrime,TK_CL
+
+current: *, type: TK_MUL
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,TK_SEM,expPrime,termPrime,TK_CL,expPrime,termPrime
+
+termPrime --> highPrecedenceOperators,factor,termPrime
+current: *, type: TK_MUL
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,TK_SEM,expPrime,termPrime,TK_CL,expPrime,termPrime,factor,highPrecedenceOperators
+
+highPrecedenceOperators --> TK_MUL
+current: *, type: TK_MUL
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,TK_SEM,expPrime,termPrime,TK_CL,expPrime,termPrime,factor,TK_MUL
+
+current: (, type: TK_OP
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,TK_SEM,expPrime,termPrime,TK_CL,expPrime,termPrime,factor
+
+factor --> TK_OP,arithmeticExpression,TK_CL
+current: (, type: TK_OP
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,TK_SEM,expPrime,termPrime,TK_CL,expPrime,termPrime,TK_CL,arithmeticExpression,TK_OP
+
+current: 2345, type: TK_NUM
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,TK_SEM,expPrime,termPrime,TK_CL,expPrime,termPrime,TK_CL,arithmeticExpression
+
+arithmeticExpression --> term,expPrime
+current: 2345, type: TK_NUM
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,TK_SEM,expPrime,termPrime,TK_CL,expPrime,termPrime,TK_CL,expPrime,term
+
+term --> factor,termPrime
+current: 2345, type: TK_NUM
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,TK_SEM,expPrime,termPrime,TK_CL,expPrime,termPrime,TK_CL,expPrime,termPrime,factor
+
+factor --> var
+current: 2345, type: TK_NUM
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,TK_SEM,expPrime,termPrime,TK_CL,expPrime,termPrime,TK_CL,expPrime,termPrime,var
+
+var --> TK_NUM
+current: 2345, type: TK_NUM
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,TK_SEM,expPrime,termPrime,TK_CL,expPrime,termPrime,TK_CL,expPrime,termPrime,TK_NUM
+
+current: -, type: TK_MINUS
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,TK_SEM,expPrime,termPrime,TK_CL,expPrime,termPrime,TK_CL,expPrime,termPrime
+
+termPrime --> #
+current: -, type: TK_MINUS
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,TK_SEM,expPrime,termPrime,TK_CL,expPrime,termPrime,TK_CL,expPrime
+
+expPrime --> lowPrecedenceOperators,term,expPrime
+current: -, type: TK_MINUS
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,TK_SEM,expPrime,termPrime,TK_CL,expPrime,termPrime,TK_CL,expPrime,term,lowPrecedenceOperators
+
+lowPrecedenceOperators --> TK_MINUS
+current: -, type: TK_MINUS
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,TK_SEM,expPrime,termPrime,TK_CL,expPrime,termPrime,TK_CL,expPrime,term,TK_MINUS
+
+current: 234, type: TK_NUM
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,TK_SEM,expPrime,termPrime,TK_CL,expPrime,termPrime,TK_CL,expPrime,term
+
+term --> factor,termPrime
+current: 234, type: TK_NUM
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,TK_SEM,expPrime,termPrime,TK_CL,expPrime,termPrime,TK_CL,expPrime,termPrime,factor
+
+factor --> var
+current: 234, type: TK_NUM
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,TK_SEM,expPrime,termPrime,TK_CL,expPrime,termPrime,TK_CL,expPrime,termPrime,var
+
+var --> TK_NUM
+current: 234, type: TK_NUM
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,TK_SEM,expPrime,termPrime,TK_CL,expPrime,termPrime,TK_CL,expPrime,termPrime,TK_NUM
+
+current: *, type: TK_MUL
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,TK_SEM,expPrime,termPrime,TK_CL,expPrime,termPrime,TK_CL,expPrime,termPrime
+
+termPrime --> highPrecedenceOperators,factor,termPrime
+current: *, type: TK_MUL
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,TK_SEM,expPrime,termPrime,TK_CL,expPrime,termPrime,TK_CL,expPrime,termPrime,factor,highPrecedenceOperators
+
+highPrecedenceOperators --> TK_MUL
+current: *, type: TK_MUL
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,TK_SEM,expPrime,termPrime,TK_CL,expPrime,termPrime,TK_CL,expPrime,termPrime,factor,TK_MUL
+
+current: 8, type: TK_NUM
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,TK_SEM,expPrime,termPrime,TK_CL,expPrime,termPrime,TK_CL,expPrime,termPrime,factor
+
+factor --> var
+current: 8, type: TK_NUM
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,TK_SEM,expPrime,termPrime,TK_CL,expPrime,termPrime,TK_CL,expPrime,termPrime,var
+
+var --> TK_NUM
+current: 8, type: TK_NUM
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,TK_SEM,expPrime,termPrime,TK_CL,expPrime,termPrime,TK_CL,expPrime,termPrime,TK_NUM
+
+current: ), type: TK_CL
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,TK_SEM,expPrime,termPrime,TK_CL,expPrime,termPrime,TK_CL,expPrime,termPrime
+
+termPrime --> #
+current: ), type: TK_CL
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,TK_SEM,expPrime,termPrime,TK_CL,expPrime,termPrime,TK_CL,expPrime
+
+expPrime --> #
+current: ), type: TK_CL
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,TK_SEM,expPrime,termPrime,TK_CL,expPrime,termPrime,TK_CL
+
+current: ), type: TK_CL
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,TK_SEM,expPrime,termPrime,TK_CL,expPrime,termPrime
+
+termPrime --> #
+current: ), type: TK_CL
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,TK_SEM,expPrime,termPrime,TK_CL,expPrime
+
+expPrime --> #
+current: ), type: TK_CL
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,TK_SEM,expPrime,termPrime,TK_CL
+
+current: +, type: TK_PLUS
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,TK_SEM,expPrime,termPrime
+
+termPrime --> #
+current: +, type: TK_PLUS
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,TK_SEM,expPrime
+
+expPrime --> lowPrecedenceOperators,term,expPrime
+current: +, type: TK_PLUS
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,TK_SEM,expPrime,term,lowPrecedenceOperators
+
+lowPrecedenceOperators --> TK_PLUS
+current: +, type: TK_PLUS
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,TK_SEM,expPrime,term,TK_PLUS
+
+current: 5, type: TK_NUM
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,TK_SEM,expPrime,term
+
+term --> factor,termPrime
+current: 5, type: TK_NUM
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,TK_SEM,expPrime,termPrime,factor
+
+factor --> var
+current: 5, type: TK_NUM
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,TK_SEM,expPrime,termPrime,var
+
+var --> TK_NUM
+current: 5, type: TK_NUM
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,TK_SEM,expPrime,termPrime,TK_NUM
+
+current: *, type: TK_MUL
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,TK_SEM,expPrime,termPrime
+
+termPrime --> highPrecedenceOperators,factor,termPrime
+current: *, type: TK_MUL
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,TK_SEM,expPrime,termPrime,factor,highPrecedenceOperators
+
+highPrecedenceOperators --> TK_MUL
+current: *, type: TK_MUL
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,TK_SEM,expPrime,termPrime,factor,TK_MUL
+
+current: c3, type: TK_ID
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,TK_SEM,expPrime,termPrime,factor
+
+factor --> var
+current: c3, type: TK_ID
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,TK_SEM,expPrime,termPrime,var
+
+var --> singleOrRecId
+current: c3, type: TK_ID
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,TK_SEM,expPrime,termPrime,singleOrRecId
+
+singleOrRecId --> TK_ID,option_single_constructed
+current: c3, type: TK_ID
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,TK_SEM,expPrime,termPrime,option_single_constructed,TK_ID
+
+current: ;, type: TK_SEM
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,TK_SEM,expPrime,termPrime,option_single_constructed
+
+option_single_constructed --> #
+current: ;, type: TK_SEM
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,TK_SEM,expPrime,termPrime
+
+termPrime --> #
+current: ;, type: TK_SEM
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,TK_SEM,expPrime
+
+expPrime --> #
+current: ;, type: TK_SEM
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,TK_SEM
+
+current: if, type: TK_IF
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts
+
+otherStmts --> stmt,otherStmts
+current: if, type: TK_IF
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,stmt
+
+stmt --> conditionalStmt
+current: if, type: TK_IF
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,conditionalStmt
+
+conditionalStmt --> TK_IF,TK_OP,booleanExpression,TK_CL,TK_THEN,stmt,otherStmts,elsePart
+current: if, type: TK_IF
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,elsePart,otherStmts,stmt,TK_THEN,TK_CL,booleanExpression,TK_OP,TK_IF
+
+current: (, type: TK_OP
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,elsePart,otherStmts,stmt,TK_THEN,TK_CL,booleanExpression,TK_OP
+
+current: (, type: TK_OP
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,elsePart,otherStmts,stmt,TK_THEN,TK_CL,booleanExpression
+
+booleanExpression --> TK_OP,booleanExpression,TK_CL,logicalOp,TK_OP,booleanExpression,TK_CL
+current: (, type: TK_OP
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,elsePart,otherStmts,stmt,TK_THEN,TK_CL,TK_CL,booleanExpression,TK_OP,logicalOp,TK_CL,booleanExpression,TK_OP
+
+current: ~, type: TK_NOT
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,elsePart,otherStmts,stmt,TK_THEN,TK_CL,TK_CL,booleanExpression,TK_OP,logicalOp,TK_CL,booleanExpression
+
+booleanExpression --> TK_NOT,TK_OP,booleanExpression,TK_CL
+current: ~, type: TK_NOT
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,elsePart,otherStmts,stmt,TK_THEN,TK_CL,TK_CL,booleanExpression,TK_OP,logicalOp,TK_CL,TK_CL,booleanExpression,TK_OP,TK_NOT
+
+current: (, type: TK_OP
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,elsePart,otherStmts,stmt,TK_THEN,TK_CL,TK_CL,booleanExpression,TK_OP,logicalOp,TK_CL,TK_CL,booleanExpression,TK_OP
+
+current: c4bbb, type: TK_ID
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,elsePart,otherStmts,stmt,TK_THEN,TK_CL,TK_CL,booleanExpression,TK_OP,logicalOp,TK_CL,TK_CL,booleanExpression
+
+booleanExpression --> var,relationalOp,var
+current: c4bbb, type: TK_ID
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,elsePart,otherStmts,stmt,TK_THEN,TK_CL,TK_CL,booleanExpression,TK_OP,logicalOp,TK_CL,TK_CL,var,relationalOp,var
+
+var --> singleOrRecId
+current: c4bbb, type: TK_ID
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,elsePart,otherStmts,stmt,TK_THEN,TK_CL,TK_CL,booleanExpression,TK_OP,logicalOp,TK_CL,TK_CL,var,relationalOp,singleOrRecId
+
+singleOrRecId --> TK_ID,option_single_constructed
+current: c4bbb, type: TK_ID
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,elsePart,otherStmts,stmt,TK_THEN,TK_CL,TK_CL,booleanExpression,TK_OP,logicalOp,TK_CL,TK_CL,var,relationalOp,option_single_constructed,TK_ID
+
+current: ==, type: TK_EQ
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,elsePart,otherStmts,stmt,TK_THEN,TK_CL,TK_CL,booleanExpression,TK_OP,logicalOp,TK_CL,TK_CL,var,relationalOp,option_single_constructed
+
+option_single_constructed --> #
+current: ==, type: TK_EQ
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,elsePart,otherStmts,stmt,TK_THEN,TK_CL,TK_CL,booleanExpression,TK_OP,logicalOp,TK_CL,TK_CL,var,relationalOp
+
+relationalOp --> TK_EQ
+current: ==, type: TK_EQ
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,elsePart,otherStmts,stmt,TK_THEN,TK_CL,TK_CL,booleanExpression,TK_OP,logicalOp,TK_CL,TK_CL,var,TK_EQ
+
+current: 0, type: TK_NUM
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,elsePart,otherStmts,stmt,TK_THEN,TK_CL,TK_CL,booleanExpression,TK_OP,logicalOp,TK_CL,TK_CL,var
+
+var --> TK_NUM
+current: 0, type: TK_NUM
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,elsePart,otherStmts,stmt,TK_THEN,TK_CL,TK_CL,booleanExpression,TK_OP,logicalOp,TK_CL,TK_CL,TK_NUM
+
+current: ), type: TK_CL
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,elsePart,otherStmts,stmt,TK_THEN,TK_CL,TK_CL,booleanExpression,TK_OP,logicalOp,TK_CL,TK_CL
+
+current: ), type: TK_CL
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,elsePart,otherStmts,stmt,TK_THEN,TK_CL,TK_CL,booleanExpression,TK_OP,logicalOp,TK_CL
+
+current: &&, type: TK_ILLEGAL
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,elsePart,otherStmts,stmt,TK_THEN,TK_CL,TK_CL,booleanExpression,TK_OP,logicalOp
+
+error lexeme: &&, type: TK_ILLEGAL line: 13
+info:- Error recovery invoked. Lexical error
+Error:- Unknown pattern <&&>
+current: (, type: TK_OP
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,elsePart,otherStmts,stmt,TK_THEN,TK_CL,TK_CL,booleanExpression,TK_OP,logicalOp
+
+error lexeme: (, type: TK_OP line: 13
+info:- Error recovery invoked. SYN(follow set)
+Error:- Line 13 Error: Invalid token TK_OP encountered with value ( stack top logicalOp
+current: (, type: TK_OP
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,elsePart,otherStmts,stmt,TK_THEN,TK_CL,TK_CL,booleanExpression,TK_OP
+
+current: c4bbb, type: TK_ID
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,elsePart,otherStmts,stmt,TK_THEN,TK_CL,TK_CL,booleanExpression
+
+booleanExpression --> var,relationalOp,var
+current: c4bbb, type: TK_ID
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,elsePart,otherStmts,stmt,TK_THEN,TK_CL,TK_CL,var,relationalOp,var
+
+var --> singleOrRecId
+current: c4bbb, type: TK_ID
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,elsePart,otherStmts,stmt,TK_THEN,TK_CL,TK_CL,var,relationalOp,singleOrRecId
+
+singleOrRecId --> TK_ID,option_single_constructed
+current: c4bbb, type: TK_ID
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,elsePart,otherStmts,stmt,TK_THEN,TK_CL,TK_CL,var,relationalOp,option_single_constructed,TK_ID
+
+current: >, type: TK_GT
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,elsePart,otherStmts,stmt,TK_THEN,TK_CL,TK_CL,var,relationalOp,option_single_constructed
+
+option_single_constructed --> #
+current: >, type: TK_GT
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,elsePart,otherStmts,stmt,TK_THEN,TK_CL,TK_CL,var,relationalOp
+
+relationalOp --> TK_GT
+current: >, type: TK_GT
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,elsePart,otherStmts,stmt,TK_THEN,TK_CL,TK_CL,var,TK_GT
+
+current: 78.56, type: TK_RNUM
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,elsePart,otherStmts,stmt,TK_THEN,TK_CL,TK_CL,var
+
+var --> TK_RNUM
+current: 78.56, type: TK_RNUM
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,elsePart,otherStmts,stmt,TK_THEN,TK_CL,TK_CL,TK_RNUM
+
+current: ), type: TK_CL
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,elsePart,otherStmts,stmt,TK_THEN,TK_CL,TK_CL
+
+current: ), type: TK_CL
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,elsePart,otherStmts,stmt,TK_THEN,TK_CL
+
+current: then, type: TK_THEN
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,elsePart,otherStmts,stmt,TK_THEN
+
+current: c6, type: TK_ID
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,elsePart,otherStmts,stmt
+
+stmt --> assignmentStmt
+current: c6, type: TK_ID
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,elsePart,otherStmts,assignmentStmt
+
+assignmentStmt --> singleOrRecId,TK_ASSIGNOP,arithmeticExpression,TK_SEM
+current: c6, type: TK_ID
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,elsePart,otherStmts,TK_SEM,arithmeticExpression,TK_ASSIGNOP,singleOrRecId
+
+singleOrRecId --> TK_ID,option_single_constructed
+current: c6, type: TK_ID
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,elsePart,otherStmts,TK_SEM,arithmeticExpression,TK_ASSIGNOP,option_single_constructed,TK_ID
+
+current: <---, type: TK_ASSIGNOP
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,elsePart,otherStmts,TK_SEM,arithmeticExpression,TK_ASSIGNOP,option_single_constructed
+
+option_single_constructed --> #
+current: <---, type: TK_ASSIGNOP
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,elsePart,otherStmts,TK_SEM,arithmeticExpression,TK_ASSIGNOP
+
+current: d4cbcd5677, type: TK_ID
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,elsePart,otherStmts,TK_SEM,arithmeticExpression
+
+arithmeticExpression --> term,expPrime
+current: d4cbcd5677, type: TK_ID
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,elsePart,otherStmts,TK_SEM,expPrime,term
+
+term --> factor,termPrime
+current: d4cbcd5677, type: TK_ID
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,elsePart,otherStmts,TK_SEM,expPrime,termPrime,factor
+
+factor --> var
+current: d4cbcd5677, type: TK_ID
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,elsePart,otherStmts,TK_SEM,expPrime,termPrime,var
+
+var --> singleOrRecId
+current: d4cbcd5677, type: TK_ID
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,elsePart,otherStmts,TK_SEM,expPrime,termPrime,singleOrRecId
+
+singleOrRecId --> TK_ID,option_single_constructed
+current: d4cbcd5677, type: TK_ID
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,elsePart,otherStmts,TK_SEM,expPrime,termPrime,option_single_constructed,TK_ID
+
+current: /, type: TK_DIV
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,elsePart,otherStmts,TK_SEM,expPrime,termPrime,option_single_constructed
+
+option_single_constructed --> #
+current: /, type: TK_DIV
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,elsePart,otherStmts,TK_SEM,expPrime,termPrime
+
+termPrime --> highPrecedenceOperators,factor,termPrime
+current: /, type: TK_DIV
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,elsePart,otherStmts,TK_SEM,expPrime,termPrime,factor,highPrecedenceOperators
+
+highPrecedenceOperators --> TK_DIV
+current: /, type: TK_DIV
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,elsePart,otherStmts,TK_SEM,expPrime,termPrime,factor,TK_DIV
+
+current: c4bbb, type: TK_ID
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,elsePart,otherStmts,TK_SEM,expPrime,termPrime,factor
+
+factor --> var
+current: c4bbb, type: TK_ID
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,elsePart,otherStmts,TK_SEM,expPrime,termPrime,var
+
+var --> singleOrRecId
+current: c4bbb, type: TK_ID
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,elsePart,otherStmts,TK_SEM,expPrime,termPrime,singleOrRecId
+
+singleOrRecId --> TK_ID,option_single_constructed
+current: c4bbb, type: TK_ID
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,elsePart,otherStmts,TK_SEM,expPrime,termPrime,option_single_constructed,TK_ID
+
+current: else, type: TK_ELSE
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,elsePart,otherStmts,TK_SEM,expPrime,termPrime,option_single_constructed
+
+error lexeme: else, type: TK_ELSE line: 16
+info:- Error recovery invoked. ERROR entry
+Error:- syntactical error
+lexeme: write, type: TK_WRITE line: 17 ---bool: 0
+lexeme: (, type: TK_OP line: 17 ---bool: 0
+lexeme: c4bbb, type: TK_ID line: 17 ---bool: 0
+lexeme: ), type: TK_CL line: 17 ---bool: 1
+info:- Error recovery invoked. SYN(follow set)
+Error:- Line 17 Error: Invalid token TK_CL encountered with value ) stack top option_single_constructed
+current: ), type: TK_CL
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,elsePart,otherStmts,TK_SEM,expPrime,termPrime
+
+termPrime --> #
+current: ), type: TK_CL
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,elsePart,otherStmts,TK_SEM,expPrime
+
+expPrime --> #
+current: ), type: TK_CL
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,elsePart,otherStmts,TK_SEM
+
+Error:- Line 17 Error: The token TK_CL for lexeme )  does not match with the expected token TK_SEM
+current: ), type: TK_CL
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,elsePart,otherStmts
+
+error lexeme: ), type: TK_CL line: 17
+info:- Error recovery invoked. ERROR entry
+Error:- syntactical error
+info:- Error recovery invoked. SYN(follow set)
+Error:- Line 17 Error: Invalid token TK_SEM encountered with value ; stack top otherStmts
+current: ;, type: TK_SEM
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,elsePart
+
+error lexeme: ;, type: TK_SEM line: 17
+info:- Error recovery invoked. ERROR entry
+Error:- syntactical error
+info:- Error recovery invoked. SYN(follow set)
+Error:- Line 18 Error: Invalid token TK_ENDIF encountered with value endif stack top elsePart
+current: endif, type: TK_ENDIF
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts
+
+otherStmts --> #
+current: endif, type: TK_ENDIF
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt
+
+error lexeme: endif, type: TK_ENDIF line: 18
+info:- Error recovery invoked. ERROR entry
+Error:- syntactical error
+info:- Error recovery invoked. SYN(follow set)
+Error:- Line 20 Error: Invalid token TK_END encountered with value end stack top returnStmt
+current: end, type: TK_END
+STACK: $,mainFunction,otherFunctions,TK_END
+
+current: _main, type: TK_MAIN
+STACK: $,mainFunction,otherFunctions
+
+otherFunctions --> #
+current: _main, type: TK_MAIN
+STACK: $,mainFunction
+
+mainFunction --> TK_MAIN,stmts,TK_END
+current: _main, type: TK_MAIN
+STACK: $,TK_END,stmts,TK_MAIN
+
+current: type, type: TK_TYPE
+STACK: $,TK_END,stmts
+
+stmts --> typeDefinitions,declarations,otherStmts,returnStmt
+current: type, type: TK_TYPE
+STACK: $,TK_END,returnStmt,otherStmts,declarations,typeDefinitions
+
+typeDefinitions --> #
+current: type, type: TK_TYPE
+STACK: $,TK_END,returnStmt,otherStmts,declarations
+
+declarations --> declaration,declarations
+current: type, type: TK_TYPE
+STACK: $,TK_END,returnStmt,otherStmts,declarations,declaration
+
+declaration --> TK_TYPE,dataType,TK_COLON,TK_ID,global_or_not,TK_SEM
+current: type, type: TK_TYPE
+STACK: $,TK_END,returnStmt,otherStmts,declarations,TK_SEM,global_or_not,TK_ID,TK_COLON,dataType,TK_TYPE
+
+current: int, type: TK_INT
+STACK: $,TK_END,returnStmt,otherStmts,declarations,TK_SEM,global_or_not,TK_ID,TK_COLON,dataType
+
+dataType --> primitiveDatatype
+current: int, type: TK_INT
+STACK: $,TK_END,returnStmt,otherStmts,declarations,TK_SEM,global_or_not,TK_ID,TK_COLON,primitiveDatatype
+
+primitiveDatatype --> TK_INT
+current: int, type: TK_INT
+STACK: $,TK_END,returnStmt,otherStmts,declarations,TK_SEM,global_or_not,TK_ID,TK_COLON,TK_INT
+
+current: b5, type: TK_ID
+STACK: $,TK_END,returnStmt,otherStmts,declarations,TK_SEM,global_or_not,TK_ID,TK_COLON
+
+Error:- Line 25 Error: The token TK_ID for lexeme b5  does not match with the expected token TK_COLON
+current: b5, type: TK_ID
+STACK: $,TK_END,returnStmt,otherStmts,declarations,TK_SEM,global_or_not,TK_ID
+
+current: ;, type: TK_SEM
+STACK: $,TK_END,returnStmt,otherStmts,declarations,TK_SEM,global_or_not
+
+global_or_not --> #
+current: ;, type: TK_SEM
+STACK: $,TK_END,returnStmt,otherStmts,declarations,TK_SEM
+
+current: type, type: TK_TYPE
+STACK: $,TK_END,returnStmt,otherStmts,declarations
+
+declarations --> declaration,declarations
+current: type, type: TK_TYPE
+STACK: $,TK_END,returnStmt,otherStmts,declarations,declaration
+
+declaration --> TK_TYPE,dataType,TK_COLON,TK_ID,global_or_not,TK_SEM
+current: type, type: TK_TYPE
+STACK: $,TK_END,returnStmt,otherStmts,declarations,TK_SEM,global_or_not,TK_ID,TK_COLON,dataType,TK_TYPE
+
+current: int, type: TK_INT
+STACK: $,TK_END,returnStmt,otherStmts,declarations,TK_SEM,global_or_not,TK_ID,TK_COLON,dataType
+
+dataType --> primitiveDatatype
+current: int, type: TK_INT
+STACK: $,TK_END,returnStmt,otherStmts,declarations,TK_SEM,global_or_not,TK_ID,TK_COLON,primitiveDatatype
+
+primitiveDatatype --> TK_INT
+current: int, type: TK_INT
+STACK: $,TK_END,returnStmt,otherStmts,declarations,TK_SEM,global_or_not,TK_ID,TK_COLON,TK_INT
+
+current: :, type: TK_COLON
+STACK: $,TK_END,returnStmt,otherStmts,declarations,TK_SEM,global_or_not,TK_ID,TK_COLON
+
+current: d5cb34567, type: TK_ID
+STACK: $,TK_END,returnStmt,otherStmts,declarations,TK_SEM,global_or_not,TK_ID
+
+current: ;, type: TK_SEM
+STACK: $,TK_END,returnStmt,otherStmts,declarations,TK_SEM,global_or_not
+
+global_or_not --> #
+current: ;, type: TK_SEM
+STACK: $,TK_END,returnStmt,otherStmts,declarations,TK_SEM
+
+current: type, type: TK_TYPE
+STACK: $,TK_END,returnStmt,otherStmts,declarations
+
+declarations --> declaration,declarations
+current: type, type: TK_TYPE
+STACK: $,TK_END,returnStmt,otherStmts,declarations,declaration
+
+declaration --> TK_TYPE,dataType,TK_COLON,TK_ID,global_or_not,TK_SEM
+current: type, type: TK_TYPE
+STACK: $,TK_END,returnStmt,otherStmts,declarations,TK_SEM,global_or_not,TK_ID,TK_COLON,dataType,TK_TYPE
+
+current: int, type: TK_INT
+STACK: $,TK_END,returnStmt,otherStmts,declarations,TK_SEM,global_or_not,TK_ID,TK_COLON,dataType
+
+dataType --> primitiveDatatype
+current: int, type: TK_INT
+STACK: $,TK_END,returnStmt,otherStmts,declarations,TK_SEM,global_or_not,TK_ID,TK_COLON,primitiveDatatype
+
+primitiveDatatype --> TK_INT
+current: int, type: TK_INT
+STACK: $,TK_END,returnStmt,otherStmts,declarations,TK_SEM,global_or_not,TK_ID,TK_COLON,TK_INT
+
+current: :, type: TK_COLON
+STACK: $,TK_END,returnStmt,otherStmts,declarations,TK_SEM,global_or_not,TK_ID,TK_COLON
+
+current: b3b444, type: TK_ID
+STACK: $,TK_END,returnStmt,otherStmts,declarations,TK_SEM,global_or_not,TK_ID
+
+current: :, type: TK_COLON
+STACK: $,TK_END,returnStmt,otherStmts,declarations,TK_SEM,global_or_not
+
+global_or_not --> TK_COLON,TK_GLOBAL
+current: :, type: TK_COLON
+STACK: $,TK_END,returnStmt,otherStmts,declarations,TK_SEM,TK_GLOBAL,TK_COLON
+
+current: global, type: TK_GLOBAL
+STACK: $,TK_END,returnStmt,otherStmts,declarations,TK_SEM,TK_GLOBAL
+
+current: ;, type: TK_SEM
+STACK: $,TK_END,returnStmt,otherStmts,declarations,TK_SEM
+
+current: type, type: TK_TYPE
+STACK: $,TK_END,returnStmt,otherStmts,declarations
+
+declarations --> declaration,declarations
+current: type, type: TK_TYPE
+STACK: $,TK_END,returnStmt,otherStmts,declarations,declaration
+
+declaration --> TK_TYPE,dataType,TK_COLON,TK_ID,global_or_not,TK_SEM
+current: type, type: TK_TYPE
+STACK: $,TK_END,returnStmt,otherStmts,declarations,TK_SEM,global_or_not,TK_ID,TK_COLON,dataType,TK_TYPE
+
+current: $, type: TK_ILLEGAL
+STACK: $,TK_END,returnStmt,otherStmts,declarations,TK_SEM,global_or_not,TK_ID,TK_COLON,dataType
+
+error lexeme: $, type: TK_ILLEGAL line: 28
+info:- Error recovery invoked. Lexical error
+Error:- Unknown Symbol <$>
+current: real, type: TK_REAL
+STACK: $,TK_END,returnStmt,otherStmts,declarations,TK_SEM,global_or_not,TK_ID,TK_COLON,dataType
+
+dataType --> primitiveDatatype
+current: real, type: TK_REAL
+STACK: $,TK_END,returnStmt,otherStmts,declarations,TK_SEM,global_or_not,TK_ID,TK_COLON,primitiveDatatype
+
+primitiveDatatype --> TK_REAL
+current: real, type: TK_REAL
+STACK: $,TK_END,returnStmt,otherStmts,declarations,TK_SEM,global_or_not,TK_ID,TK_COLON,TK_REAL
+
+current: :, type: TK_COLON
+STACK: $,TK_END,returnStmt,otherStmts,declarations,TK_SEM,global_or_not,TK_ID,TK_COLON
+
+current: c3, type: TK_ID
+STACK: $,TK_END,returnStmt,otherStmts,declarations,TK_SEM,global_or_not,TK_ID
+
+current: ;, type: TK_SEM
+STACK: $,TK_END,returnStmt,otherStmts,declarations,TK_SEM,global_or_not
+
+global_or_not --> #
+current: ;, type: TK_SEM
+STACK: $,TK_END,returnStmt,otherStmts,declarations,TK_SEM
+
+current: b5, type: TK_ID
+STACK: $,TK_END,returnStmt,otherStmts,declarations
+
+declarations --> #
+current: b5, type: TK_ID
+STACK: $,TK_END,returnStmt,otherStmts
+
+otherStmts --> stmt,otherStmts
+current: b5, type: TK_ID
+STACK: $,TK_END,returnStmt,otherStmts,stmt
+
+stmt --> assignmentStmt
+current: b5, type: TK_ID
+STACK: $,TK_END,returnStmt,otherStmts,assignmentStmt
+
+assignmentStmt --> singleOrRecId,TK_ASSIGNOP,arithmeticExpression,TK_SEM
+current: b5, type: TK_ID
+STACK: $,TK_END,returnStmt,otherStmts,TK_SEM,arithmeticExpression,TK_ASSIGNOP,singleOrRecId
+
+singleOrRecId --> TK_ID,option_single_constructed
+current: b5, type: TK_ID
+STACK: $,TK_END,returnStmt,otherStmts,TK_SEM,arithmeticExpression,TK_ASSIGNOP,option_single_constructed,TK_ID
+
+current: <--, type: TK_ILLEGAL
+STACK: $,TK_END,returnStmt,otherStmts,TK_SEM,arithmeticExpression,TK_ASSIGNOP,option_single_constructed
+
+error lexeme: <--, type: TK_ILLEGAL line: 29
+info:- Error recovery invoked. Lexical error
+Error:- Unknown pattern <<-->
+current: 1, type: TK_NUM
+STACK: $,TK_END,returnStmt,otherStmts,TK_SEM,arithmeticExpression,TK_ASSIGNOP,option_single_constructed
+
+error lexeme: 1, type: TK_NUM line: 29
+info:- Error recovery invoked. ERROR entry
+Error:- syntactical error
+lexeme: ;, type: TK_SEM line: 29 ---bool: 1
+info:- Error recovery invoked. SYN(follow set)
+Error:- Line 29 Error: Invalid token TK_SEM encountered with value ; stack top option_single_constructed
+current: ;, type: TK_SEM
+STACK: $,TK_END,returnStmt,otherStmts,TK_SEM,arithmeticExpression,TK_ASSIGNOP
+
+Error:- Line 29 Error: The token TK_SEM for lexeme ;  does not match with the expected token TK_ASSIGNOP
+current: ;, type: TK_SEM
+STACK: $,TK_END,returnStmt,otherStmts,TK_SEM,arithmeticExpression
+
+arithmeticExpression --> term,expPrime
+current: ;, type: TK_SEM
+STACK: $,TK_END,returnStmt,otherStmts,TK_SEM,expPrime,term
+
+error lexeme: ;, type: TK_SEM line: 29
+info:- Error recovery invoked. SYN(follow set)
+Error:- Line 29 Error: Invalid token TK_SEM encountered with value ; stack top term
+current: ;, type: TK_SEM
+STACK: $,TK_END,returnStmt,otherStmts,TK_SEM,expPrime
+
+expPrime --> #
+current: ;, type: TK_SEM
+STACK: $,TK_END,returnStmt,otherStmts,TK_SEM
+
+current: read, type: TK_READ
+STACK: $,TK_END,returnStmt,otherStmts
+
+otherStmts --> stmt,otherStmts
+current: read, type: TK_READ
+STACK: $,TK_END,returnStmt,otherStmts,stmt
+
+stmt --> ioStmt
+current: read, type: TK_READ
+STACK: $,TK_END,returnStmt,otherStmts,ioStmt
+
+ioStmt --> TK_READ,TK_OP,var,TK_CL,TK_SEM
+current: read, type: TK_READ
+STACK: $,TK_END,returnStmt,otherStmts,TK_SEM,TK_CL,var,TK_OP,TK_READ
+
+current: (, type: TK_OP
+STACK: $,TK_END,returnStmt,otherStmts,TK_SEM,TK_CL,var,TK_OP
+
+current: d5cb34567, type: TK_ID
+STACK: $,TK_END,returnStmt,otherStmts,TK_SEM,TK_CL,var
+
+var --> singleOrRecId
+current: d5cb34567, type: TK_ID
+STACK: $,TK_END,returnStmt,otherStmts,TK_SEM,TK_CL,singleOrRecId
+
+singleOrRecId --> TK_ID,option_single_constructed
+current: d5cb34567, type: TK_ID
+STACK: $,TK_END,returnStmt,otherStmts,TK_SEM,TK_CL,option_single_constructed,TK_ID
+
+current: ), type: TK_CL
+STACK: $,TK_END,returnStmt,otherStmts,TK_SEM,TK_CL,option_single_constructed
+
+option_single_constructed --> #
+current: ), type: TK_CL
+STACK: $,TK_END,returnStmt,otherStmts,TK_SEM,TK_CL
+
+current: ;, type: TK_SEM
+STACK: $,TK_END,returnStmt,otherStmts,TK_SEM
+
+current: read, type: TK_READ
+STACK: $,TK_END,returnStmt,otherStmts
+
+otherStmts --> stmt,otherStmts
+current: read, type: TK_READ
+STACK: $,TK_END,returnStmt,otherStmts,stmt
+
+stmt --> ioStmt
+current: read, type: TK_READ
+STACK: $,TK_END,returnStmt,otherStmts,ioStmt
+
+ioStmt --> TK_READ,TK_OP,var,TK_CL,TK_SEM
+current: read, type: TK_READ
+STACK: $,TK_END,returnStmt,otherStmts,TK_SEM,TK_CL,var,TK_OP,TK_READ
+
+current: (, type: TK_OP
+STACK: $,TK_END,returnStmt,otherStmts,TK_SEM,TK_CL,var,TK_OP
+
+current: 45, type: TK_NUM
+STACK: $,TK_END,returnStmt,otherStmts,TK_SEM,TK_CL,var
+
+var --> TK_NUM
+current: 45, type: TK_NUM
+STACK: $,TK_END,returnStmt,otherStmts,TK_SEM,TK_CL,TK_NUM
+
+current: ), type: TK_CL
+STACK: $,TK_END,returnStmt,otherStmts,TK_SEM,TK_CL
+
+current: ;, type: TK_SEM
+STACK: $,TK_END,returnStmt,otherStmts,TK_SEM
+
+current: read, type: TK_READ
+STACK: $,TK_END,returnStmt,otherStmts
+
+otherStmts --> stmt,otherStmts
+current: read, type: TK_READ
+STACK: $,TK_END,returnStmt,otherStmts,stmt
+
+stmt --> ioStmt
+current: read, type: TK_READ
+STACK: $,TK_END,returnStmt,otherStmts,ioStmt
+
+ioStmt --> TK_READ,TK_OP,var,TK_CL,TK_SEM
+current: read, type: TK_READ
+STACK: $,TK_END,returnStmt,otherStmts,TK_SEM,TK_CL,var,TK_OP,TK_READ
+
+current: (, type: TK_OP
+STACK: $,TK_END,returnStmt,otherStmts,TK_SEM,TK_CL,var,TK_OP
+
+current: b3b444, type: TK_ID
+STACK: $,TK_END,returnStmt,otherStmts,TK_SEM,TK_CL,var
+
+var --> singleOrRecId
+current: b3b444, type: TK_ID
+STACK: $,TK_END,returnStmt,otherStmts,TK_SEM,TK_CL,singleOrRecId
+
+singleOrRecId --> TK_ID,option_single_constructed
+current: b3b444, type: TK_ID
+STACK: $,TK_END,returnStmt,otherStmts,TK_SEM,TK_CL,option_single_constructed,TK_ID
+
+current: ), type: TK_CL
+STACK: $,TK_END,returnStmt,otherStmts,TK_SEM,TK_CL,option_single_constructed
+
+option_single_constructed --> #
+current: ), type: TK_CL
+STACK: $,TK_END,returnStmt,otherStmts,TK_SEM,TK_CL
+
+current: ;, type: TK_SEM
+STACK: $,TK_END,returnStmt,otherStmts,TK_SEM
+
+current: [, type: TK_SQL
+STACK: $,TK_END,returnStmt,otherStmts
+
+otherStmts --> stmt,otherStmts
+current: [, type: TK_SQL
+STACK: $,TK_END,returnStmt,otherStmts,stmt
+
+stmt --> funCallStmt
+current: [, type: TK_SQL
+STACK: $,TK_END,returnStmt,otherStmts,funCallStmt
+
+funCallStmt --> outputParameters,TK_CALL,TK_FUNID,TK_WITH,TK_PARAMETERS,inputParameters,TK_SEM
+current: [, type: TK_SQL
+STACK: $,TK_END,returnStmt,otherStmts,TK_SEM,inputParameters,TK_PARAMETERS,TK_WITH,TK_FUNID,TK_CALL,outputParameters
+
+outputParameters --> TK_SQL,idList,TK_SQR,TK_ASSIGNOP
+current: [, type: TK_SQL
+STACK: $,TK_END,returnStmt,otherStmts,TK_SEM,inputParameters,TK_PARAMETERS,TK_WITH,TK_FUNID,TK_CALL,TK_ASSIGNOP,TK_SQR,idList,TK_SQL
+
+current: c3, type: TK_ID
+STACK: $,TK_END,returnStmt,otherStmts,TK_SEM,inputParameters,TK_PARAMETERS,TK_WITH,TK_FUNID,TK_CALL,TK_ASSIGNOP,TK_SQR,idList
+
+idList --> TK_ID,more_ids
+current: c3, type: TK_ID
+STACK: $,TK_END,returnStmt,otherStmts,TK_SEM,inputParameters,TK_PARAMETERS,TK_WITH,TK_FUNID,TK_CALL,TK_ASSIGNOP,TK_SQR,more_ids,TK_ID
+
+current: ], type: TK_SQR
+STACK: $,TK_END,returnStmt,otherStmts,TK_SEM,inputParameters,TK_PARAMETERS,TK_WITH,TK_FUNID,TK_CALL,TK_ASSIGNOP,TK_SQR,more_ids
+
+more_ids --> #
+current: ], type: TK_SQR
+STACK: $,TK_END,returnStmt,otherStmts,TK_SEM,inputParameters,TK_PARAMETERS,TK_WITH,TK_FUNID,TK_CALL,TK_ASSIGNOP,TK_SQR
+
+current: <---, type: TK_ASSIGNOP
+STACK: $,TK_END,returnStmt,otherStmts,TK_SEM,inputParameters,TK_PARAMETERS,TK_WITH,TK_FUNID,TK_CALL,TK_ASSIGNOP
+
+current: call, type: TK_CALL
+STACK: $,TK_END,returnStmt,otherStmts,TK_SEM,inputParameters,TK_PARAMETERS,TK_WITH,TK_FUNID,TK_CALL
+
+current: _computeFunctionValue, type: TK_FUNID
+STACK: $,TK_END,returnStmt,otherStmts,TK_SEM,inputParameters,TK_PARAMETERS,TK_WITH,TK_FUNID
+
+current: with, type: TK_WITH
+STACK: $,TK_END,returnStmt,otherStmts,TK_SEM,inputParameters,TK_PARAMETERS,TK_WITH
+
+current: parameters, type: TK_PARAMETERS
+STACK: $,TK_END,returnStmt,otherStmts,TK_SEM,inputParameters,TK_PARAMETERS
+
+current: [, type: TK_SQL
+STACK: $,TK_END,returnStmt,otherStmts,TK_SEM,inputParameters
+
+inputParameters --> TK_SQL,idList,TK_SQR
+current: [, type: TK_SQL
+STACK: $,TK_END,returnStmt,otherStmts,TK_SEM,TK_SQR,idList,TK_SQL
+
+current: b5, type: TK_ID
+STACK: $,TK_END,returnStmt,otherStmts,TK_SEM,TK_SQR,idList
+
+idList --> TK_ID,more_ids
+current: b5, type: TK_ID
+STACK: $,TK_END,returnStmt,otherStmts,TK_SEM,TK_SQR,more_ids,TK_ID
+
+current: ,, type: TK_COMMA
+STACK: $,TK_END,returnStmt,otherStmts,TK_SEM,TK_SQR,more_ids
+
+more_ids --> TK_COMMA,idList
+current: ,, type: TK_COMMA
+STACK: $,TK_END,returnStmt,otherStmts,TK_SEM,TK_SQR,idList,TK_COMMA
+
+current: d5cb34567, type: TK_ID
+STACK: $,TK_END,returnStmt,otherStmts,TK_SEM,TK_SQR,idList
+
+idList --> TK_ID,more_ids
+current: d5cb34567, type: TK_ID
+STACK: $,TK_END,returnStmt,otherStmts,TK_SEM,TK_SQR,more_ids,TK_ID
+
+current: ,, type: TK_COMMA
+STACK: $,TK_END,returnStmt,otherStmts,TK_SEM,TK_SQR,more_ids
+
+more_ids --> TK_COMMA,idList
+current: ,, type: TK_COMMA
+STACK: $,TK_END,returnStmt,otherStmts,TK_SEM,TK_SQR,idList,TK_COMMA
+
+current: b3b444, type: TK_ID
+STACK: $,TK_END,returnStmt,otherStmts,TK_SEM,TK_SQR,idList
+
+idList --> TK_ID,more_ids
+current: b3b444, type: TK_ID
+STACK: $,TK_END,returnStmt,otherStmts,TK_SEM,TK_SQR,more_ids,TK_ID
+
+current: ], type: TK_SQR
+STACK: $,TK_END,returnStmt,otherStmts,TK_SEM,TK_SQR,more_ids
+
+more_ids --> #
+current: ], type: TK_SQR
+STACK: $,TK_END,returnStmt,otherStmts,TK_SEM,TK_SQR
+
+current: ;, type: TK_SEM
+STACK: $,TK_END,returnStmt,otherStmts,TK_SEM
+
+current: write, type: TK_WRITE
+STACK: $,TK_END,returnStmt,otherStmts
+
+otherStmts --> stmt,otherStmts
+current: write, type: TK_WRITE
+STACK: $,TK_END,returnStmt,otherStmts,stmt
+
+stmt --> ioStmt
+current: write, type: TK_WRITE
+STACK: $,TK_END,returnStmt,otherStmts,ioStmt
+
+ioStmt --> TK_WRITE,TK_OP,var,TK_CL,TK_SEM
+current: write, type: TK_WRITE
+STACK: $,TK_END,returnStmt,otherStmts,TK_SEM,TK_CL,var,TK_OP,TK_WRITE
+
+current: (, type: TK_OP
+STACK: $,TK_END,returnStmt,otherStmts,TK_SEM,TK_CL,var,TK_OP
+
+current: c3, type: TK_ID
+STACK: $,TK_END,returnStmt,otherStmts,TK_SEM,TK_CL,var
+
+var --> singleOrRecId
+current: c3, type: TK_ID
+STACK: $,TK_END,returnStmt,otherStmts,TK_SEM,TK_CL,singleOrRecId
+
+singleOrRecId --> TK_ID,option_single_constructed
+current: c3, type: TK_ID
+STACK: $,TK_END,returnStmt,otherStmts,TK_SEM,TK_CL,option_single_constructed,TK_ID
+
+current: ), type: TK_CL
+STACK: $,TK_END,returnStmt,otherStmts,TK_SEM,TK_CL,option_single_constructed
+
+option_single_constructed --> #
+current: ), type: TK_CL
+STACK: $,TK_END,returnStmt,otherStmts,TK_SEM,TK_CL
+
+current: ;, type: TK_SEM
+STACK: $,TK_END,returnStmt,otherStmts,TK_SEM
+
+current: return, type: TK_RETURN
+STACK: $,TK_END,returnStmt,otherStmts
+
+otherStmts --> #
+current: return, type: TK_RETURN
+STACK: $,TK_END,returnStmt
+
+returnStmt --> TK_RETURN,optionalReturn,TK_SEM
+current: return, type: TK_RETURN
+STACK: $,TK_END,TK_SEM,optionalReturn,TK_RETURN
+
+current: ;, type: TK_SEM
+STACK: $,TK_END,TK_SEM,optionalReturn
+
+optionalReturn --> #
+current: ;, type: TK_SEM
+STACK: $,TK_END,TK_SEM
+
+current: end, type: TK_END
+STACK: $,TK_END

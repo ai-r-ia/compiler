@@ -68,8 +68,6 @@ bool isKeywordSynToken(String string)
     return false;
 }
 
-
-
 void _panicRecovery()
 {
 }
@@ -274,7 +272,7 @@ TreeNode parseInputSourceCode(char *testcaseFile)
 
     // printf("\nPARSE TREE \n");
     saveParseTree(tree, 0);
-    printSymbolTable(symbolTable);
+    // printSymbolTable(symbolTable);
     // prettyPrintParseTree(tree);
     return tree;
 }

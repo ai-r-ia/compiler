@@ -5,10 +5,10 @@
 void remove_comments(const char *input_filename, const char *output_filename);
 
 // Function to measure execution time
-void measure_execution_time();
+void measure_execution_time(char *filename);
 
 // driver function to allow users to perform an execution of their choice
 void driver();
 
-void lexical_analysis();
+void lexical_analysis(char *filename);
 #endif

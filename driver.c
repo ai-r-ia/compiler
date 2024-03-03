@@ -1,12 +1,12 @@
 #include "whole_include.h"
 #include <time.h>
 
-void lexical_analysis()
+void lexical_analysis(char *input_filename)
 {
     info("Performing Lexical Analysis");
     // Lexer lexer = init_lexer("test.txt");
     // Lexer lexer = init_lexer("test/test_char.txt");
-    Lexer lexer = init_lexer("Test_Cases/t1.txt");
+    Lexer lexer = init_lexer(input_filename);
 
     Token tk = getNextToken(lexer);
     // printf("fwd0 %d \n", lexer->fwd_ptr);
@@ -44,7 +44,7 @@ void lexical_analysis()
 }
 
 // Function to remove comments from a file
-void remove_comments(const char *input_filename, const char *output_filename)
+void remove_comments(char *input_filename, const char *output_filename)
 {
     FILE *input_file = fopen(input_filename, "r");
     if (input_file == NULL)
@@ -83,7 +83,7 @@ void remove_comments(const char *input_filename, const char *output_filename)
 }
 
 // Function to measure execution time
-void measure_execution_time()
+void measure_execution_time(char *filename)
 {
     clock_t start_time, end_time;
 
@@ -91,8 +91,7 @@ void measure_execution_time()
 
     start_time = clock();
 
-    lexical_analysis();
-    // parser();
+    TreeNode tree = parseInputSourceCode(filename);
 
     end_time = clock();
 
@@ -108,6 +107,7 @@ void measure_execution_time()
 void driver()
 {
     int option;
+    char filename[100];
     do
     {
         printf("\n Options: \n");
@@ -123,18 +123,30 @@ void driver()
         {
         case 0:
             printf("Exiting \n");
+            exit(1);
             break;
         case 1:
-            remove_comments("test/t5.txt", "test/t5_wo.txt");
+            printf(" Please enter the input file name (relative path): ");
+            scanf(" %[^\n]%*c", filename);
+            // gets(filename);
+            remove_comments(filename, "Test_Cases/comment_free_output.txt");
+            printf("The comment free code has been saved in location: Test_Cases/comment_free_output.txt");
             break;
+
         case 2:
-            lexical_analysis();
+            printf(" Please enter the input file name (relative path): ");
+            scanf(" %[^\n]%*c", filename);
+            lexical_analysis(filename);
             break;
         case 3:
-            // parse_and_print_parse_tree();
-            // break;
+            printf(" Please enter the input file name (relative path): ");
+            scanf(" %[^\n]%*c", filename);
+            TreeNode tree = parseInputSourceCode(filename);
+            break;
         case 4:
-            measure_execution_time();
+            printf(" Please enter the input file name (relative path): ");
+            scanf(" %[^\n]%*c", filename);
+            measure_execution_time(filename);
             break;
         default:
             printf("Invalid option. Please try again.\n");

@@ -67,17 +67,6 @@ void updateTerminalInTree(TreeNode root, Token token)
         }
     }
 
-    // else if (root->value->type!=TERMINAL && compare(char_to_string(grammarTokenKindString[token->type]), root->value->lexeme_str))
-    // {
-    //     if (root->value->line_num == 0)
-    //     {
-    //         // root->value = copy_token(root->value, token);
-    //         root->value->lexeme_value = token->lexeme_str->text;
-    //         root->value->line_num = token->line_num;
-    //         root->value->char_num = token->char_num;
-    //         return;
-    //     }
-    // }
     for (int i = 0; i < root->children->size; i++)
     {
         updateTerminalInTree((TreeNode)get(root->children, i), token);
@@ -86,6 +75,10 @@ void updateTerminalInTree(TreeNode root, Token token)
 
 void printTree(FILE *fp, TreeNode root, int level)
 {
+    if (root->children->size >0)
+    //     return;
+    printTree(fp, (TreeNode)get(root->children, 0), level + 1);
+
     // lexeme CurrentNode lineno tokenName valueIfNumber parentNodeSymbol isLeafNode(yes / no) NodeSymbol
     int lineno;
     double valueIfNumber = -1;
@@ -96,18 +89,8 @@ void printTree(FILE *fp, TreeNode root, int level)
     char *isLeafNode = malloc(4);
     char *NodeSymbol = malloc(100);
 
-    // for(int i = 0; i<TK_ILLEGAL; i++){
-    //     if(compare(root->value->lexeme_str, char_to_string(token_type_list[i]))){
-    //         CurrentNode = token_type_list[i];
-    //         tokenName = CurrentNode;
-    //         NodeSymbol = CurrentNode;
-    //     }
-    // }
-
     CurrentNode = root->value->lexeme_str->text;
     NodeSymbol = CurrentNode;
-    // CurrentNode = token_type_list[root->value->type]; // NOTE: vs tokenName ....symboltable
-    // tokenName = token_type_list[root->value->type];   // NOTE: vs tokenName ....symboltable
     if (!root->parent)
         parentNodeSymbol = "ROOT";
     else
@@ -125,24 +108,17 @@ void printTree(FILE *fp, TreeNode root, int level)
         tokenName = "-----";
     }
 
-    // NodeSymbol = token_type_list[root->value->type]; // NOTE: vs tokenName ....symboltable
-
     lineno = root->value->line_num;
     if (compare(root->value->lexeme_str, char_to_string("TK_NUM")) || compare(root->value->lexeme_str, char_to_string("TK_RNUM")))
         valueIfNumber = *(double *)(root->value->lexeme_value);
 
-    // preorder TODO: inorder
-    for (int i = 0; i < root->children->size; i++)
-    {
-        printTree(fp, (TreeNode)get(root->children, i), level + 1);
-    }
-    // printf("%s      ---%d\n", root->value->lexeme_str->text, level);
-    // printf("Lexeme:%13s CurrentNode:%25s Line no.:%3d  tokenName:%13s valueIfNumber:%.3f parentNodeSymbol:%25s isLeafNode:%4s NodeSymbol:%25s \n", lexeme, CurrentNode, lineno,
-    //        tokenName, valueIfNumber, parentNodeSymbol, isLeafNode, NodeSymbol);
     fprintf(fp, "Lexeme:%13s CurrentNode:%25s Line no.:%3d  tokenName:%13s valueIfNumber:%.3f parentNodeSymbol:%25s isLeafNode:%4s NodeSymbol:%25s \n", lexeme, CurrentNode, lineno,
             tokenName, valueIfNumber, parentNodeSymbol, isLeafNode, NodeSymbol);
 
-    // printf("\n");
+    for (int i = 1; i < root->children->size; i++)
+    {
+        printTree(fp, (TreeNode)get(root->children, i), level + 1); // Traverse rest of the subtrees
+    }
 }
 
 void saveParseTree(TreeNode root, int level)
