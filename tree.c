@@ -75,9 +75,8 @@ void updateTerminalInTree(TreeNode root, Token token)
 
 void printTree(FILE *fp, TreeNode root, int level)
 {
-    if (root->children->size >0)
-    //     return;
-    printTree(fp, (TreeNode)get(root->children, 0), level + 1);
+    if (root->children->size > 0)
+        printTree(fp, (TreeNode)get(root->children, 0), level + 1);
 
     // lexeme CurrentNode lineno tokenName valueIfNumber parentNodeSymbol isLeafNode(yes / no) NodeSymbol
     int lineno;
