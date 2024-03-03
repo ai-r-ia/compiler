@@ -8,7 +8,7 @@
 
 bool isKeywordSynToken(String string);
 
-Parser init_parser(char *filename, char *grammar);
+Parser init_parser(char *filename);
 
 TreeNode parseInputSourceCode(char *testcaseFile);
 

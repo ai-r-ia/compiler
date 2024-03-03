@@ -448,7 +448,10 @@ void populateParseTable(Grammar grammar)
     for (int r = 0; r < grammar->rules->size; r++)
     {
         Rule rule = (Rule)get(grammar->rules, r);
-
+        if (rule->NT->type == booleanExpression)
+        {
+            printf("ejd");
+        }
         Vector row = (Vector)get(grammar->parseTable, rule->NT->type);
         bool containsNull = false;
 
