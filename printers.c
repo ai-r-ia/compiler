@@ -1,18 +1,17 @@
 #include "printers.h"
 #include "whole_include.h"
 void debug(char *message) { printf("%sDebug:- %s %s\n", WHITE, message, WHITE); }
-void error(char *message) { printf("%sError:- %s %s\n", RED, message, WHITE); }
+void error(char *message) { printf("%s%s %s\n", RED, message, WHITE); }
 void info(char *message) { printf("%sinfo:- %s %s\n", BLUE, message, WHITE); }
 void success(char *message) { printf("%sSuccess:- %s %s\n", GREEN, message, WHITE); }
 
-
-void prettyPrintParseTree(TreeNode  node)
+void prettyPrintParseTree(TreeNode node)
 {
     printf("-- Parse Tree --\n");
     _prettyPrintParseTree(node, 0);
 }
 
-void _prettyPrintParseTree(TreeNode  node, int level)
+void _prettyPrintParseTree(TreeNode node, int level)
 {
     if (node == NULL || node->value == NULL)
         return;
@@ -20,7 +19,7 @@ void _prettyPrintParseTree(TreeNode  node, int level)
     for (int i = 0; i < level; i++)
         printf("|--");
 
-    if (node->value->type  == TERMINAL)
+    if (node->value->type == TERMINAL)
     {
         if (node->value->lexeme_str == NULL)
             printf("Expected: %s\n", token_type_list[node->value->type]);
@@ -30,15 +29,15 @@ void _prettyPrintParseTree(TreeNode  node, int level)
     else
     {
         if (node->value->lexeme_str == NULL)
-            printf("Expected: %s\n", grammarTokenKindString[node->value->type ]);
+            printf("Expected: %s\n", grammarTokenKindString[node->value->type]);
         else
-            printf("%s\n", grammarTokenKindString[node->value->type ]);
+            printf("%s\n", grammarTokenKindString[node->value->type]);
     }
     if (node->children == NULL)
         return;
     for (size_t i = 0; i < (node->children->size); i++)
     {
-        _prettyPrintParseTree((TreeNode  )get(node->children, i), level + 1);
+        _prettyPrintParseTree((TreeNode)get(node->children, i), level + 1);
     }
 }
 
@@ -85,7 +84,7 @@ void _prettyPrintParseTree(TreeNode  node, int level)
 //     }
 // }
 
-void prettyPrintAST(TreeNode  node)
+void prettyPrintAST(TreeNode node)
 {
     // printf("-- AST (Pre order Traversal) --\n\n");
     // _prettyPrintParseTreeT(node, NULL, 0);

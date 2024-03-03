@@ -34,6 +34,9 @@ static char *keyword_syn_token_list[] = {
     "TK_CL",
     "TK_SEM",
     "TK_ENDIF",
+    "TK_ENDUNION",
+    "TK_RETURN",
+    "TK_ENDRECORD",
 };
 
 #endif

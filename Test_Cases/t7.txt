@@ -6,5 +6,8 @@ _main
         c6 <--- (800.5 + 200.7);
         c6 <--- (200 + 300);
     end
+    if (56>9)
+    then 
+        write(c7);
     return;
 end
