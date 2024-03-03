@@ -1,5 +1,6 @@
 #include "whole_include.h"
 #include "test/test.h"
+#include "driver.h"
 
 int main(int argc, char** args)
 {
@@ -9,6 +10,9 @@ int main(int argc, char** args)
     {
         testAll();
         return 0;
+    }
+    else {
+        driver();
     }
     printf("not testing\n");
     return 0;

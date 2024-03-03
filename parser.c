@@ -272,7 +272,7 @@ TreeNode parseInputSourceCode(char *testcaseFile)
         top_of_stack = top(parser->stack);
     }
 
-    printf("\nPARSE TREE \n");
+    // printf("\nPARSE TREE \n");
     saveParseTree(tree, 0);
     printSymbolTable(symbolTable);
     // prettyPrintParseTree(tree);
