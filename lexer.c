@@ -1,7 +1,52 @@
+/* 
+Group Number: 28
+1. Anishka Singh 2020B3A70816P
+2. Gautam Jajoo 2020B3A71638P
+3. Suraj Phalod 2020B3A71959P
+4. Ria Shekhawat 2020B4A71986P
+5. Karan Agrawal 2020B4A70830P
+*/ 
 #include "whole_include.h"
 
 bool eof_retraction = false;
+// Function to remove comments from a file
+void remove_comments(const char *input_filename, const char *output_filename)
+{
+    FILE *input_file = fopen(input_filename, "r");
+    if (input_file == NULL)
+    {
+        fprintf(stderr, "Error opening input file %s\n", input_filename);
+        exit(1);
+    }
 
+    FILE *output_file = fopen(output_filename, "w");
+    if (output_file == NULL)
+    {
+        fprintf(stderr, "Error opening output file %s\n", output_filename);
+        exit(1);
+    }
+
+    char line[256];
+    while (fgets(line, sizeof(line), input_file))
+    {
+        char *comment_start = strchr(line, '%');
+        if (comment_start != NULL)
+        {
+            *comment_start = '\0';
+        }
+        int i = strlen(line) - 1;
+        while (i >= 0 && (line[i] == ' ' || line[i] == '\t' || line[i] == '\n' || line[i] == '\r'))
+        {
+            line[i] = '\0';
+            i--;
+        }
+        printf("%s\n", line);
+        fprintf(output_file, "%s\n", line);
+    }
+
+    fclose(input_file);
+    fclose(output_file);
+}
 Lexer init_lexer(char *filename)
 {
     Lexer lexer = (Lexer)malloc(sizeof(struct lexer));
