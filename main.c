@@ -12,7 +12,7 @@ Group Number: 28
 
 int main(int argc, char** args)
 {
-    *args = "test";
+    // *args = "test";
 
     if (strcmp(*args, "test") == 0)
     {

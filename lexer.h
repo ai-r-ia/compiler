@@ -28,6 +28,9 @@ struct lexer
     int lineNumber, charNumber, prevLineChar;
 };
 
+// Function to remove comments from a file
+void remove_comments(const char *input_filename, const char *output_filename);
+
 // Constructor for Lexer
 Lexer init_lexer(char *filename);
 
