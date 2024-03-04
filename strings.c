@@ -144,7 +144,7 @@ String toSmall(String a)
     return a;
 }
 
-// TODO: test this
+
 void pop_str(String str)
 {
     if (str->text == NULL || str->memory_size == 0)
