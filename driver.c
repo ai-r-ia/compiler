@@ -41,6 +41,7 @@ void lexical_analysis(char *input_filename)
     }
 
     info("Only Lexical analyzer module developed");
+    free(lexer);
 }
 
 // Function to measure execution time

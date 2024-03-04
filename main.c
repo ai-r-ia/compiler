@@ -13,11 +13,12 @@ Group Number: 28
 int main(int argc, char **args)
 {
 
-    for (int i = 1; i < argc - 1; i++)
-    {
-        printf("For input file: %s\n", args[i]);
-        driver(args[i], args[argc - 1]);
-    }
+    // for (int i = 1; i < argc - 1; i++)
+    // {
+    //     printf("For input file: %s\n", args[i]);
+    //     driver(args[i], args[argc - 1]);
+    // }
+    testAll();
 
     return 0;
 }

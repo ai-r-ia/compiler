@@ -278,5 +278,9 @@ parseInputSourceCode(char *testcaseFile, char *treefile)
         saveParseTree(tree, 0, treefile);
     else
         info("Parse tree could not be generated");
+    free(parser->stack);
+    free(parser->lexer);
+    free(parser->grammar);
+    free(parser);
     return tree;
 }
