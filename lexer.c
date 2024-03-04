@@ -1,11 +1,11 @@
-/* 
+/*
 Group Number: 28
 1. Anishka Singh 2020B3A70816P
 2. Gautam Jajoo 2020B3A71638P
 3. Suraj Phalod 2020B3A71959P
 4. Ria Shekhawat 2020B4A71986P
 5. Karan Agrawal 2020B4A70830P
-*/ 
+*/
 #include "whole_include.h"
 
 bool eof_retraction = false;
@@ -129,22 +129,22 @@ bool isSymbol(char value)
            value == '@' || value == '~' || value == '=' || value == '!';
 }
 
-//checks for valid symbol table operator entries
+// checks for valid symbol table operator entries
 bool isSymbolTableOperator(String str)
 {
     return compare(str, char_to_string("+")) ||
-        compare(str, char_to_string("-")) ||
-        compare(str, char_to_string("*")) ||
-        compare(str, char_to_string("/")) ||
-        compare(str, char_to_string("&&&")) ||
-        compare(str, char_to_string("@@@")) ||
-        compare(str, char_to_string("~")) ||
-        compare(str, char_to_string("<")) ||
-        compare(str, char_to_string(">")) ||
-        compare(str, char_to_string("<=")) ||
-        compare(str, char_to_string(">=")) ||
-        compare(str, char_to_string("==")) ||
-        compare(str, char_to_string("!="));
+           compare(str, char_to_string("-")) ||
+           compare(str, char_to_string("*")) ||
+           compare(str, char_to_string("/")) ||
+           compare(str, char_to_string("&&&")) ||
+           compare(str, char_to_string("@@@")) ||
+           compare(str, char_to_string("~")) ||
+           compare(str, char_to_string("<")) ||
+           compare(str, char_to_string(">")) ||
+           compare(str, char_to_string("<=")) ||
+           compare(str, char_to_string(">=")) ||
+           compare(str, char_to_string("==")) ||
+           compare(str, char_to_string("!="));
 }
 
 int getKeyword(String word)
@@ -486,7 +486,7 @@ Token get_tk_fieldid(Lexer lexer, String lexeme)
 Token get_tk_id2(Lexer lexer, String lexeme)
 {
     getNextCharacter(lexer);
-    while (lexer->fp && isLetter_b2d(lexer->curr_char))
+    while (lexer->fp && (isLetter_b2d(lexer->curr_char) || isDigit_2_7(lexer->curr_char)))
     {
 
         append(lexeme, lexer->curr_char);

@@ -188,6 +188,9 @@ TreeNode parseInputSourceCode(char *testcaseFile)
                     {
                         do
                         {
+                            printf("STACK: ");
+                            printVector(parser->stack);
+                            printf("\n");
                             pop_back(parser->stack);
                             top_of_stack = top(parser->stack);
                             if (top_of_stack->type == TERMINAL)
@@ -208,6 +211,8 @@ TreeNode parseInputSourceCode(char *testcaseFile)
                         } while (!contains(firsts_tos, parser->currentNode));
                     }
 
+                    if (compare(char_to_string(token_type_list[parser->currentNode->type]), top_of_stack->lexeme_str))
+                        continue;
                     sprintf(error_msg, "Line %2ld Error: Invalid token %s encountered with value %s stack top %s",
                             parser->currentNode->line_num,
                             token_type_list[parser->currentNode->type],
@@ -234,7 +239,7 @@ TreeNode parseInputSourceCode(char *testcaseFile)
             }
             else if (rule)
             {
-                // printRule(rule);
+                printRule(rule);
                 addToTree(currentParent, rule);
                 pop_back(parser->stack);
 
