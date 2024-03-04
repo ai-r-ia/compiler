@@ -172,6 +172,8 @@ parseInputSourceCode(char *testcaseFile, char *treefile)
                     //    && !contains(firsts_tos, parser->currentNode)) // special keyword check
                     {
                         parser->currentNode = getNextToken(parser->lexer);
+                        if (!parser->currentNode)
+                            return tree;
                         if (parser->currentNode->type == TK_ILLEGAL) // lexical error
                         {
                             char *error_msg_tk = parser->currentNode->error_msg;
@@ -180,6 +182,8 @@ parseInputSourceCode(char *testcaseFile, char *treefile)
 
                             parser->currentNode = getNextToken(parser->lexer);
                         }
+                        if (!parser->currentNode)
+                            return tree;
                         rule = (Rule)get(tableRow, parser->currentNode->type);
                         if ((rule->NT->type != ERROR) && (rule->NT->type != SYN))
                             firsts_tos = get(parser->grammar->first, rule->NT->type);
@@ -192,7 +196,6 @@ parseInputSourceCode(char *testcaseFile, char *treefile)
                     }
 
                     if (rule->NT->type == SYN)
-                    // || !isStartKeyword(char_to_string(token_type_list[parser->currentNode->type])))
                     {
                         pop_back(parser->stack);
                     }
@@ -200,9 +203,6 @@ parseInputSourceCode(char *testcaseFile, char *treefile)
                     {
                         do
                         {
-                            // printf("STACK: ");
-                            // printVector(parser->stack);
-                            // printf("\n");
                             pop_back(parser->stack);
                             top_of_stack = top(parser->stack);
                             if (top_of_stack->type == TERMINAL)
@@ -227,8 +227,6 @@ parseInputSourceCode(char *testcaseFile, char *treefile)
 
                     if (top_of_stack->type == TERMINAL)
                         continue;
-                    // else
-                    //     pop_back(parser->stack);
 
                     sprintf(error_msg, "Line %2ld Error: Invalid token %s encountered with value %s stack top %s",
                             parser->currentNode->line_num,
@@ -237,7 +235,6 @@ parseInputSourceCode(char *testcaseFile, char *treefile)
                             top_of_stack->lexeme_str->text);
                     error(error_msg);
 
-                    // if (!contains(firsts_tos, parser->currentNode))
                     parser->currentNode = getNextToken(parser->lexer);
                 }
                 else if (rule->NT->type == SYN)

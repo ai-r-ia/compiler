@@ -1,3 +1,12 @@
+
+_recordTotal input parameter list [record #booking b1]
+output parameter list [record #booking b1];
+    b1.c1.total <--- (b1.d1.fees + b1.d2.fees) * 3; %use b1.c1.noAppt in place of 3 to check syntactical error
+    b1.c2.total <--- (b1.d2.fees) * 4; %use b1.c2.noAppt in place of 4 to check syntactical error
+    return [b1];
+end
+
+_main
 record #doctor
     type int : docId;
     type int : dPhone;
@@ -18,14 +27,6 @@ record #booking
     type record #client : c2; %c2 went to d2 4 times
 endrecord
 
-_recordTotal input parameter list [record #booking b1]
-output parameter list [record #booking b1];
-    b1.c1.total <--- (b1.d1.fees + b1.d2.fees) * 3; %use b1.c1.noAppt in place of 3 to check syntactical error
-    b1.c2.total <--- (b1.d2.fees) * 4; %use b1.c2.noAppt in place of 4 to check syntactical error
-    return [b1];
-end
-
-_main
     type record #booking : b1;
     b1.d1.docId <--- 1;
     b1.d1.dPhone <--- 1

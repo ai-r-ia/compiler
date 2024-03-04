@@ -1,9 +1,12 @@
-record #dist
-    type int : x;
-endrecord
+
 
 _recordDist input parameter list [record #dist d1]
 output parameter list [record #dist d2];
+
+    record #dist
+        type int : x;
+    endrecord
+
     type int : ctr;
     ctr <--- 1;
     while(ctr<=d1.x)

@@ -1,11 +1,11 @@
-/* 
+/*
 Group Number: 28
 1. Anishka Singh 2020B3A70816P
 2. Gautam Jajoo 2020B3A71638P
 3. Suraj Phalod 2020B3A71959P
 4. Ria Shekhawat 2020B4A71986P
 5. Karan Agrawal 2020B4A70830P
-*/ 
+*/
 #include "whole_include.h"
 #include "vectors.h"
 #include "lexical_token.h"
@@ -31,7 +31,7 @@ void *get(Vector vec, size_t ind)
     void *value = NULL;
     if (ind >= vec->size || ind < 0)
     {
-        printf("Index out of bound\n");
+        // printf("Index out of bound\n");
     }
     else
     {
@@ -55,7 +55,7 @@ void put(Vector vec, size_t ind, void *value)
 {
     if (ind >= vec->size || ind < 0)
     {
-        printf("Index out of bound\n");
+        // printf("Index out of bound\n");
     }
     else
     {
@@ -103,7 +103,7 @@ void removeAt(Vector vec, size_t ind)
 {
     if (ind >= vec->size || ind < 0)
     {
-        printf("Index out of bounds\n");
+        // printf("Index out of bounds\n");
         return;
     }
 

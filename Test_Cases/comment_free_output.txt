@@ -1,12 +1,119 @@
-_computeFunctionValue input parameter list[int c3, int c4, int c5]
-    output parameter list [real c6];
-        c6 <--- (5000.7 + 200.74)
-        ;
-        return;
-    end
+
+
+
+_readMarks input parameter list[int b7] output parameter list [int maths, int physics, int chemistry];
+    read(maths);
+    read(physics);
+    read(chemistry);
+    return [maths, physics, chemistry];
+
 
 _main
-    type int : b5;
+    type int : c2;
+    type int : c3;
+    type int : b2;
+    type int : b3;
+    type int : b4;
+    type real : b22;
+    type real : b32;
+    type real : b42;
+    type real : b23;
+    type real : b33;
+    type real : b43;
+    type int : d2;
+    type int : b24;
+    type int : b25;
+    type int : b34;
+    type int : b35;
+    type int : b44;
+    type int : b45;
+    type int : d3;
+    type int : d4;
+    type int : d5;
+    type int : d6;
+
+    read(c2);
+
+    b21 <--- 0;
+    b31 <--- 0;
+    b41 <--- 0;
+
+    b23 <--- -1;
+    b24 <--- 101;
+    b33 <--- -1;
+    b34 <--- 101;
+    b43 <--- -1;
+    b44 <--- 101;
+
+    d3 <--- 0;
+    d4 <--- 0;
+    d5 <--- 0;
+    d6 <--- 0;
+
+    c3 <--- 1;
+    while (c3 <= c2)
+        [b2, b3, b4] <--- call _readMarks with parameters [c3];
+
+
+        b21 <--- b21 + b2;
+        b31 <--- b31 + b3;
+        b41 <--- b41 + b4;
+
+
+        if (b2 > b23) then
+            b23 <--- b2;
+        endif
+        if (b2 < b24) then
+            b24 <--- b2;
+        endif
+        if (b3 > b33) then
+            b33 <--- b3;
+        endif
+        if (b3 < b34) then
+            b34 <--- b3;
+        endif
+        if (b4 > b43) then
+            b43 <--- b4;
+        endif
+        if (b4 < b44) then
+            b44 <--- b4;
+        endif
+
+
+        d1 <--- b2 + b3 + b4;
+        if (d1 >= 270) then
+            d3 <--- d3 + 1;
+        elseif (d1 >= 240) then
+            d4 <--- d4 + 1;
+        elseif (d1 >= 210) then
+            d5 <--- d5 + 1;
+        else
+            d6 <--- d6 + 1;
+        endif
+
+        c3 <--- c3 + 1;
+    endwhile
+
+
+    b22 <--- b21 / c2;
+    b32 <--- b31  c2;
+    b42 <--- b41 / c2;
+
+    write(b22);
+    write(b32)
+    write(b42);
+
+    write(b23);
+    write(b24);
+    write(b33);
+    write(b34);
+    write(b43);
+    write(b44);
+
+    write(d3);
+    write(d4);
+    write(d5);
+    write(d6);
 
     return;
 end

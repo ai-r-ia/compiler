@@ -11,4 +11,4 @@ TARGET=stage1exe #target file name
 
 all:
 	$(CC) test/*.c \
-	*.c -o $(TARGET) -lm
+	*.c -o3 $(TARGET) -lm

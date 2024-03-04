@@ -12,24 +12,12 @@ Group Number: 28
 
 int main(int argc, char **args)
 {
-    // *args = "sfhk t8.txt parseTreeee.txt";
-    printf("You have entered %d arguments:\n", argc);
 
-    // driver(*(char **)args[1], args[2]);
     for (int i = 1; i < argc - 1; i++)
     {
-        printf("%s\n", args[i]);
+        printf("For input file: %s\n", args[i]);
         driver(args[i], args[argc - 1]);
     }
 
-    // if (strcmp(*args, "test") == 0)
-    // {
-    //     testAll();
-    //     return 0;
-    // }
-    // else
-    // {
-    //     driver("t8.txt", args[argc - 1]);
-    // }
     return 0;
 }
