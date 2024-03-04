@@ -1,11 +1,11 @@
-/* 
+/*
 Group Number: 28
 1. Anishka Singh 2020B3A70816P
 2. Gautam Jajoo 2020B3A71638P
 3. Suraj Phalod 2020B3A71959P
 4. Ria Shekhawat 2020B4A71986P
 5. Karan Agrawal 2020B4A70830P
-*/ 
+*/
 #ifndef VECTORDEF
 #define VECTORDEF
 
@@ -40,12 +40,19 @@ static char *data_type_map[] = {
     "VECTOR",
 };
 
+/*
+ A struct called vector is defined which performs actions akin to arrays but
+additional flexibility of assuming different types such as those declared
+in the enum DATATYPE.
+
+The functions performed on vectors are described in vectors.h*/
+
 typedef struct vector *Vector;
 struct vector
 {
-    enum DATATYPE DATATYPE;
-    void *data;
-    size_t memory_size;
-    size_t size;
+    enum DATATYPE DATATYPE; // the DATATYPE from list of enums above
+    void *data;             // array of elements of type DATATYPE
+    size_t memory_size;     // size of space allocated
+    size_t size;            // space filled with data entries
 };
 #endif

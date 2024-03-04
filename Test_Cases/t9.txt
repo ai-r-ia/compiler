@@ -5,10 +5,10 @@
 % The following function computes the sqrt value for the given input
 _sqrt input parameter list [int d5] output parameter list [real d4];
 type real: c6;
-c6 <--- (d5 / 2);
 type real: b23;
+c6 <--- (d5 / 2);
 b23 <--- 0;
-while(c6 !<--- b23)
+while(c6 != b23)
 b23 <--- c6;
 c6 <--- (d5/(b23+b23))/2;
 d4 <--- c6;

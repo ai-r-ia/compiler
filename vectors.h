@@ -9,7 +9,6 @@ Group Number: 28
 #ifndef VECTORS
 #define VECTORS
 
-// #include "whole_include.h"
 #include "vectorDef.h"
 
 Vector init_vector(enum DATATYPE DATATYPE);

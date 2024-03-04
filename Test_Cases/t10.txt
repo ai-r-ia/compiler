@@ -1,0 +1,19 @@
+_factorial input parameter list [int c6] 
+output parameter list [int result];
+	if (c6 <= 1)
+	then
+		result <--- 1;
+	else
+		result <--- c6 * _factorial(c6 - 1);
+	endif
+	return [result];
+end
+
+_main
+	type int : number;
+	type int : factorial_result;
+	read(number);
+	[factorial_result] <--- _factorial(number);
+	write(factorial_result);
+	return;
+end
