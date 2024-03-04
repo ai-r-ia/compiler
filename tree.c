@@ -1,11 +1,11 @@
-/* 
+/*
 Group Number: 28
 1. Anishka Singh 2020B3A70816P
 2. Gautam Jajoo 2020B3A71638P
 3. Suraj Phalod 2020B3A71959P
 4. Ria Shekhawat 2020B4A71986P
 5. Karan Agrawal 2020B4A70830P
-*/ 
+*/
 #include "tree.h"
 #include <stdlib.h>
 
@@ -128,10 +128,12 @@ void printTree(FILE *fp, TreeNode root, int level)
     }
 }
 
-void saveParseTree(TreeNode root, int level)
+void saveParseTree(TreeNode root, int level, char *treefile)
 {
-    FILE *fp = fopen("parsetreeOutFile.txt", "w+");
+    FILE *fp = fopen(treefile, "w+");
     printTree(fp, root, 0);
     fclose(fp);
-    info("Parse tree generated and saved in parsetreeOutFile.txt.");
+    char treeAffirm[100];
+    sprintf(treeAffirm, "Parse tree generated and saved in &s.", treefile);
+        info(treeAffirm);
 }

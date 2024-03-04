@@ -12,6 +12,6 @@ bool isStartKeyword(String string);
 
 Parser init_parser(char *filename);
 
-TreeNode parseInputSourceCode(char *testcaseFile);
+TreeNode parseInputSourceCode(char *testcaseFile, char *treefile);
 
 #endif

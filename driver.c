@@ -44,7 +44,7 @@ void lexical_analysis(char *input_filename)
 }
 
 // Function to measure execution time
-void measure_execution_time(char *filename)
+void measure_execution_time(char *filename, char *treefile)
 {
     clock_t start_time, end_time;
 
@@ -52,7 +52,7 @@ void measure_execution_time(char *filename)
 
     start_time = clock();
 
-    TreeNode tree = parseInputSourceCode(filename);
+    parseInputSourceCode(filename, treefile);
 
     end_time = clock();
 
@@ -65,7 +65,7 @@ void measure_execution_time(char *filename)
 }
 
 // driver function to allow users to perform an execution of their choice
-void driver(char *filename)
+void driver(char *filename, char *treefile)
 {
     int option;
     // char filename[100];
@@ -102,13 +102,13 @@ void driver(char *filename)
         case 3:
             // printf(" Please enter the input file name (relative path): ");
             // scanf(" %[^\n]%*c", filename);
-            parseInputSourceCode(filename);
+            parseInputSourceCode(filename, treefile);
             info("Both lexical and syntax analysis modules implemented");
             break;
         case 4:
             // printf(" Please enter the input file name (relative path): ");
             // scanf(" %[^\n]%*c", filename);
-            measure_execution_time(filename);
+            measure_execution_time(filename, treefile);
             break;
         default:
             printf("Invalid option. Please try again.\n");

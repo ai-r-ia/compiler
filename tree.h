@@ -28,5 +28,5 @@ void updateTerminalInTree(TreeNode root, Token token);
 
 void printTree(FILE *fp, TreeNode root, int level);
 
-void saveParseTree(TreeNode root, int level);
+void saveParseTree(TreeNode root, int level, char* treefile);
 #endif

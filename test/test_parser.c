@@ -2,5 +2,5 @@
 
 void test_parser()
 {
-    TreeNode tree = parseInputSourceCode("Test_Cases/t10.txt");
+    TreeNode tree = parseInputSourceCode("Test_Cases/t10.txt", "parse_tree.txt");
 }

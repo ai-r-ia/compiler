@@ -7,8 +7,8 @@
 
 CC=gcc  #compiler
 # TARGET=a.exe #target file name
-TARGET=a.out #target file name
+TARGET=stage1exe #target file name
 
 all:
 	$(CC) test/*.c \
-	*.c -o $(TARGET)
+	*.c -o $(TARGET) -lm

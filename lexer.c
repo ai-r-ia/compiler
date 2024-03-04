@@ -74,7 +74,6 @@ bool isDelimiter(char value)
            (value == '\t') ||
            (value == '\n') ||
            (value == '\0') ||
-           (value == '\r') ||
            (value == '%');
 }
 
@@ -196,7 +195,7 @@ Token tokenize_function(Lexer lexer, String lexeme, enum TOKEN_TYPE type, bool o
         return init_token(type, lexeme, value, lexer->lineNumber, lexer->charNumber);
     }
 
-    while (((lexer->curr_char != ' ') && (lexer->curr_char != '\t') && (lexer->curr_char != '\r') && (lexer->curr_char != '\n') && (lexer->curr_char != '\0') && (lexer->curr_char != '%') && (!isSymbol(lexer->curr_char))))
+    while (((lexer->curr_char != ' ') && (lexer->curr_char != '\t') && (lexer->curr_char != '\n') && (lexer->curr_char != '\0') && (lexer->curr_char != '%') && (!isSymbol(lexer->curr_char))))
     {
         append(lexeme, lexer->curr_char);
         getNextCharacter(lexer);
@@ -255,7 +254,7 @@ char getNextCharacter(Lexer lexer)
         }
     }
     lexer->charNumber++;
-    if (res == '\n' || res == '\r')
+    if (res == '\n')
     {
         lexer->lineNumber++;
         lexer->prevLineChar = lexer->curr_char;
@@ -285,7 +284,7 @@ void retract(Lexer lexer, String lexeme)
         eof_retraction = true;
 
     lexer->charNumber--;
-    if (buffer[lexer->fwd_ptr] == '\n' || buffer[lexer->fwd_ptr] == '\r')
+    if (buffer[lexer->fwd_ptr] == '\n')
     {
         lexer->lineNumber--;
         lexer->charNumber = lexer->prevLineChar;
@@ -864,7 +863,7 @@ Token getNextToken(Lexer lexer)
     getNextCharacter(lexer);
 
     // whitespaces
-    if (lexer->curr_char == ' ' || lexer->curr_char == '\t' || lexer->curr_char == '\n' || lexer->curr_char == '\r')
+    if (lexer->curr_char == ' ' || lexer->curr_char == '\t' || lexer->curr_char == '\n')
         return getNextToken(lexer);
 
     // eof
@@ -876,7 +875,7 @@ Token getNextToken(Lexer lexer)
 
     if (lexer->curr_char == '%')
     {
-        while (lexer->curr_char != '\n' && lexer->curr_char != '\0' && lexer->curr_char != '\r')
+        while (lexer->curr_char != '\n' && lexer->curr_char != '\0')
         {
             getNextCharacter(lexer);
             // append(lexeme, lexer->curr_char);

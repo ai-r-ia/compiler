@@ -71,7 +71,7 @@ while 𝑋≠ $:
     𝑋← top stack symbol*/
 
 TreeNode
-parseInputSourceCode(char *testcaseFile)
+parseInputSourceCode(char *testcaseFile, char *treefile)
 {
     Parser parser = init_parser(testcaseFile);
 
@@ -191,7 +191,8 @@ parseInputSourceCode(char *testcaseFile)
                         // printf("---bool: %d \n", isKeywordSynToken(char_to_string(token_type_list[parser->currentNode->type])));
                     }
 
-                    if (rule->NT->type == SYN || !isStartKeyword(char_to_string(token_type_list[parser->currentNode->type])))
+                    if (rule->NT->type == SYN)
+                    // || !isStartKeyword(char_to_string(token_type_list[parser->currentNode->type])))
                     {
                         pop_back(parser->stack);
                     }
@@ -206,10 +207,11 @@ parseInputSourceCode(char *testcaseFile)
                             top_of_stack = top(parser->stack);
                             if (top_of_stack->type == TERMINAL)
                                 break;
-                            if (top_of_stack->type == ERROR)
+                            if (top_of_stack->type == ERROR || top_of_stack->type == SYN)
                                 continue;
                             tableRow = (Vector)get(parseTable, top_of_stack->type);
-
+                            if (!tableRow)
+                                continue;
                             rule = (Rule)get(tableRow, parser->currentNode->type);
                             if (rule->NT->type == SYN)
                             {
@@ -276,7 +278,7 @@ parseInputSourceCode(char *testcaseFile)
     }
 
     if (parser->noError)
-        saveParseTree(tree, 0);
+        saveParseTree(tree, 0, treefile);
     else
         info("Parse tree could not be generated");
     return tree;
