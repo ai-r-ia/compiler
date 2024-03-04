@@ -200,9 +200,9 @@ parseInputSourceCode(char *testcaseFile, char *treefile)
                     {
                         do
                         {
-                            printf("STACK: ");
-                            printVector(parser->stack);
-                            printf("\n");
+                            // printf("STACK: ");
+                            // printVector(parser->stack);
+                            // printf("\n");
                             pop_back(parser->stack);
                             top_of_stack = top(parser->stack);
                             if (top_of_stack->type == TERMINAL)
