@@ -1,57 +1,47 @@
-/* 
+/*
 Group Number: 28
 1. Anishka Singh 2020B3A70816P
 2. Gautam Jajoo 2020B3A71638P
 3. Suraj Phalod 2020B3A71959P
 4. Ria Shekhawat 2020B4A71986P
 5. Karan Agrawal 2020B4A70830P
-*/ 
+*/
 #include "whole_include.h"
 #include <time.h>
 
 void lexical_analysis(char *input_filename)
 {
-    info("Performing Lexical Analysis");
-    // Lexer lexer = init_lexer("test.txt");
-    // Lexer lexer = init_lexer("test/test_char.txt");
+    // info("Performing Lexical Analysis");
     Lexer lexer = init_lexer(input_filename);
 
     Token tk = getNextToken(lexer);
-    // printf("fwd0 %d \n", lexer->fwd_ptr);
 
     Vector vec = init_vector(TOKEN);
-    // push_back(vec, tk1);
 
-    // Token tk = NULL;
-    printf("%s \n", lexer->buff1);
     while ((lexer->fp))
     {
-        // if(tk1_read)
-        // printf("%s\n", token_type_list[tk->type]);
         push_back(vec, tk);
         tk = getNextToken(lexer);
     }
 
     for (int i = 0; i < vec->size; i++)
     {
-        printf("Line No. %ld  ", ((Token)get(vec, i))->line_num);
+        printf("Line no. %3ld  ", ((Token)get(vec, i))->line_num);
         if (((Token)get(vec, i))->type == 57)
         {
             printf("Error: %s", ((Token)get(vec, i))->error_msg);
         }
         else
         {
-            printf("Lexeme %s       ", (char *)(((Token)get(vec, i))->lexeme_str)->text);
+            printf("Lexeme %25s   ", (char *)(((Token)get(vec, i))->lexeme_str)->text);
             printf("Token %s", token_type_list[((Token)get(vec, i))->type]);
         }
 
         printf("\n");
     }
 
-    success("LEXER output printed successfully.");
+    info("Only Lexical analyzer module developed");
 }
-
-
 
 // Function to measure execution time
 void measure_execution_time(char *filename)
@@ -75,10 +65,10 @@ void measure_execution_time(char *filename)
 }
 
 // driver function to allow users to perform an execution of their choice
-void driver()
+void driver(char *filename)
 {
     int option;
-    char filename[100];
+    // char filename[100];
     do
     {
         printf("\n Options: \n");
@@ -93,30 +83,31 @@ void driver()
         switch (option)
         {
         case 0:
-            printf("Exiting \n");
+            info("Exiting \n");
             exit(1);
             break;
         case 1:
-            printf(" Please enter the input file name (relative path): ");
-            scanf(" %[^\n]%*c", filename);
+            // printf(" Please enter the input file name (relative path): ");
+            // scanf(" %[^\n]%*c", filename);
             // gets(filename);
             remove_comments(filename, "Test_Cases/comment_free_output.txt");
-            printf("The comment free code has been saved in location: Test_Cases/comment_free_output.txt");
+            info("The comment free code has been saved in location: Test_Cases/comment_free_output.txt");
             break;
 
         case 2:
-            printf(" Please enter the input file name (relative path): ");
-            scanf(" %[^\n]%*c", filename);
+            // printf(" Please enter the input file name (relative path): ");
+            // scanf(" %[^\n]%*c", filename);
             lexical_analysis(filename);
             break;
         case 3:
-            printf(" Please enter the input file name (relative path): ");
-            scanf(" %[^\n]%*c", filename);
-            TreeNode tree = parseInputSourceCode(filename);
+            // printf(" Please enter the input file name (relative path): ");
+            // scanf(" %[^\n]%*c", filename);
+            parseInputSourceCode(filename);
+            info("Both lexical and syntax analysis modules implemented");
             break;
         case 4:
-            printf(" Please enter the input file name (relative path): ");
-            scanf(" %[^\n]%*c", filename);
+            // printf(" Please enter the input file name (relative path): ");
+            // scanf(" %[^\n]%*c", filename);
             measure_execution_time(filename);
             break;
         default:

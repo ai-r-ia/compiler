@@ -21,13 +21,13 @@ struct parser
 
 static char *keyword_syn_token_list[] = {
     "TK_COMMENT",
-    "TK_END", // check
+    "TK_END", 
     "TK_WHILE",
     "TK_UNION",
     "TK_DEFINETYPE",
     "TK_TYPE",
     "TK_MAIN",
-    "TK_ENDWHILE", // check
+    "TK_ENDWHILE", 
     "TK_IF",
     "TK_CALL",
     "TK_RECORD",

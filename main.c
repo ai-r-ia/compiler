@@ -12,7 +12,13 @@ Group Number: 28
 
 int main(int argc, char** args)
 {
-    // *args = "test";
+    *args = "test";
+    printf("You have entered %d arguments:\n", argc);
+
+    for (int i = 0; i < argc; i++)
+    {
+        printf("%s\n", args[i]);
+    }
 
     if (strcmp(*args, "test") == 0)
     {
@@ -20,7 +26,8 @@ int main(int argc, char** args)
         return 0;
     }
     else {
-        driver();
+        // driver(*(char**)args[1]);
+        driver("t8.txt");
     }
     printf("not testing\n");
     return 0;

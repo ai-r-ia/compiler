@@ -1,13 +1,26 @@
 
+%_main
+%    type int : b5;
+%    _computeFunctionValue input parameter list[int c3, int c4, int c5]
+%    output parameter [real c6];
+%        c6 <--- (800.5 + 200.7);
+%        c6 <--- (200 + 300);
+%    end
+%    if (56>9)
+%    then 
+%        write(c7);
+%    return;
+%end
+
+_computeFunctionValue input parameter list[int c3, int c4, int c5]
+    output parameter list [real c6];
+        c6 <--- (5000.7 + 200.74)
+        ;
+        return;
+    end
+
 _main
     type int : b5;
-    _computeFunctionValue input parameter list[int c3, int c4, int c5]
-    output parameter [real c6];
-        c6 <--- (800.5 + 200.7);
-        c6 <--- (200 + 300);
-    end
-    if (56>9)
-    then 
-        write(c7);
+    
     return;
 end

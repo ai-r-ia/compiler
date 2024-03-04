@@ -13,7 +13,7 @@ Group Number: 28
 void measure_execution_time(char *filename);
 
 // driver function to allow users to perform an execution of their choice
-void driver();
+void driver(char* filename);
 
 void lexical_analysis(char *filename);
 #endif

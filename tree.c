@@ -130,7 +130,8 @@ void printTree(FILE *fp, TreeNode root, int level)
 
 void saveParseTree(TreeNode root, int level)
 {
-    FILE *fp = fopen("parse_tree.txt", "w+");
+    FILE *fp = fopen("parsetreeOutFile.txt", "w+");
     printTree(fp, root, 0);
     fclose(fp);
+    info("Parse tree generated and saved in parsetreeOutFile.txt.");
 }
