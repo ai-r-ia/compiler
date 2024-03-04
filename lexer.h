@@ -12,21 +12,7 @@ Group Number: 28
 #include <stdio.h>
 #include "strings.h"
 #include "lexical_token.h"
-
-static int BUFFER_SIZE = 512;
-
-typedef struct lexer *Lexer;
-struct lexer
-{
-    int BUFF_NUM;
-    FILE *fp;
-    char *filename;
-    char curr_char; // current character
-    char *buff1;
-    char *buff2;
-    int fwd_ptr;
-    int lineNumber, charNumber, prevLineChar;
-};
+#include "lexerDef.h"
 
 // Function to remove comments from a file
 void remove_comments(const char *input_filename, const char *output_filename);
