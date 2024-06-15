@@ -1,0 +1,49 @@
+
+_recordTotal input parameter list [record #booking b1]
+output parameter list [record #booking b1];
+    b1.c1.total <--- (b1.d1.fees + b1.d2.fees) * 3; %use b1.c1.noAppt in place of 3 to check syntactical error
+    b1.c2.total <--- (b1.d2.fees) * 4; %use b1.c2.noAppt in place of 4 to check syntactical error
+    return [b1];
+end
+
+_main
+record #doctor
+    type int : docId;
+    type int : dPhone;
+    type real : fees;
+endrecord
+
+record #client
+    type int : cId;
+    type int : noAppt;
+    type int : cPhone;
+    type real : total;
+endrecord
+
+record #booking
+    type record #doctor : d1;
+    type record #doctor : d2;
+    type record #client : c1; %c1 went to d1 and d2 3 times each
+    type record #client : c2; %c2 went to d2 4 times
+endrecord
+
+    type record #booking : b1;
+    b1.d1.docId <--- 1;
+    b1.d1.dPhone <--- 1
+    b1.d1.fees <--- 500.50;
+
+    b1.d2.docId <--- 2;
+    b1.d2.dPhone <--- 2;
+    b1.d2.fees <--- 1000.50;
+
+    b1.c1.cId <--- 1;
+    b1.c1.noAppt <--- 3;
+    b1.c1.cPhone <--- 1;
+    
+    b1.c2.cId <--- 2;
+    b1.c2.noAppt <--- 4;
+    b1.c2.cPhone <--- 2;
+    
+    [b1] <--- call _recordTotal with parameters[b1];
+    write(b1);
+end

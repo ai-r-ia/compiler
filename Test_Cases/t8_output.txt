@@ -1,0 +1,274 @@
+STACK: $,program
+current: _computeFunctionValue, type: TK_FUNID 
+
+program --> otherFunctions,mainFunction
+STACK: $,mainFunction,otherFunctions
+current: _computeFunctionValue, type: TK_FUNID 
+
+otherFunctions --> function,otherFunctions
+STACK: $,mainFunction,otherFunctions,function
+current: _computeFunctionValue, type: TK_FUNID 
+
+function --> TK_FUNID,input_par,output_par,TK_SEM,stmts,TK_END
+STACK: $,mainFunction,otherFunctions,TK_END,stmts,TK_SEM,output_par,input_par,TK_FUNID
+STACK: $,mainFunction,otherFunctions,TK_END,stmts,TK_SEM,output_par,input_par
+current: input, type: TK_INPUT 
+
+input_par --> TK_INPUT,TK_PARAMETER,TK_LIST,TK_SQL,parameter_list,TK_SQR
+STACK: $,mainFunction,otherFunctions,TK_END,stmts,TK_SEM,output_par,TK_SQR,parameter_list,TK_SQL,TK_LIST,TK_PARAMETER,TK_INPUT
+STACK: $,mainFunction,otherFunctions,TK_END,stmts,TK_SEM,output_par,TK_SQR,parameter_list,TK_SQL,TK_LIST,TK_PARAMETER
+STACK: $,mainFunction,otherFunctions,TK_END,stmts,TK_SEM,output_par,TK_SQR,parameter_list,TK_SQL,TK_LIST
+STACK: $,mainFunction,otherFunctions,TK_END,stmts,TK_SEM,output_par,TK_SQR,parameter_list,TK_SQL
+STACK: $,mainFunction,otherFunctions,TK_END,stmts,TK_SEM,output_par,TK_SQR,parameter_list
+current: int, type: TK_INT 
+
+parameter_list --> dataType,TK_ID,remaining_list
+STACK: $,mainFunction,otherFunctions,TK_END,stmts,TK_SEM,output_par,TK_SQR,remaining_list,TK_ID,dataType
+current: int, type: TK_INT 
+
+dataType --> primitiveDatatype
+STACK: $,mainFunction,otherFunctions,TK_END,stmts,TK_SEM,output_par,TK_SQR,remaining_list,TK_ID,primitiveDatatype
+current: int, type: TK_INT 
+
+primitiveDatatype --> TK_INT
+STACK: $,mainFunction,otherFunctions,TK_END,stmts,TK_SEM,output_par,TK_SQR,remaining_list,TK_ID,TK_INT
+STACK: $,mainFunction,otherFunctions,TK_END,stmts,TK_SEM,output_par,TK_SQR,remaining_list,TK_ID
+STACK: $,mainFunction,otherFunctions,TK_END,stmts,TK_SEM,output_par,TK_SQR,remaining_list
+current: ,, type: TK_COMMA 
+
+remaining_list --> TK_COMMA,parameter_list
+STACK: $,mainFunction,otherFunctions,TK_END,stmts,TK_SEM,output_par,TK_SQR,parameter_list,TK_COMMA
+STACK: $,mainFunction,otherFunctions,TK_END,stmts,TK_SEM,output_par,TK_SQR,parameter_list
+current: int, type: TK_INT 
+
+parameter_list --> dataType,TK_ID,remaining_list
+STACK: $,mainFunction,otherFunctions,TK_END,stmts,TK_SEM,output_par,TK_SQR,remaining_list,TK_ID,dataType
+current: int, type: TK_INT 
+
+dataType --> primitiveDatatype
+STACK: $,mainFunction,otherFunctions,TK_END,stmts,TK_SEM,output_par,TK_SQR,remaining_list,TK_ID,primitiveDatatype
+current: int, type: TK_INT 
+
+primitiveDatatype --> TK_INT
+STACK: $,mainFunction,otherFunctions,TK_END,stmts,TK_SEM,output_par,TK_SQR,remaining_list,TK_ID,TK_INT
+STACK: $,mainFunction,otherFunctions,TK_END,stmts,TK_SEM,output_par,TK_SQR,remaining_list,TK_ID
+STACK: $,mainFunction,otherFunctions,TK_END,stmts,TK_SEM,output_par,TK_SQR,remaining_list
+current: ,, type: TK_COMMA 
+
+remaining_list --> TK_COMMA,parameter_list
+STACK: $,mainFunction,otherFunctions,TK_END,stmts,TK_SEM,output_par,TK_SQR,parameter_list,TK_COMMA
+STACK: $,mainFunction,otherFunctions,TK_END,stmts,TK_SEM,output_par,TK_SQR,parameter_list
+current: int, type: TK_INT 
+
+parameter_list --> dataType,TK_ID,remaining_list
+STACK: $,mainFunction,otherFunctions,TK_END,stmts,TK_SEM,output_par,TK_SQR,remaining_list,TK_ID,dataType
+current: int, type: TK_INT 
+
+dataType --> primitiveDatatype
+STACK: $,mainFunction,otherFunctions,TK_END,stmts,TK_SEM,output_par,TK_SQR,remaining_list,TK_ID,primitiveDatatype
+current: int, type: TK_INT 
+
+primitiveDatatype --> TK_INT
+STACK: $,mainFunction,otherFunctions,TK_END,stmts,TK_SEM,output_par,TK_SQR,remaining_list,TK_ID,TK_INT
+STACK: $,mainFunction,otherFunctions,TK_END,stmts,TK_SEM,output_par,TK_SQR,remaining_list,TK_ID
+STACK: $,mainFunction,otherFunctions,TK_END,stmts,TK_SEM,output_par,TK_SQR,remaining_list
+current: ], type: TK_SQR 
+
+remaining_list --> #
+STACK: $,mainFunction,otherFunctions,TK_END,stmts,TK_SEM,output_par,TK_SQR
+STACK: $,mainFunction,otherFunctions,TK_END,stmts,TK_SEM,output_par
+current: output, type: TK_OUTPUT 
+
+output_par --> TK_OUTPUT,TK_PARAMETER,TK_LIST,TK_SQL,parameter_list,TK_SQR
+STACK: $,mainFunction,otherFunctions,TK_END,stmts,TK_SEM,TK_SQR,parameter_list,TK_SQL,TK_LIST,TK_PARAMETER,TK_OUTPUT
+STACK: $,mainFunction,otherFunctions,TK_END,stmts,TK_SEM,TK_SQR,parameter_list,TK_SQL,TK_LIST,TK_PARAMETER
+STACK: $,mainFunction,otherFunctions,TK_END,stmts,TK_SEM,TK_SQR,parameter_list,TK_SQL,TK_LIST
+STACK: $,mainFunction,otherFunctions,TK_END,stmts,TK_SEM,TK_SQR,parameter_list,TK_SQL
+STACK: $,mainFunction,otherFunctions,TK_END,stmts,TK_SEM,TK_SQR,parameter_list
+current: real, type: TK_REAL 
+
+parameter_list --> dataType,TK_ID,remaining_list
+STACK: $,mainFunction,otherFunctions,TK_END,stmts,TK_SEM,TK_SQR,remaining_list,TK_ID,dataType
+current: real, type: TK_REAL 
+
+dataType --> primitiveDatatype
+STACK: $,mainFunction,otherFunctions,TK_END,stmts,TK_SEM,TK_SQR,remaining_list,TK_ID,primitiveDatatype
+current: real, type: TK_REAL 
+
+primitiveDatatype --> TK_REAL
+STACK: $,mainFunction,otherFunctions,TK_END,stmts,TK_SEM,TK_SQR,remaining_list,TK_ID,TK_REAL
+STACK: $,mainFunction,otherFunctions,TK_END,stmts,TK_SEM,TK_SQR,remaining_list,TK_ID
+STACK: $,mainFunction,otherFunctions,TK_END,stmts,TK_SEM,TK_SQR,remaining_list
+current: ], type: TK_SQR 
+
+remaining_list --> #
+STACK: $,mainFunction,otherFunctions,TK_END,stmts,TK_SEM,TK_SQR
+STACK: $,mainFunction,otherFunctions,TK_END,stmts,TK_SEM
+STACK: $,mainFunction,otherFunctions,TK_END,stmts
+current: c6, type: TK_ID 
+
+stmts --> typeDefinitions,declarations,otherStmts,returnStmt
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,declarations,typeDefinitions
+current: c6, type: TK_ID 
+
+typeDefinitions --> #
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,declarations
+current: c6, type: TK_ID 
+
+declarations --> #
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts
+current: c6, type: TK_ID 
+
+otherStmts --> stmt,otherStmts
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,stmt
+current: c6, type: TK_ID 
+
+stmt --> assignmentStmt
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,assignmentStmt
+current: c6, type: TK_ID 
+
+assignmentStmt --> singleOrRecId,TK_ASSIGNOP,arithmeticExpression,TK_SEM
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,TK_SEM,arithmeticExpression,TK_ASSIGNOP,singleOrRecId
+current: c6, type: TK_ID 
+
+singleOrRecId --> TK_ID,option_single_constructed
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,TK_SEM,arithmeticExpression,TK_ASSIGNOP,option_single_constructed,TK_ID
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,TK_SEM,arithmeticExpression,TK_ASSIGNOP,option_single_constructed
+current: <---, type: TK_ASSIGNOP 
+
+option_single_constructed --> #
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,TK_SEM,arithmeticExpression,TK_ASSIGNOP
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,TK_SEM,arithmeticExpression
+current: (, type: TK_OP 
+
+arithmeticExpression --> term,expPrime
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,TK_SEM,expPrime,term
+current: (, type: TK_OP 
+
+term --> factor,termPrime
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,TK_SEM,expPrime,termPrime,factor
+current: (, type: TK_OP 
+
+factor --> TK_OP,arithmeticExpression,TK_CL
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,TK_SEM,expPrime,termPrime,TK_CL,arithmeticExpression,TK_OP
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,TK_SEM,expPrime,termPrime,TK_CL,arithmeticExpression
+current: 5000.7, type: TK_ILLEGAL 
+
+error lexeme: 5000.7, type: TK_ILLEGAL line: 3 
+Error:- Error recovery invoked. Lexical error 
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,TK_SEM,expPrime,termPrime,TK_CL,arithmeticExpression
+current: +, type: TK_PLUS 
+
+error lexeme: +, type: TK_PLUS line: 3 
+Error:- Error recovery invoked. ERROR entry 
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,TK_SEM,expPrime,termPrime,TK_CL,arithmeticExpression
+current: 200.74, type: TK_RNUM 
+
+arithmeticExpression --> term,expPrime
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,TK_SEM,expPrime,termPrime,TK_CL,expPrime,term
+current: 200.74, type: TK_RNUM 
+
+term --> factor,termPrime
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,TK_SEM,expPrime,termPrime,TK_CL,expPrime,termPrime,factor
+current: 200.74, type: TK_RNUM 
+
+factor --> var
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,TK_SEM,expPrime,termPrime,TK_CL,expPrime,termPrime,var
+current: 200.74, type: TK_RNUM 
+
+var --> TK_RNUM
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,TK_SEM,expPrime,termPrime,TK_CL,expPrime,termPrime,TK_RNUM
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,TK_SEM,expPrime,termPrime,TK_CL,expPrime,termPrime
+current: ), type: TK_CL 
+
+termPrime --> #
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,TK_SEM,expPrime,termPrime,TK_CL,expPrime
+current: ), type: TK_CL 
+
+expPrime --> #
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,TK_SEM,expPrime,termPrime,TK_CL
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,TK_SEM,expPrime,termPrime
+current: ;, type: TK_SEM 
+
+termPrime --> #
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,TK_SEM,expPrime
+current: ;, type: TK_SEM 
+
+expPrime --> #
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts,TK_SEM
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt,otherStmts
+current: return, type: TK_RETURN 
+
+otherStmts --> #
+STACK: $,mainFunction,otherFunctions,TK_END,returnStmt
+current: return, type: TK_RETURN 
+
+returnStmt --> TK_RETURN,optionalReturn,TK_SEM
+STACK: $,mainFunction,otherFunctions,TK_END,TK_SEM,optionalReturn,TK_RETURN
+STACK: $,mainFunction,otherFunctions,TK_END,TK_SEM,optionalReturn
+current: ;, type: TK_SEM 
+
+optionalReturn --> #
+STACK: $,mainFunction,otherFunctions,TK_END,TK_SEM
+STACK: $,mainFunction,otherFunctions,TK_END
+STACK: $,mainFunction,otherFunctions
+current: _main, type: TK_MAIN 
+
+otherFunctions --> #
+STACK: $,mainFunction
+current: _main, type: TK_MAIN 
+
+mainFunction --> TK_MAIN,stmts,TK_END
+STACK: $,TK_END,stmts,TK_MAIN
+STACK: $,TK_END,stmts
+current: type, type: TK_TYPE 
+
+stmts --> typeDefinitions,declarations,otherStmts,returnStmt
+STACK: $,TK_END,returnStmt,otherStmts,declarations,typeDefinitions
+current: type, type: TK_TYPE 
+
+typeDefinitions --> #
+STACK: $,TK_END,returnStmt,otherStmts,declarations
+current: type, type: TK_TYPE 
+
+declarations --> declaration,declarations
+STACK: $,TK_END,returnStmt,otherStmts,declarations,declaration
+current: type, type: TK_TYPE 
+
+declaration --> TK_TYPE,dataType,TK_COLON,TK_ID,global_or_not,TK_SEM
+STACK: $,TK_END,returnStmt,otherStmts,declarations,TK_SEM,global_or_not,TK_ID,TK_COLON,dataType,TK_TYPE
+STACK: $,TK_END,returnStmt,otherStmts,declarations,TK_SEM,global_or_not,TK_ID,TK_COLON,dataType
+current: int, type: TK_INT 
+
+dataType --> primitiveDatatype
+STACK: $,TK_END,returnStmt,otherStmts,declarations,TK_SEM,global_or_not,TK_ID,TK_COLON,primitiveDatatype
+current: int, type: TK_INT 
+
+primitiveDatatype --> TK_INT
+STACK: $,TK_END,returnStmt,otherStmts,declarations,TK_SEM,global_or_not,TK_ID,TK_COLON,TK_INT
+STACK: $,TK_END,returnStmt,otherStmts,declarations,TK_SEM,global_or_not,TK_ID,TK_COLON
+STACK: $,TK_END,returnStmt,otherStmts,declarations,TK_SEM,global_or_not,TK_ID
+STACK: $,TK_END,returnStmt,otherStmts,declarations,TK_SEM,global_or_not
+current: ;, type: TK_SEM 
+
+global_or_not --> #
+STACK: $,TK_END,returnStmt,otherStmts,declarations,TK_SEM
+STACK: $,TK_END,returnStmt,otherStmts,declarations
+current: return, type: TK_RETURN 
+
+declarations --> #
+STACK: $,TK_END,returnStmt,otherStmts
+current: return, type: TK_RETURN 
+
+otherStmts --> #
+STACK: $,TK_END,returnStmt
+current: return, type: TK_RETURN 
+
+returnStmt --> TK_RETURN,optionalReturn,TK_SEM
+STACK: $,TK_END,TK_SEM,optionalReturn,TK_RETURN
+STACK: $,TK_END,TK_SEM,optionalReturn
+current: ;, type: TK_SEM 
+
+optionalReturn --> #
+STACK: $,TK_END,TK_SEM
+STACK: $,TK_END

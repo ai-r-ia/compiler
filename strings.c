@@ -1,3 +1,11 @@
+/* 
+Group Number: 28
+1. Anishka Singh 2020B3A70816P
+2. Gautam Jajoo 2020B3A71638P
+3. Suraj Phalod 2020B3A71959P
+4. Ria Shekhawat 2020B4A71986P
+5. Karan Agrawal 2020B4A70830P
+*/ 
 #include "whole_include.h"
 
 // private
@@ -8,7 +16,6 @@ void _initialise(char *ref, size_t start, size_t end)
     {
         ref[i] = '\0';
     }
-    // info("added");
 }
 
 // public functions
@@ -37,7 +44,6 @@ String char_to_string(char *a)
 
 void append(String str, char val)
 {
-    // info("append called");
     if (str->text == NULL || str->memory_size == 0)
     {
         if (str->memory_size == 0)
@@ -60,32 +66,10 @@ size_t len(String str)
     return str->size;
 }
 
-String add(String a, String b)
-{
-    // if(a==NULL && b!= NULL) return b;      //return new string
-    // if(b==NULL && a!= NULL) return a;
-
-    String str = init_str();
-    str->memory_size = a->memory_size + b->memory_size;
-
-    str->text = (char *)malloc(sizeof(char) * str->memory_size);
-    str->text = a->text; // should take care of '/0'
-    str->size = a->size;
-
-    for (int i = 0; i < b->size; i++)
-    {
-        append(str, b->text[i]);
-    }
-    // str->pos = str->n -1;
-    return str;
-}
 
 // compares lengths and letters
 int compare(String a, String b)
 {
-    // puts(a->text);
-    // puts(b->text);
-    // info("in comp");
     if (a == NULL && b == NULL)
         return 1;
     if (a == NULL || b == NULL)
@@ -134,7 +118,7 @@ String copy_string(String destination, String source)
     {
         destination->text[destination->size++] = source->text[i++];
     }
-    destination->size--;
+    destination->size = source->size;
     return destination;
 }
 
@@ -158,4 +142,15 @@ String toSmall(String a)
             a->text[i] = 'A' - 'a' - c;
     }
     return a;
+}
+
+
+void pop_str(String str)
+{
+    if (str->text == NULL || str->memory_size == 0)
+        return;
+
+    str->text[str->size-1] = '\0';
+    str->size--;
+    return;
 }

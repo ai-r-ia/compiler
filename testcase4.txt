@@ -1,0 +1,39 @@
+
+
+_recordDist input parameter list [record #dist d1]
+output parameter list [record #dist d2];
+
+    record #dist
+        type int : x;
+    endrecord
+
+    type int : ctr;
+    ctr <--- 1;
+    while(ctr<=d1.x)
+        d2.x <--- d2.x + (d1.x * 2);
+        ctr <--- ctr+1
+        write(d2.x);
+        write(ctr);
+    endwhile
+    return [d2];
+end
+
+_main
+    type record #dist : d1;
+    type record #dist : d2;
+    type int : flag;
+
+    read(d1.x);
+    d2.x <--- 1;
+    flag <--- 0;
+
+    if(d1.x>0 &&& d2.x>0)
+    then 
+        [d2] <--- call _recordDist with parameters[d1];
+    endif
+
+    if(d1.x<=0 @@@ d2.x<0)
+    then 
+        write(flag);
+    endif
+end

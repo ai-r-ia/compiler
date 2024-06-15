@@ -1,3 +1,11 @@
+/* 
+Group Number: 28
+1. Anishka Singh 2020B3A70816P
+2. Gautam Jajoo 2020B3A71638P
+3. Suraj Phalod 2020B3A71959P
+4. Ria Shekhawat 2020B4A71986P
+5. Karan Agrawal 2020B4A70830P
+*/ 
 #ifndef WHOLE
 #define WHOLE
 
@@ -12,7 +20,13 @@
 #include "utils.h"
 #include "strings.h"
 #include "lexical_token.h"
-#include "hash.h"
+#include "symbol_table.h"
 #include "lexer.h"
+#include "rules.h"
+#include "vectorDef.h"
+#include "parserDef.h"
+#include "parser.h"
+#include "treeDef.h"
+#include "tree.h"
 
 #endif

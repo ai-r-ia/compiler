@@ -3,18 +3,22 @@
 void test_hash_table()
 {
     info("testing HASH TABLE");
-    
-    HashTable table = init_table();
+
+    SymbolTable table = init_table();
     int len = sizeof(keyword_token_value) / sizeof(int);
 
-    for(int i = 0; i<len; i++){
-        insert_item(table, char_to_string(keyword_type_list[i]), keyword_token_value[i]);
+    for (int i = 0; i < len; i++)
+    {
+        Token tk = init_token(i, char_to_string(keyword_type_list[i]), (keyword_type_list[i]), 0, 0);
+        insert_item(table, char_to_string(keyword_type_list[i]), tk);
     }
 
     int ind = 3;
-    int value = get_value(table, char_to_string(keyword_type_list[ind]));
+    // Token tk = init_token(ind, char_to_string(keyword_type_list[ind]), (keyword_type_list[ind]), 0, 0);
+    Token value = get_value(table, char_to_string(keyword_type_list[ind]));
 
-    if (value != keyword_token_value[ind]){
+    if (value->type != ind)
+    {
         error("Incorrect value.1");
         exit(-1);
     }
@@ -22,16 +26,16 @@ void test_hash_table()
     ind = rand() % len;
     value = get_value(table, char_to_string(keyword_type_list[ind]));
 
-    if (value != keyword_token_value[ind])
+    if (value->type != ind)
     {
         error("Incorrect value.2");
         exit(-1);
     }
 
-     ind = rand() % len;
-     value = get_value(table, char_to_string(keyword_type_list[ind]));
+    ind = rand() % len;
+    value = get_value(table, char_to_string(keyword_type_list[ind]));
 
-    if (value != keyword_token_value[ind])
+    if (value->type != ind)
     {
         error("Incorrect value.3");
         exit(-1);
@@ -40,7 +44,7 @@ void test_hash_table()
     ind = rand() % len;
     value = get_value(table, char_to_string(keyword_type_list[ind]));
 
-    if (value != keyword_token_value[ind])
+    if (value->type != ind)
     {
         error("Incorrect value.4");
         exit(-1);
@@ -48,9 +52,9 @@ void test_hash_table()
 
     value = get_value(table, char_to_string("kaiwalya"));
 
-    if (value != -1)
+    if (value->type != TK_ILLEGAL)
     {
-        error("bhagwan aagye.");
+        error("Incorrect value.5");
         exit(-1);
     }
 

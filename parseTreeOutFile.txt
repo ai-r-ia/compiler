@@ -1,0 +1,3 @@
+Lexeme:       (null) CurrentNode:           otherFunctions Line no.:  0  tokenName:otherFunctions valueIfNumber:-1.000 parentNodeSymbol:                  program isLeafNode: yes NodeSymbol:           otherFunctions 
+Lexeme:        ----- CurrentNode:                  program Line no.:  0  tokenName:        ----- valueIfNumber:-1.000 parentNodeSymbol:                     ROOT isLeafNode:  no NodeSymbol:                  program 
+Lexeme:       (null) CurrentNode:             mainFunction Line no.:  0  tokenName: mainFunction valueIfNumber:-1.000 parentNodeSymbol:                  program isLeafNode: yes NodeSymbol:             mainFunction 

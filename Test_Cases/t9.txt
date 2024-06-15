@@ -1,0 +1,64 @@
+
+%Test Case: Syntactically incorrect testcase - HAS ERRORS
+%Let's calcualte the mean, standard deviation and variance of the given input numbers
+
+% The following function computes the sqrt value for the given input
+_sqrt input parameter list [int d5] output parameter list [real d4];
+type real: c6;
+type real: b23;
+c6 <--- (d5 / 2);
+b23 <--- 0;
+while(c6 != b23)
+b23 <--- c6;
+c6 <--- (d5/(b23+b23))/2;
+d4 <--- c6;
+return [d4];
+end
+
+% The following function computes the mean value for the given inputs 
+_mean input parameter list [int c2dbc,int d7,int b2d567] output parameter list [real d2];
+type real: c3 : global; 
+c3 <---3;
+d2 <--- (c2dbc + d7 + b2d567)/c3;
+return [d2];
+end
+
+
+% The following function computes the standard deviation value for the given inputs 
+_deviation input parameter list [int c2dbc, int d7, int b2d567] output parameter list [real c2];
+type real: b23, mean, c6;
+% type real: mean;  
+[mean] <--- call _mean with parameters [int c2dbc, int d7, int b2d567];
+b23 <--- b23 + ((c2dbc - mean) * (c2dbc - mean));
+b23 <--- b23 + ((d7 - mean) * (d7 - mean));
+b23 <--- b23 + ((b2d567 - mean) * (b2d567 - mean));
+
+c2 <--- call _sqrt with parameters[(b23/(c3 - 1))];
+return [c2];
+end
+
+% The following function computes the variance value for the given inputs 
+_mean input parameter list [int c2dbc, int d7, int b2d567] output parameter list [real var];
+
+[standard] <--- call _deviation with parameters [int c2dbc, int d7, int b2d567];
+var <--- standard * standard;
+return [var];
+
+end
+
+
+%The following program computes the function value for the user defined input
+_main 
+	type int  b5;
+	type int : d5cb34567;
+	type int :  b3b444;
+
+	read(d5cb34567);
+	read(45);
+	read(b3b444);
+
+    % Calculate mean, standard deviation and variance
+	[c3] <--- call _deviation with parameters [b5, d5cb34567, b3b444];
+	write(c3);
+	return;
+end

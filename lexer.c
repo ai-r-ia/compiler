@@ -1,5 +1,52 @@
+/*
+Group Number: 28
+1. Anishka Singh 2020B3A70816P
+2. Gautam Jajoo 2020B3A71638P
+3. Suraj Phalod 2020B3A71959P
+4. Ria Shekhawat 2020B4A71986P
+5. Karan Agrawal 2020B4A70830P
+*/
 #include "whole_include.h"
 
+bool eof_retraction = false;
+// Function to remove comments from a file
+void remove_comments(const char *input_filename, const char *output_filename)
+{
+    FILE *input_file = fopen(input_filename, "r");
+    if (input_file == NULL)
+    {
+        fprintf(stderr, "Error opening input file %s\n", input_filename);
+        exit(1);
+    }
+
+    FILE *output_file = fopen(output_filename, "w");
+    if (output_file == NULL)
+    {
+        fprintf(stderr, "Error opening output file %s\n", output_filename);
+        exit(1);
+    }
+
+    char line[256];
+    while (fgets(line, sizeof(line), input_file))
+    {
+        char *comment_start = strchr(line, '%');
+        if (comment_start != NULL)
+        {
+            *comment_start = '\0';
+        }
+        int i = strlen(line) - 1;
+        while (i >= 0 && (line[i] == ' ' || line[i] == '\t' || line[i] == '\n' || line[i] == '\r'))
+        {
+            line[i] = '\0';
+            i--;
+        }
+        printf("%s\n", line);
+        fprintf(output_file, "%s\n", line);
+    }
+
+    fclose(input_file);
+    fclose(output_file);
+}
 Lexer init_lexer(char *filename)
 {
     Lexer lexer = (Lexer)malloc(sizeof(struct lexer));
@@ -7,23 +54,27 @@ Lexer init_lexer(char *filename)
 
     _openFile(lexer);
 
-    lexer->BUFF_SIZE1 = BUFFER_SIZE;
-    lexer->BUFF_SIZE2 = BUFFER_SIZE;
-    lexer->buff1 = (char *)malloc(sizeof(char) * (lexer->BUFF_SIZE1 + 1));
-    lexer->buff2 = (char *)malloc(sizeof(char) * (lexer->BUFF_SIZE2 + 1));
+    lexer->buff1 = (char *)malloc(sizeof(char) * (BUFFER_SIZE + 1));
+    lexer->buff2 = (char *)malloc(sizeof(char) * (BUFFER_SIZE + 1));
 
     lexer->BUFF_NUM = 1;
     _readFile(lexer);
 
-    // lexer->buff_begin1 = 0;
-    // lexer->buff_begin2 = 0;
-    lexer->buffp1 = 0;
-    lexer->buffp2 = 0;
     lexer->fwd_ptr = 0;
     lexer->lineNumber = 1;
     lexer->charNumber = 1;
-    // _closeFile(lexer);
+
     return lexer;
+}
+
+// delimiter or comment check
+bool isDelimiter(char value)
+{
+    return (value == ' ') ||
+           (value == '\t') ||
+           (value == '\n') ||
+           (value == '\0') ||
+           (value == '%');
 }
 
 // Checks whether a character is [a-z] | [A-Z]
@@ -36,6 +87,12 @@ bool isLetter_a2z_A2Z(char value)
 bool isLetter_a2z(char value)
 {
     return (value >= 'a' && value <= 'z');
+}
+
+//[A-Z]
+bool isLetter_A2Z(char value)
+{
+    return (value >= 'A' && value <= 'Z');
 }
 
 // [b-d]
@@ -72,31 +129,130 @@ bool isSymbol(char value)
            value == '@' || value == '~' || value == '=' || value == '!';
 }
 
-char getNextCharacter(Lexer lexer) // TODO: test this and work out doublebuffering mechanism
+// checks for valid symbol table operator entries
+bool isSymbolTableOperator(String str)
+{
+    return compare(str, char_to_string("+")) ||
+           compare(str, char_to_string("-")) ||
+           compare(str, char_to_string("*")) ||
+           compare(str, char_to_string("/")) ||
+           compare(str, char_to_string("&&&")) ||
+           compare(str, char_to_string("@@@")) ||
+           compare(str, char_to_string("~")) ||
+           compare(str, char_to_string("<")) ||
+           compare(str, char_to_string(">")) ||
+           compare(str, char_to_string("<=")) ||
+           compare(str, char_to_string(">=")) ||
+           compare(str, char_to_string("==")) ||
+           compare(str, char_to_string("!="));
+}
+
+int getKeyword(String word)
+{
+    for (int i = 0; i < 28; i++)
+    {
+        if (compare(char_to_string(keyword_type_list[i]), word))
+            return i;
+    }
+
+    return -1;
+}
+
+Token tokenize_function(Lexer lexer, String lexeme, enum TOKEN_TYPE type, bool others)
+{
+    void *value;
+    char *p;
+
+    switch (type)
+    {
+    case TK_RNUM:
+        value = (double *)malloc(sizeof(double));
+        double d = strtod(lexeme->text, &p);
+        value = &d;
+        break;
+    case TK_NUM:
+        value = (int *)malloc(sizeof(int));
+        int i = atoi(lexeme->text);
+        value = &i;
+        break;
+    case TK_FIELDID:
+    case TK_ID:
+    case TK_FUNID:
+    case TK_RUID:
+    case TK_ILLEGAL:
+    case TK_LT:
+        value = (char *)malloc(sizeof(char));
+        value = lexeme->text;
+        break;
+    default:
+
+        printf("No coherent type provided to 'error_function'.");
+        break;
+    }
+
+    if (isDelimiter(lexer->curr_char) || isSymbol(lexer->curr_char) || others)
+    {
+        return init_token(type, lexeme, value, lexer->lineNumber, lexer->charNumber);
+    }
+
+    while (((lexer->curr_char != ' ') && (lexer->curr_char != '\t') && (lexer->curr_char != '\n') && (lexer->curr_char != '\0') && (lexer->curr_char != '%') && (!isSymbol(lexer->curr_char))))
+    {
+        append(lexeme, lexer->curr_char);
+        getNextCharacter(lexer);
+    }
+
+    retract(lexer, lexeme);
+    Token ill_token = init_token(TK_ILLEGAL, lexeme, lexeme->text, lexer->lineNumber, lexer->charNumber);
+    sprintf(ill_token->error_msg, "Unknown pattern <%s>", lexeme->text);
+    return ill_token;
+}
+
+char getNextCharacter(Lexer lexer)
 {
     char res;
     if (lexer->BUFF_NUM == 1)
     {
         // lexer->buff_begin1;
-        res = lexer->buff1[lexer->fwd_ptr];
-        lexer->fwd_ptr++;
-        if (lexer->fwd_ptr >= lexer->BUFF_SIZE1)
+        if (eof_retraction)
         {
-            lexer->BUFF_NUM = 2;
-            _readFile(lexer); // will load new data into buff2
+            // printf("eof_retraction %d\n", eof_retraction);
+            eof_retraction = false;
+            return lexer->curr_char;
+        }
+        else
+        {
+            res = lexer->buff1[lexer->fwd_ptr];
+            lexer->fwd_ptr++;
+            if (lexer->fwd_ptr >= BUFFER_SIZE)
+            {
+                // printf("%s\n", lexer->buff1);
+                lexer->fwd_ptr = 0;
+                lexer->BUFF_NUM = 2;
+                _readFile(lexer); // will load new data into buff2
+            }
         }
     }
     else
     {
-        res = lexer->buff2[lexer->fwd_ptr];
-        lexer->fwd_ptr++;
-        if (lexer->fwd_ptr >= lexer->BUFF_SIZE2)
+        if (eof_retraction)
         {
-            lexer->BUFF_NUM = 1;
-            _readFile(lexer); // will load new data into buff1
+            // printf("eof_retraction %d\n", eof_retraction);
+            eof_retraction = false;
+            return lexer->curr_char;
+        }
+        else
+        {
+            res = lexer->buff2[lexer->fwd_ptr];
+            lexer->fwd_ptr++;
+            if (lexer->fwd_ptr >= BUFFER_SIZE)
+            {
+                // printf("%s\n", lexer->buff2);
+                lexer->fwd_ptr = 0;
+                lexer->BUFF_NUM = 1;
+                _readFile(lexer); // will load new data into buff1
+            }
         }
     }
-
     lexer->charNumber++;
     if (res == '\n')
     {
@@ -104,279 +260,385 @@ char getNextCharacter(Lexer lexer) // TODO: test this and work out doublebufferi
         lexer->prevLineChar = lexer->curr_char;
         lexer->charNumber = 1;
     }
+
     return lexer->curr_char = res;
 }
 
-/* check at the bottom of lexer.c for all TD states
+// retraction
+void retract(Lexer lexer, String lexeme)
+{
+    pop_str(lexeme);
+    char *buffer;
+    if (lexer->BUFF_NUM == 1)
+        buffer = lexer->buff1;
+    else
+        buffer = lexer->buff2;
 
-In digit based tokens: 10 states
-17: if [.]
-18: ret tk_num        NOTE: removed
-19: if [0-9] after 17
-20: if [0-9] after 19
-21: if [E]
-22: if [+|-]
-23: if [0-9] after 22
-24: if [0-9] after 23 NOTE: removed
-25: ret tk_rnum       NOTE: removed
-*/
+    // eof
+    // if (buffer[lexer->fwd_ptr] == '\0')
+    //     eof_retraction = true;
+
+    if ((lexer->fwd_ptr) != '\0')
+        lexer->fwd_ptr--;
+    else
+        eof_retraction = true;
+
+    lexer->charNumber--;
+    if (buffer[lexer->fwd_ptr] == '\n')
+    {
+        lexer->lineNumber--;
+        lexer->charNumber = lexer->prevLineChar;
+    }
+}
+
 Token get_numeric_tk(Lexer lexer)
 {
     String lexeme = init_str();
-    int state = 2;
 
     while (lexer->fp && isDigit_0_9(lexer->curr_char))
     {
         append(lexeme, lexer->curr_char);
         getNextCharacter(lexer);
     }
+    append(lexeme, lexer->curr_char);
 
     if (lexer->curr_char == '.')
     {
-        append(lexeme, lexer->curr_char);
-        state = 17; // ret fn 17
+        return get_tk_rnum1(lexer, lexeme);
     }
 
-    return init_Token(TK_NUM, lexeme, lexer->lineNumber, lexer->charNumber);
-
-    switch (state)
-    {
-    case 17:
-        getNextCharacter(lexer);
-        if (isDigit_0_9(lexer->curr_char))
-        {
-            append(lexeme, lexer->curr_char);
-            state = 19; // ret fn 19
-        }
-        // error
-        return init_Token(TK_ILLEGAL, lexeme, lexer->lineNumber, lexer->charNumber);
-
-    case 19:
-        getNextCharacter(lexer);
-        if (isDigit_0_9(lexer->curr_char))
-        {
-            append(lexeme, lexer->curr_char);
-            state = 20; // ret fn 20
-        }
-        // error
-        return init_Token(TK_ILLEGAL, lexeme, lexer->lineNumber, lexer->charNumber);
-
-    case 20:
-        getNextCharacter(lexer);
-        if (lexer->curr_char == 'E')
-        {
-            append(lexeme, lexer->curr_char);
-            state = 21; // ret fn 21
-        }
-        return init_Token(TK_RNUM, lexeme, lexer->lineNumber, lexer->charNumber);
-
-    case 21:
-        getNextCharacter(lexer);
-        if ((lexer->curr_char == '+') || (lexer->curr_char == '-'))
-        {
-            append(lexeme, lexer->curr_char);
-            state = 22; // ret fn 22
-        }
-        else if (isDigit_0_9(lexer->curr_char))
-        {
-            append(lexeme, lexer->curr_char);
-            state = 23; // ret fn 23
-        }
-        // error
-        return init_Token(TK_ILLEGAL, lexeme, lexer->lineNumber, lexer->charNumber);
-
-    case 22:
-        getNextCharacter(lexer);
-        if (isDigit_0_9(lexer->curr_char))
-        {
-            append(lexeme, lexer->curr_char);
-            state = 23; // ret fn 23
-        }
-        // error
-        return init_Token(TK_ILLEGAL, lexeme, lexer->lineNumber, lexer->charNumber);
-
-    case 23:
-        getNextCharacter(lexer);
-        if (isDigit_0_9(lexer->curr_char))
-        {
-            append(lexeme, lexer->curr_char);
-            return init_Token(TK_RNUM, lexeme, lexer->lineNumber, lexer->charNumber);
-        }
-        // error
-        return init_Token(TK_ILLEGAL, lexeme, lexer->lineNumber, lexer->charNumber);
-    }
+    retract(lexer, lexeme);
+    return tokenize_function(lexer, lexeme, TK_NUM, true);
 }
 
-/*In character based tokens : 13 states
-4 : if[b - d]
-5 : if[a | e - z] | [a - z] and check Keyword
-6 : ret tk_fieldid
-7 : from 4 accepts[2 - 7] to transition, loops on[b - d]
-8 : loops on[2 - 7]
-9 : ret tk_id NOTE: __REMOVED__
-10 : if[_]
-11 : loops on[a - z | A - Z], check keyword
-12 : loops on[0 - 9]
-13 : ret tk_funid  NOTE: __REMOVED__
-14 : if[#]
-15 : loops on[a - z]
-16 : ret tk_ruid      NOTE: __REMOVED__
-*/
+Token get_tk_rnum1(Lexer lexer, String lexeme)
+{
+
+    getNextCharacter(lexer);
+    append(lexeme, lexer->curr_char);
+    if (isDigit_0_9(lexer->curr_char))
+    {
+        return get_tk_rnum2(lexer, lexeme);
+    }
+    // error
+    retract(lexer, lexeme);
+    retract(lexer, lexeme);
+    return tokenize_function(lexer, lexeme, TK_NUM, true);
+}
+
+Token get_tk_rnum2(Lexer lexer, String lexeme)
+{
+
+    getNextCharacter(lexer);
+    append(lexeme, lexer->curr_char);
+    if (isDigit_0_9(lexer->curr_char))
+    {
+        return get_tk_rnum3(lexer, lexeme);
+    }
+    // error
+    retract(lexer, lexeme);
+    Token ill_token = init_token(TK_ILLEGAL, lexeme, lexeme->text, lexer->lineNumber, lexer->charNumber);
+    sprintf(ill_token->error_msg, "Unknown pattern <%s>", lexeme->text);
+    return ill_token;
+}
+
+Token get_tk_rnum3(Lexer lexer, String lexeme)
+{
+
+    getNextCharacter(lexer);
+    append(lexeme, lexer->curr_char);
+
+    if (lexer->curr_char == 'E')
+    {
+        return get_tk_rnum4(lexer, lexeme);
+    }
+    // error
+    retract(lexer, lexeme);
+    return tokenize_function(lexer, lexeme, TK_RNUM, true);
+}
+
+Token get_tk_rnum4(Lexer lexer, String lexeme)
+{
+
+    getNextCharacter(lexer);
+    append(lexeme, lexer->curr_char);
+    if ((lexer->curr_char == '+') || (lexer->curr_char == '-'))
+    {
+        return get_tk_rnum5(lexer, lexeme);
+    }
+    else if (isDigit_0_9(lexer->curr_char))
+    {
+        return get_tk_rnum6(lexer, lexeme);
+    }
+    // error
+    retract(lexer, lexeme);
+    Token ill_token = init_token(TK_ILLEGAL, lexeme, lexeme->text, lexer->lineNumber, lexer->charNumber);
+    sprintf(ill_token->error_msg, "Unknown pattern <%s>", lexeme->text);
+    return ill_token;
+}
+
+Token get_tk_rnum5(Lexer lexer, String lexeme)
+{
+
+    getNextCharacter(lexer);
+    append(lexeme, lexer->curr_char);
+    if (isDigit_0_9(lexer->curr_char))
+    {
+        return get_tk_rnum6(lexer, lexeme);
+    }
+
+    // error
+    retract(lexer, lexeme);
+    Token ill_token = init_token(TK_ILLEGAL, lexeme, lexeme->text, lexer->lineNumber, lexer->charNumber);
+    sprintf(ill_token->error_msg, "Unknown pattern <%s>", lexeme->text);
+    return ill_token;
+}
+
+Token get_tk_rnum6(Lexer lexer, String lexeme)
+{
+
+    // getNextCharacter(lexer);
+    getNextCharacter(lexer);
+    append(lexeme, lexer->curr_char);
+    if (isDigit_0_9(lexer->curr_char))
+    {
+        return tokenize_function(lexer, lexeme, TK_RNUM, true);
+    }
+    // error
+    retract(lexer, lexeme);
+    Token ill_token = init_token(TK_ILLEGAL, lexeme, lexeme->text, lexer->lineNumber, lexer->charNumber);
+    sprintf(ill_token->error_msg, "Unknown pattern <%s>", lexeme->text);
+    return ill_token;
+}
+
 Token get_char_tk(Lexer lexer)
 {
     String lexeme = init_str();
     append(lexeme, lexer->curr_char);
-    int keyword;
-    bool flag;
-    int state = 1;
 
     if (isLetter_b2d(lexer->curr_char))
-        state = 4; // ret fn 4
+    {
+        return after_b2d(lexer, lexeme);
+    }
     if (lexer->curr_char == 'a' || isLetter_e2z(lexer->curr_char))
-        state = 5; // ret fn 5
+    {
+        return get_tk_fieldid(lexer, lexeme);
+    }
     if (lexer->curr_char == '_')
-        state = 10; // ret fn 10
+    {
+        return get_tk_funid0(lexer, lexeme);
+    }
     if (lexer->curr_char == '#')
-        state = 14; // ret fn 14
+    {
+        return get_tk_ruid0(lexer, lexeme);
+    }
 
     // error --> should never occur here
-    return init_Token(TK_ILLEGAL, lexeme, lexer->lineNumber, lexer->charNumber);
+    // retract(lexer, lexeme);
+    Token ill_token = init_token(TK_ILLEGAL, lexeme, lexeme->text, lexer->lineNumber, lexer->charNumber);
+    sprintf(ill_token->error_msg, "Unknown Symbol <%s>", lexeme->text);
+    return ill_token;
+}
 
-    switch (state)
+Token after_b2d(Lexer lexer, String lexeme)
+{
+
+    getNextCharacter(lexer);
+    append(lexeme, lexer->curr_char);
+
+    if (isDigit_2_7(lexer->curr_char))
+        return get_tk_id2(lexer, lexeme);
+    if (isLetter_a2z(lexer->curr_char))
+        return get_tk_fieldid(lexer, lexeme);
+
+    // error
+    retract(lexer, lexeme);
+    Token ill_token = init_token(TK_ILLEGAL, lexeme, lexeme->text, lexer->lineNumber, lexer->charNumber);
+    sprintf(ill_token->error_msg, "Unknown pattern <%s>", lexeme->text);
+    return ill_token;
+}
+
+Token get_tk_fieldid(Lexer lexer, String lexeme)
+{
+    bool flag = false;
+    while (lexer->fp && isLetter_a2z(lexer->curr_char))
     {
-    case 4:
+        if (flag)
+        {
+            append(lexeme, lexer->curr_char);
+        }
+
         getNextCharacter(lexer);
+        flag = true;
+    }
+    append(lexeme, lexer->curr_char);
+    retract(lexer, lexeme);
+
+    int keyword = getKeyword(lexeme);
+    if (keyword != -1)
+    {
+        return init_token(keyword_token_value[keyword], lexeme, lexeme->text, lexer->lineNumber, lexer->charNumber);
+    }
+
+    return tokenize_function(lexer, lexeme, TK_FIELDID, true);
+}
+
+Token get_tk_id2(Lexer lexer, String lexeme)
+{
+    getNextCharacter(lexer);
+    while (lexer->fp && (isLetter_b2d(lexer->curr_char) || isDigit_2_7(lexer->curr_char)))
+    {
+
+        append(lexeme, lexer->curr_char);
+        getNextCharacter(lexer);
+
         if (isDigit_2_7(lexer->curr_char))
         {
             append(lexeme, lexer->curr_char);
-            state = 7; // ret fn 7
+            return get_tk_id3(lexer, lexeme);
         }
-        if (isLetter_a2z(lexer->curr_char))
-        {
-            append(lexeme, lexer->curr_char);
-            state = 5; // ret fn 5
-        }
-        // error
-        return init_Token(TK_ILLEGAL, lexeme, lexer->lineNumber, lexer->charNumber);
-
-    case 5:
-        flag = false;
-        while (lexer->fp && isLetter_a2z(lexer->curr_char))
-        {
-            if (flag)
-                append(lexeme, lexer->curr_char);
-
-            keyword = getKeyword(lexeme);
-            if (keyword != -1)
-                // TODO: check init_token type
-                return init_Token(keyword_token_value[keyword], lexeme, lexer->lineNumber, lexer->charNumber);
-
-            getNextCharacter(lexer);
-            flag = true;
-        }
-
-        return init_Token(TK_FIELDID, lexeme, lexer->lineNumber, lexer->charNumber);
-
-    case 7:
-        flag = false;
-        while (lexer->fp && isLetter_b2d(lexer->curr_char))
-        {
-            if (flag)
-                append(lexeme, lexer->curr_char);
-
-            getNextCharacter(lexer);
-
-            if (isDigit_2_7(lexer->curr_char))
-            {
-                append(lexeme, lexer->curr_char);
-                state = 8; // ret fn 8
-            }
-
-            flag = true;
-        }
-
-        return init_Token(TK_ID, lexeme, lexer->lineNumber, lexer->charNumber);
-
-    case 8:
-        flag = false;
-        while (lexer->fp && isLetter_b2d(lexer->curr_char))
-        {
-            if (flag)
-                append(lexeme, lexer->curr_char);
-            getNextCharacter(lexer);
-            flag = true;
-        }
-
-        return init_Token(TK_ID, lexeme, lexer->lineNumber, lexer->charNumber);
-
-    case 10:
-        getNextCharacter(lexer);
-        if (isLetter_a2z_A2Z(lexer->curr_char))
-        {
-            append(lexeme, lexer->curr_char);
-            state = 11; // ret fn 11
-        }
-        // error
-        return init_Token(TK_ILLEGAL, lexeme, lexer->lineNumber, lexer->charNumber);
-
-    case 11:
-        flag = false;
-        while (lexer->fp && isLetter_a2z_A2Z(lexer->curr_char))
-        {
-            if (flag)
-                append(lexeme, lexer->curr_char);
-
-            keyword = getKeyword(lexeme);
-            if (keyword == 17)
-                return init_Token(TK_MAIN, lexeme, lexer->lineNumber, lexer->charNumber);
-
-            getNextCharacter(lexer);
-
-            if (isDigit_0_9(lexer->curr_char))
-            {
-                append(lexeme, lexer->curr_char);
-                state = 12; // ret fn 12
-            }
-
-            flag = true;
-        }
-
-        return init_Token(TK_FUNID, lexeme, lexer->lineNumber, lexer->charNumber);
-
-    case 12:
-        flag = false;
-        while (lexer->fp && isDigit_0_9(lexer->curr_char))
-        {
-            if (flag)
-                append(lexeme, lexer->curr_char);
-            getNextCharacter(lexer);
-            flag = true;
-        }
-
-        return init_Token(TK_FUNID, lexeme, lexer->lineNumber, lexer->charNumber);
-
-    case 14:
-        getNextCharacter(lexer);
-        if (isLetter_a2z(lexer->curr_char))
-        {
-            append(lexeme, lexer->curr_char);
-            state = 15; // ret fn 15
-        }
-        // error
-        return init_Token(TK_ILLEGAL, lexeme, lexer->lineNumber, lexer->charNumber);
-
-    case 15:
-        flag = false;
-        while (lexer->fp && isLetter_a2z(lexer->curr_char))
-        {
-            if (flag)
-                append(lexeme, lexer->curr_char);
-            getNextCharacter(lexer);
-            flag = true;
-        }
-
-        return init_Token(TK_RUID, lexeme, lexer->lineNumber, lexer->charNumber);
     }
+
+    append(lexeme, lexer->curr_char);
+    retract(lexer, lexeme);
+    return tokenize_function(lexer, lexeme, TK_ID, true);
+}
+
+Token get_tk_id3(Lexer lexer, String lexeme)
+{
+
+    bool flag = false;
+    while (lexer->fp && isDigit_2_7(lexer->curr_char))
+    {
+        if (flag)
+        {
+            append(lexeme, lexer->curr_char);
+        }
+        getNextCharacter(lexer);
+        flag = true;
+    }
+
+    append(lexeme, lexer->curr_char);
+    retract(lexer, lexeme);
+
+    if (lexeme->size > 20)
+    {
+        Token ret = init_token(TK_ILLEGAL, lexeme, lexeme->text, lexer->lineNumber, lexer->charNumber);
+        ret->error_msg = "Variable Identifier is longer than the prescribed length of 20 characters.";
+        return ret;
+    }
+    return tokenize_function(lexer, lexeme, TK_ID, true);
+}
+
+Token get_tk_funid0(Lexer lexer, String lexeme)
+{
+
+    getNextCharacter(lexer);
+    append(lexeme, lexer->curr_char);
+    if (isLetter_a2z_A2Z(lexer->curr_char))
+    {
+        return get_tk_funid1(lexer, lexeme); // ret fn 11
+    }
+    // error
+    retract(lexer, lexeme);
+    Token ill_token = init_token(TK_ILLEGAL, lexeme, lexeme->text, lexer->lineNumber, lexer->charNumber);
+    sprintf(ill_token->error_msg, "Unknown pattern <%s>", lexeme->text);
+    return ill_token;
+}
+
+Token get_tk_funid1(Lexer lexer, String lexeme)
+{
+
+    bool flag = false;
+    while (lexer->fp && isLetter_a2z_A2Z(lexer->curr_char))
+    {
+        if (flag)
+        {
+            append(lexeme, lexer->curr_char);
+        }
+        getNextCharacter(lexer);
+
+        flag = true;
+    }
+
+    append(lexeme, lexer->curr_char);
+
+    if (isDigit_0_9(lexer->curr_char))
+    {
+        return get_tk_funid3(lexer, lexeme);
+    }
+
+    retract(lexer, lexeme);
+
+    if (!isDigit_0_9(lexer->curr_char))
+    {
+        int keyword = getKeyword(lexeme);
+        if (keyword_token_value[keyword] == 17)
+        {
+            return init_token(TK_MAIN, lexeme, lexeme->text, lexer->lineNumber, lexer->charNumber);
+        }
+    }
+
+    if (lexeme->size > 30)
+    {
+        Token ret = init_token(TK_ILLEGAL, lexeme, lexeme->text, lexer->lineNumber, lexer->charNumber);
+        ret->error_msg = "Function Identifier is longer than the prescribed length of 30 characters.";
+        return ret;
+    }
+    return tokenize_function(lexer, lexeme, TK_FUNID, true);
+}
+
+Token get_tk_funid3(Lexer lexer, String lexeme)
+{
+
+    bool flag = false;
+    while (lexer->fp && isDigit_0_9(lexer->curr_char))
+    {
+        if (flag)
+        {
+            append(lexeme, lexer->curr_char);
+        }
+        getNextCharacter(lexer);
+        flag = true;
+    }
+
+    append(lexeme, lexer->curr_char);
+    retract(lexer, lexeme);
+    return tokenize_function(lexer, lexeme, TK_FUNID, true);
+}
+
+Token get_tk_ruid0(Lexer lexer, String lexeme)
+{
+
+    getNextCharacter(lexer);
+    append(lexeme, lexer->curr_char);
+    if (isLetter_a2z(lexer->curr_char))
+    {
+        return get_tk_ruid1(lexer, lexeme); // ret fn 15
+    }
+    // error
+    retract(lexer, lexeme);
+    Token ill_token = init_token(TK_ILLEGAL, lexeme, lexeme->text, lexer->lineNumber, lexer->charNumber);
+    sprintf(ill_token->error_msg, "Unknown pattern <%s>", lexeme->text);
+    return ill_token;
+}
+
+Token get_tk_ruid1(Lexer lexer, String lexeme)
+{
+
+    bool flag = false;
+    while (lexer->fp && isLetter_a2z(lexer->curr_char))
+    {
+        if (flag)
+        {
+            append(lexeme, lexer->curr_char);
+        }
+        getNextCharacter(lexer);
+        flag = true;
+    }
+    append(lexeme, lexer->curr_char);
+    retract(lexer, lexeme);
+    return tokenize_function(lexer, lexeme, TK_RUID, true);
 }
 
 Token get_symbol_tk(Lexer lexer)
@@ -401,23 +663,34 @@ Token get_symbol_tk(Lexer lexer)
                 if (lexer->curr_char == '-')
                 {
                     append(lexeme, lexer->curr_char);
-                    return init_Token(TK_ASSIGNOP, lexeme, lexer->lineNumber, lexer->charNumber);
+                    return init_token(TK_ASSIGNOP, lexeme, lexeme->text, lexer->lineNumber, lexer->charNumber);
                 }
 
                 // error
-                return init_Token(TK_ILLEGAL, lexeme, lexer->lineNumber, lexer->charNumber);
+                append(lexeme, lexer->curr_char);
+                retract(lexer, lexeme);
+                Token ill_token = init_token(TK_ILLEGAL, lexeme, lexeme->text, lexer->lineNumber, lexer->charNumber);
+                sprintf(ill_token->error_msg, "Unknown pattern <%s>", lexeme->text);
+                return ill_token;
             }
 
             // error
-            return init_Token(TK_ILLEGAL, lexeme, lexer->lineNumber, lexer->charNumber);
+            append(lexeme, lexer->curr_char);
+            retract(lexer, lexeme);
+            retract(lexer, lexeme);
+
+            return tokenize_function(lexer, lexeme, TK_LT, true);
         }
         if (lexer->curr_char == '=')
         {
             append(lexeme, lexer->curr_char);
-            return init_Token(TK_LE, lexeme, lexer->lineNumber, lexer->charNumber);
+            return init_token(TK_LE, lexeme, lexeme->text, lexer->lineNumber, lexer->charNumber);
         }
 
-        return init_Token(TK_LT, lexeme, lexer->lineNumber, lexer->charNumber);
+        append(lexeme, lexer->curr_char);
+        retract(lexer, lexeme);
+
+        return init_token(TK_LT, lexeme, lexeme->text, lexer->lineNumber, lexer->charNumber);
     }
     if (lexer->curr_char == '>')
     {
@@ -426,9 +699,13 @@ Token get_symbol_tk(Lexer lexer)
         if (lexer->curr_char == '=')
         {
             append(lexeme, lexer->curr_char);
-            return init_Token(TK_GE, lexeme, lexer->lineNumber, lexer->charNumber);
+            return init_token(TK_GE, lexeme, lexeme->text, lexer->lineNumber, lexer->charNumber);
         }
-        return init_Token(TK_GT, lexeme, lexer->lineNumber, lexer->charNumber);
+
+        append(lexeme, lexer->curr_char);
+        retract(lexer, lexeme);
+
+        return init_token(TK_GT, lexeme, lexeme->text, lexer->lineNumber, lexer->charNumber);
     }
 
     if (lexer->curr_char == '&')
@@ -443,15 +720,23 @@ Token get_symbol_tk(Lexer lexer)
             if (lexer->curr_char == '&')
             {
                 append(lexeme, lexer->curr_char);
-                return init_Token(TK_AND, lexeme, lexer->lineNumber, lexer->charNumber);
+                return init_token(TK_AND, lexeme, lexeme->text, lexer->lineNumber, lexer->charNumber);
             }
 
             // error
-            return init_Token(TK_ILLEGAL, lexeme, lexer->lineNumber, lexer->charNumber);
+            append(lexeme, lexer->curr_char);
+            retract(lexer, lexeme);
+            Token ill_token = init_token(TK_ILLEGAL, lexeme, lexeme->text, lexer->lineNumber, lexer->charNumber);
+            sprintf(ill_token->error_msg, "Unknown pattern <%s>", lexeme->text);
+            return ill_token;
         }
 
         // error
-        return init_Token(TK_ILLEGAL, lexeme, lexer->lineNumber, lexer->charNumber);
+        append(lexeme, lexer->curr_char);
+        retract(lexer, lexeme);
+        Token ill_token = init_token(TK_ILLEGAL, lexeme, lexeme->text, lexer->lineNumber, lexer->charNumber);
+        sprintf(ill_token->error_msg, "Unknown Symbol <%s>", lexeme->text);
+        return ill_token;
     }
 
     if (lexer->curr_char == '@')
@@ -466,15 +751,25 @@ Token get_symbol_tk(Lexer lexer)
             if (lexer->curr_char == '@')
             {
                 append(lexeme, lexer->curr_char);
-                return init_Token(TK_OR, lexeme, lexer->lineNumber, lexer->charNumber);
+                return init_token(TK_OR, lexeme, lexeme->text, lexer->lineNumber, lexer->charNumber);
             }
 
             // error
-            return init_Token(TK_ILLEGAL, lexeme, lexer->lineNumber, lexer->charNumber);
+            append(lexeme, lexer->curr_char);
+            retract(lexer, lexeme);
+
+            Token ill_token = init_token(TK_ILLEGAL, lexeme, lexeme->text, lexer->lineNumber, lexer->charNumber);
+            sprintf(ill_token->error_msg, "Unknown pattern <%s>", lexeme->text);
+            return ill_token;
         }
 
         // error
-        return init_Token(TK_ILLEGAL, lexeme, lexer->lineNumber, lexer->charNumber);
+        append(lexeme, lexer->curr_char);
+        retract(lexer, lexeme);
+
+        Token ill_token = init_token(TK_ILLEGAL, lexeme, lexeme->text, lexer->lineNumber, lexer->charNumber);
+        sprintf(ill_token->error_msg, "Unknown Symbol <%s>", lexeme->text);
+        return ill_token;
     }
 
     if (lexer->curr_char == '=')
@@ -484,11 +779,16 @@ Token get_symbol_tk(Lexer lexer)
         if (lexer->curr_char == '=')
         {
             append(lexeme, lexer->curr_char);
-            return init_Token(TK_EQ, lexeme, lexer->lineNumber, lexer->charNumber);
+            return init_token(TK_EQ, lexeme, lexeme->text, lexer->lineNumber, lexer->charNumber);
         }
 
         // error
-        return init_Token(TK_ILLEGAL, lexeme, lexer->lineNumber, lexer->charNumber);
+        append(lexeme, lexer->curr_char);
+        retract(lexer, lexeme);
+
+        Token ill_token = init_token(TK_ILLEGAL, lexeme, lexeme->text, lexer->lineNumber, lexer->charNumber);
+        sprintf(ill_token->error_msg, "Unknown Symbol <%s>", lexeme->text);
+        return ill_token;
     }
 
     if (lexer->curr_char == '!')
@@ -498,75 +798,92 @@ Token get_symbol_tk(Lexer lexer)
         if (lexer->curr_char == '=')
         {
             append(lexeme, lexer->curr_char);
-            return init_Token(TK_NE, lexeme, lexer->lineNumber, lexer->charNumber);
+            return init_token(TK_NE, lexeme, lexeme->text, lexer->lineNumber, lexer->charNumber);
         }
 
         // error
-        return init_Token(TK_ILLEGAL, lexeme, lexer->lineNumber, lexer->charNumber);
+        append(lexeme, lexer->curr_char);
+        retract(lexer, lexeme);
+
+        Token ill_token = init_token(TK_ILLEGAL, lexeme, lexeme->text, lexer->lineNumber, lexer->charNumber);
+        sprintf(ill_token->error_msg, "Unknown Symbol <%s>", lexeme->text);
+        return ill_token;
     }
 
-    // NOTE: to be removed, comments needn't be tokenized, simply skipped
-    if (lexer->curr_char == '%')
-        return init_Token(TK_COMMENT, lexeme, lexer->lineNumber, lexer->charNumber);
-
     if (lexer->curr_char == '[')
-        return init_Token(TK_SQL, lexeme, lexer->lineNumber, lexer->charNumber);
+        return init_token(TK_SQL, lexeme, lexeme->text, lexer->lineNumber, lexer->charNumber);
 
     if (lexer->curr_char == ']')
-        return init_Token(TK_SQR, lexeme, lexer->lineNumber, lexer->charNumber);
+        return init_token(TK_SQR, lexeme, lexeme->text, lexer->lineNumber, lexer->charNumber);
 
     if (lexer->curr_char == ',')
-        return init_Token(TK_COMMA, lexeme, lexer->lineNumber, lexer->charNumber);
+        return init_token(TK_COMMA, lexeme, lexeme->text, lexer->lineNumber, lexer->charNumber);
 
     if (lexer->curr_char == ';')
-        return init_Token(TK_SEM, lexeme, lexer->lineNumber, lexer->charNumber);
+        return init_token(TK_SEM, lexeme, lexeme->text, lexer->lineNumber, lexer->charNumber);
 
     if (lexer->curr_char == ':')
-        return init_Token(TK_COLON, lexeme, lexer->lineNumber, lexer->charNumber);
+        return init_token(TK_COLON, lexeme, lexeme->text, lexer->lineNumber, lexer->charNumber);
 
     if (lexer->curr_char == '.')
-        return init_Token(TK_DOT, lexeme, lexer->lineNumber, lexer->charNumber);
+        return init_token(TK_DOT, lexeme, lexeme->text, lexer->lineNumber, lexer->charNumber);
 
     if (lexer->curr_char == '(')
-        return init_Token(TK_OP, lexeme, lexer->lineNumber, lexer->charNumber);
+        return init_token(TK_OP, lexeme, lexeme->text, lexer->lineNumber, lexer->charNumber);
 
     if (lexer->curr_char == ')')
-        return init_Token(TK_CL, lexeme, lexer->lineNumber, lexer->charNumber);
+        return init_token(TK_CL, lexeme, lexeme->text, lexer->lineNumber, lexer->charNumber);
 
     if (lexer->curr_char == '+')
-        return init_Token(TK_PLUS, lexeme, lexer->lineNumber, lexer->charNumber);
+        return init_token(TK_PLUS, lexeme, lexeme->text, lexer->lineNumber, lexer->charNumber);
 
     if (lexer->curr_char == '-')
-        return init_Token(TK_MINUS, lexeme, lexer->lineNumber, lexer->charNumber);
+        return init_token(TK_MINUS, lexeme, lexeme->text, lexer->lineNumber, lexer->charNumber);
 
     if (lexer->curr_char == '*')
-        return init_Token(TK_MUL, lexeme, lexer->lineNumber, lexer->charNumber);
+        return init_token(TK_MUL, lexeme, lexeme->text, lexer->lineNumber, lexer->charNumber);
 
     if (lexer->curr_char == '/')
-        return init_Token(TK_DIV, lexeme, lexer->lineNumber, lexer->charNumber);
+        return init_token(TK_DIV, lexeme, lexeme->text, lexer->lineNumber, lexer->charNumber);
 
     if (lexer->curr_char == '~')
-        return init_Token(TK_NOT, lexeme, lexer->lineNumber, lexer->charNumber);
+        return init_token(TK_NOT, lexeme, lexeme->text, lexer->lineNumber, lexer->charNumber);
 
     // error --> should never occur here
-    return init_Token(TK_ILLEGAL, lexeme, lexer->lineNumber, lexer->charNumber);
+    append(lexeme, lexer->curr_char);
+    retract(lexer, lexeme);
+
+    Token ill_token = init_token(TK_ILLEGAL, lexeme, lexeme->text, lexer->lineNumber, lexer->charNumber);
+    sprintf(ill_token->error_msg, "Unknown Symbol <%s>", lexeme->text);
+    return ill_token;
 }
 
-Token tokenize(Lexer lexer, bool readNext)
+Token getNextToken(Lexer lexer)
 {
-    if (readNext)
-        getNextCharacter(lexer);
+    getNextCharacter(lexer);
 
     // whitespaces
     if (lexer->curr_char == ' ' || lexer->curr_char == '\t' || lexer->curr_char == '\n')
-        return tokenize(lexer, true);
+        return getNextToken(lexer);
 
     // eof
     if (lexer->curr_char == '\0')
     {
         _closeFile(lexer);
-        return NULL; // TODO: check if tk_eof needed
+        return NULL;
     }
+
+    if (lexer->curr_char == '%')
+    {
+        while (lexer->curr_char != '\n' && lexer->curr_char != '\0')
+        {
+            getNextCharacter(lexer);
+            // append(lexeme, lexer->curr_char);
+        }
+
+        return getNextToken(lexer);
+    }
+
     // initial state for letter based tokens
     if (isLetter_a2z(lexer->curr_char) || lexer->curr_char == '_' || lexer->curr_char == '#')
         return get_char_tk(lexer);
@@ -581,7 +898,9 @@ Token tokenize(Lexer lexer, bool readNext)
 
     String illegal = init_str();
     append(illegal, lexer->curr_char);
-    return init_Token(TK_ILLEGAL, illegal, lexer->lineNumber, lexer->charNumber);
+    Token ill_token = init_token(TK_ILLEGAL, illegal, illegal->text, lexer->lineNumber, lexer->charNumber);
+    sprintf(ill_token->error_msg, "Unknown Symbol <%s>", illegal->text);
+    return ill_token;
 }
 
 // private functions (internal)
@@ -623,10 +942,7 @@ void _readFile(Lexer lexer)
     memset(buff, '\0', BUFFER_SIZE + 1);
     fr = fread(buff, 1, BUFFER_SIZE, lexer->fp);
 
-    // error handling
-    // if (feof(lexer->fp))
-    //     _closeFile(lexer);  //DEBUG:
-     if (fr != BUFFER_SIZE)
+    if (fr != BUFFER_SIZE)
     {
         // file reading error
         if (ferror(lexer->fp))
@@ -637,11 +953,6 @@ void _readFile(Lexer lexer)
         }
         clearerr(lexer->fp);
     }
-
-    if (lexer->BUFF_NUM == 1)
-        lexer->buffp1 = 0;
-    else
-        lexer->buffp2 = 0;
 }
 
 void _closeFile(Lexer lexer)
@@ -649,7 +960,6 @@ void _closeFile(Lexer lexer)
     if (fclose(lexer->fp) != 0)
     {
         char err_text[300];
-        // sprintf(err_text, "Error in closing file: %s", strerror(errno));
         sprintf(err_text, "Error in closing file: %s", lexer->filename);
         error(err_text);
         exit(1);
